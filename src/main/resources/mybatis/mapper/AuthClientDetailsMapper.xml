@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.monolithic.mapper.AuthClientDetailsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.monolithic.po.AuthClientDetailsPo">
+        <id column="client_id" property="clientId"/>
+        <result column="resource_ids" property="resourceIds"/>
+        <result column="secret_required" property="secretRequired"/>
+        <result column="client_secret" property="clientSecret"/>
+        <result column="scope" property="scope"/>
+        <result column="authorized_grant_types" property="authorizedGrantTypes"/>
+        <result column="registered_redirect_uris" property="registeredRedirectUris"/>
+        <result column="authorities" property="authorities"/>
+        <result column="access_token_validity" property="accessTokenValidity"/>
+        <result column="refresh_token_validity" property="refreshTokenValidity"/>
+        <result column="auto_approve" property="autoApprove"/>
+        <result column="desc" property="desc"/>
+        <result column="addl_info" property="addlInfo"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        client_id
+        , resource_ids, secret_required, client_secret, `scope`, authorized_grant_types, registered_redirect_uris, authorities, access_token_validity, refresh_token_validity, auto_approve, `desc`,addl_info, del_flag, create_time, update_time
+    </sql>
+
+</mapper>

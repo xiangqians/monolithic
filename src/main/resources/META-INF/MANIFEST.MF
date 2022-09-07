@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: springfox-swagger-ui
+Implementation-Version: 2.1.2
+Created-By: 1.7.0_60 (Oracle Corporation)
+Built-With: gradle-2.4, groovy-2.3.10
+Build-Time: 2015-07-21T21:34:36-0500
+Built-By: d_krishnan
+Built-On: ISDV157182L.home/192.168.1.22
+SwaggerUi-Version: 2.1.0
+

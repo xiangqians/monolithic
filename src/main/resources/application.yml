@@ -1,0 +1,112 @@
+server:
+  #address: 127.0.0.1
+  port: @server.port@
+  servlet:
+    context-path: /
+    session:
+      persistent: false
+
+spring:
+  application:
+    name: @artifactId@
+    version: @version@
+
+  security:
+    filter:
+      # org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.securityFilterChainRegistration()
+      # async,error,request
+      dispatcher-types: async,error,request,forward
+
+  # datasource
+  datasource:
+    name: default
+    driver-class-name: @datasource.driver-class-name@
+    url: @datasource.url@
+    username: @datasource.username@
+    password: @datasource.password@
+
+    # 指定使用的数据源
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      # 池中最大连接数（包括空闲和正在使用的连接）
+      maximum-pool-size: 5
+      # 池中最小空闲连接数量
+      minimum-idle: 1
+
+  # 多数据源
+  multiple-datasource:
+    # default
+    - name: default
+      driver-class-name: ${spring.datasource.driver-class-name}
+      url: ${spring.datasource.url}
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      type: ${spring.datasource.type}
+      hikari:
+        maximum-pool-size: ${spring.datasource.hikari.maximum-pool-size}
+        minimum-idle: ${spring.datasource.hikari.minimum-idle}
+
+    # other
+    - name: other
+      driver-class-name: ${spring.datasource.driver-class-name}
+      url: ${spring.datasource.url}
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      type: ${spring.datasource.type}
+      hikari:
+        maximum-pool-size: ${spring.datasource.hikari.maximum-pool-size}
+        minimum-idle: ${spring.datasource.hikari.minimum-idle}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  # 资源本地路径
+  resource-locations:
+    # swagger
+    - path-patterns: [ doc.html, swagger-ui.html ]
+      locations: [ classpath:/META-INF/resources/ ]
+    - path-patterns: [ /webjars/** ]
+      locations: [ classpath:/META-INF/resources/webjars/ ]
+    #
+    - name: fileResourceDirectory
+      path-patterns: [ /img/** ]
+      locations: [ file:E:/tmp/img/ ]
+    # static
+    - name: static
+      path-patterns: [ /static/** ]
+      locations: [ classpath:/static/ ]
+
+  # jackson
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    custom-data-time-format: yyyy-MM-dd HH:mm:ss
+    custom-date-format: yyyy-MM-dd
+    custom-time-format: HH:mm:ss
+    time-zone: GMT+8
+
+  # profiles
+  profiles:
+    active: @profiles.active@
+
+# mybatis-plus
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    auto-mapping-behavior: full
+
+    # org.apache.ibatis.logging.nologging.NoLoggingImpl
+    # org.apache.ibatis.logging.stdout.StdOutImpl
+    # org.apache.ibatis.logging.slf4j.Slf4jImpl
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+  # 指定sql映射文件位置
+  mapper-locations: classpath:mybatis/mapper/**/*Mapper.xml
+  global-config:
+    # 逻辑删除配置
+    db-config:
+      # 删除前
+      logic-not-delete-value: 0
+      # 删除后
+      logic-delete-value: 1
