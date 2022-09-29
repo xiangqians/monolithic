@@ -1,7 +1,7 @@
 package org.monolithic.po.param;
 
 import lombok.Data;
-import org.monolithic.o.PoParam;
+import org.monolithic.o.Ppo;
 import org.monolithic.po.UserPo;
 
 /**
@@ -9,5 +9,5 @@ import org.monolithic.po.UserPo;
  * @date 22:37 2022/09/06
  */
 @Data
-public class UserPoParam extends UserPo implements PoParam {
+public class UserPoParam extends UserPo implements Ppo {
 }

@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.monolithic.o.VoParam;
+import org.monolithic.o.Vpo;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.Min;
@@ -23,7 +23,7 @@ import java.util.Set;
  */
 @Data
 @ApiModel(description = "分页参数信息")
-public class PageRequest implements VoParam {
+public class PageRequest implements Vpo {
 
     protected static final String SORT_FIELDS_DOCUMENT_DESCRIPTION = "注：排序字段集，字段间以英文逗号（,）分隔";
 

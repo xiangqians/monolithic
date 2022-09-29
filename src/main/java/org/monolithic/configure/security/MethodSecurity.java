@@ -65,7 +65,7 @@ public class MethodSecurity {
 
     public boolean hasPerm(String path) {
         // 资源允许访问
-        if (resourcePermitPatterns.contains(path)) {
+        if (Objects.nonNull(resourcePermitPatterns) && resourcePermitPatterns.contains(path)) {
             return true;
         }
 

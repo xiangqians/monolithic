@@ -3,7 +3,7 @@ package org.monolithic.vo.user.param;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.monolithic.o.PoParam;
+import org.monolithic.o.Ppo;
 import org.monolithic.po.param.UserPoParam;
 
 import javax.validation.constraints.Min;
@@ -23,7 +23,7 @@ public class UserModifyVoParam extends UserAddVoParam {
     private Long id;
 
     @Override
-    public <T extends PoParam> T convertToPoParam(Class<T> type) {
+    public <T extends Ppo> T convertToPoParam(Class<T> type) {
 
         if (type == UserPoParam.class) {
             UserPoParam poParam = super.convertToPoParam(UserPoParam.class);

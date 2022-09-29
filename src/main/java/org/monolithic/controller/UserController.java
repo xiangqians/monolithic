@@ -3,7 +3,9 @@ package org.monolithic.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.monolithic.annotation.AllowUARequest;
 import org.monolithic.annotation.DocketGroup;
+import org.monolithic.annotation.PubRes;
 import org.monolithic.constant.DocketGroupName;
 import org.monolithic.constant.DocketGroupTag;
 import org.monolithic.pagination.Page;
@@ -34,6 +36,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @AllowUARequest
     @ResponseBody
     @GetMapping("/page")
     @ApiOperation("分页查询用户信息")
@@ -45,6 +48,8 @@ public class UserController {
                 .body(userService.queryForPage(voParam))
                 .build();
     }
+
+
 
     @ResponseBody
     @ApiOperation("根据id查询用户信息")

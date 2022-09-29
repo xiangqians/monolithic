@@ -4,8 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.monolithic.o.PoParam;
-import org.monolithic.o.VoParam;
+import org.monolithic.o.Ppo;
+import org.monolithic.o.Vpo;
 import org.monolithic.po.param.UserPoParam;
 
 import javax.validation.constraints.NotBlank;
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @ApiModel(description = "新增用户信息")
-public class UserAddVoParam implements VoParam {
+public class UserAddVoParam implements Vpo {
 
     @NotBlank(message = "昵称不能为空")
     @ApiModelProperty(value = "昵称", required = true)
@@ -38,7 +38,7 @@ public class UserAddVoParam implements VoParam {
     }
 
     @Override
-    public <T extends PoParam> T convertToPoParam(Class<T> type) {
+    public <T extends Ppo> T convertToPoParam(Class<T> type) {
 
         if (type == UserPoParam.class) {
             UserPoParam poParam = new UserPoParam();
@@ -48,7 +48,7 @@ public class UserAddVoParam implements VoParam {
             return (T) poParam;
         }
 
-        return VoParam.super.convertToPoParam(type);
+        return Vpo.super.convertToPoParam(type);
     }
 
 }

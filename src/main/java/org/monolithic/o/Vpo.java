@@ -6,17 +6,17 @@ package org.monolithic.o;
  * @author xiangqian
  * @date 18:04 2022/06/11
  */
-public interface VoParam extends O {
+public interface Vpo extends O {
 
-    default <T extends BoParam> T convertToBoParam(Class<T> type) {
+    default <T extends Bpo> T convertToBoParam(Class<T> type) {
         throw new UnsupportedOperationException();
     }
 
-    default <T extends PoParam> T convertToPoParam(Class<T> type) {
+    default <T extends Ppo> T convertToPoParam(Class<T> type) {
         throw new UnsupportedOperationException();
     }
 
-    default <T extends DtoParam> T convertToDtoParam(Class<T> type) {
+    default <T extends Dtpo> T convertToDtoParam(Class<T> type) {
         throw new UnsupportedOperationException();
     }
 

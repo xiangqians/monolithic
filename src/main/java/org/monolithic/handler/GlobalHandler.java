@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.monolithic.o.VoParam;
+import org.monolithic.o.Vpo;
 import org.monolithic.resp.Response;
 import org.monolithic.resp.DefaultStatusCode;
 import org.springframework.http.HttpStatus;
@@ -50,8 +50,8 @@ public class GlobalHandler {
                     continue;
                 }
 
-                if (arg instanceof VoParam) {
-                    VoParam voParam = (VoParam) arg;
+                if (arg instanceof Vpo) {
+                    Vpo voParam = (Vpo) arg;
                     voParam.post();
                 } else if (parameterTypes[i] == String.class) {
                     args[i] = StringUtils.trimToNull(arg.toString());
