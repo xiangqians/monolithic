@@ -4,53 +4,103 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.monolithic</groupId>
+    <groupId>org.xiangqian</groupId>
     <artifactId>monolithic</artifactId>
-    <version>2022.9</version>
+    <version>2022.09</version>
 
     <name>monolithic</name>
-
-    <!-- FIXME change it to the project's website -->
-    <url>http://localhost:8080</url>
+    <url>https://github.com/xiangqians/monolithic</url>
+    <description>单体式应用</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>12</maven.compiler.source>
-        <maven.compiler.target>12</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
         <!-- 跳过单元测试 -->
         <skipTests>true</skipTests>
 
         <!-- spring-boot-dependencies -->
-        <spring-boot-dependencies.version>2.5.14</spring-boot-dependencies.version>
+        <!-- 3.1.1 GA -->
+        <spring-boot-dependencies.version>3.1.1</spring-boot-dependencies.version>
 
-        <!-- commons -->
-        <commons-io.version>2.11.0</commons-io.version>
-        <commons-collections4.version>4.4</commons-collections4.version>
+        <!-- apache-commons -->
+        <apache-commons-io.version>2.11.0</apache-commons-io.version>
+        <apache-commons-collections.version>4.4</apache-commons-collections.version>
 
-        <!-- mybatis -->
-        <mybatis-plus.version>3.5.2</mybatis-plus.version>
-        <velocity-engine-core.version>2.3</velocity-engine-core.version>
+        <!-- springdoc -->
+        <!-- https://github.com/springdoc/springdoc-openapi -->
+        <!-- https://springdoc.org/index.html#migrating-from-springfox -->
+        <springdoc.version>2.0.4</springdoc.version>
 
-        <!-- spring-security-oauth2 -->
-        <spring-security-oauth2.version>2.3.6.RELEASE</spring-security-oauth2.version>
-        <knife4j-spring-boot-starter.version>3.0.3</knife4j-spring-boot-starter.version>
+        <!-- knife4j -->
+        <knife4j.version>4.1.0</knife4j.version>
 
-        <!-- UserAgentUtils -->
-        <UserAgentUtils.version>1.21</UserAgentUtils.version>
+        <!-- mysql-connector -->
+        <mysql-connector.version>8.0.30</mysql-connector.version>
 
+        <!-- mybatis-plus -->
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
+
+        <!-- apache-velocity-engine -->
+        <apache-velocity-engine.version>2.3</apache-velocity-engine.version>
+
+        <!-- dynamic-datasource -->
+        <dynamic-datasource.version>3.6.1</dynamic-datasource.version>
+
+        <!-- bootstrap -->
+        <bootstrap.version>5.3.0</bootstrap.version>
     </properties>
 
     <dependencies>
-        <!--
-         | UserAgentUtils
-         | https://github.com/HaraldWalker/user-agent-utils
-         | 用来解析 User-Agent 字符串类库
-         | -->
+
+        <!-- 静态资源 -->
         <dependency>
-            <groupId>eu.bitwalker</groupId>
-            <artifactId>UserAgentUtils</artifactId>
-            <version>${UserAgentUtils.version}</version>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-locator-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${bootstrap.version}</version>
+        </dependency>
+
+        <!-- thymeleaf模板引擎 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- spring-security-oauth2-authorization-server
+         | https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Features-Matrix#frequently-asked-questions
+         | https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2
+         | https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide
+         | https://spring.io/projects/spring-authorization-server
+         | Spring Boot中文社区：https://springdoc.cn/spring-authorization-server
+         | https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-authorization-server
+         | https://github.com/spring-projects/spring-authorization-server
+         |-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+        </dependency>
+        <!-- spring-boot-starter-security
+         | https://spring.io/projects/spring-security
+         | https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Features-Matrix
+         |-->
+        <!--
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        -->
+
+        <!-- spring-boot-starter-oauth2-authorization-server 已包含 spring-boot-starter-web -->
+
+        <!-- spring-boot-starter-cache -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
         <!-- spring-boot-starter-validation -->
@@ -59,48 +109,16 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- spring-boot-starter-web -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- spring-boot-starter-jetty -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
-        </dependency>
-
-        <!-- spring-boot-configuration-processor -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- aop -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-
-        <!-- mysql-connector -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-        <!-- mybatis plus -->
+        <!-- dynamic-datasource-spring-boot-starter -->
+        <!--
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>${dynamic-datasource.version}</version>
         </dependency>
+        -->
+
+        <!-- mybatis-plus-generator -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
@@ -111,56 +129,55 @@
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
-            <version>${velocity-engine-core.version}</version>
+            <version>${apache-velocity-engine.version}</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- security -->
+        <!-- mybatis plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+
+        <!-- mysql-connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector.version}</version>
+        </dependency>
+
+        <!-- spring-boot-configuration-processor -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
-        <!-- oauth2 -->
-        <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>${spring-security-oauth2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-        </dependency>
-
-        <!-- caffeine cache -->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-
-        <!-- spring-boot-starter-cache -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-
-        <!-- knife4j -->
+        <!-- knife4j-openapi3-jakarta-spring-boot-starter -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-boot-starter</artifactId>
-            <version>${knife4j-spring-boot-starter.version}</version>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
         </dependency>
 
-        <!-- commons -->
+        <!-- springdoc-openapi-starter-webmvc-ui -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+
+        <!-- apache-commons -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
+            <version>${apache-commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>${commons-collections4.version}</version>
+            <version>${apache-commons-collections.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -246,17 +263,17 @@
         <pluginManagement>
             <plugins>
 
-                <!-- https://github.com/xiangqians/defoliation-maven-plugin -->
+                <!-- https://github.com/xiangqians/maven-tool-plugin -->
                 <plugin>
                     <groupId>org.xiangqian</groupId>
-                    <artifactId>defoliation-maven-plugin</artifactId>
+                    <artifactId>maven-tool-plugin</artifactId>
                     <version>2022.4</version>
                     <executions>
                         <execution>
-                            <id>properties</id>
+                            <id>file</id>
                             <phase>validate</phase>
                             <goals>
-                                <goal>properties</goal>
+                                <goal>file-load</goal>
                             </goals>
                             <configuration>
                                 <properties>
@@ -273,15 +290,19 @@
     </build>
 
     <pluginRepositories>
-        <!-- github -->
+
+        <!-- https://github.com/xiangqians/mvn-repository -->
         <pluginRepository>
             <id>github</id>
-            <url>https://raw.githubusercontent.com/xiangqians/repository/master/maven</url>
+            <url>https://raw.githubusercontent.com/xiangqians/mvn-repository/master/repository</url>
         </pluginRepository>
+
     </pluginRepositories>
 
+    <!-- profile -->
     <profiles>
-        <!-- dev，开发环境 -->
+
+        <!-- 开发环境 -->
         <profile>
             <id>dev</id>
             <properties>
@@ -291,13 +312,13 @@
                 <plugins>
                     <plugin>
                         <groupId>org.xiangqian</groupId>
-                        <artifactId>defoliation-maven-plugin</artifactId>
+                        <artifactId>maven-tool-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>properties</id>
+                                <id>file</id>
                                 <configuration>
                                     <includes>
-                                        <include>${project.basedir}/conf/profile/dev.properties</include>
+                                        <include>${project.basedir}/profile/dev.yml</include>
                                     </includes>
                                     <skip>false</skip>
                                 </configuration>
@@ -306,14 +327,13 @@
                     </plugin>
                 </plugins>
             </build>
-
             <activation>
                 <!-- 默认环境 -->
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
 
-        <!-- test，测试环境 -->
+        <!-- 测试环境 -->
         <profile>
             <id>test</id>
             <properties>
@@ -323,13 +343,13 @@
                 <plugins>
                     <plugin>
                         <groupId>org.xiangqian</groupId>
-                        <artifactId>defoliation-maven-plugin</artifactId>
+                        <artifactId>maven-tool-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>properties</id>
+                                <id>file</id>
                                 <configuration>
                                     <includes>
-                                        <include>${project.basedir}/conf/profile/test.properties</include>
+                                        <include>${project.basedir}/profile/test.yml</include>
                                     </includes>
                                     <skip>false</skip>
                                 </configuration>
@@ -340,7 +360,7 @@
             </build>
         </profile>
 
-        <!-- prod，生产环境 -->
+        <!-- 生产环境 -->
         <profile>
             <id>prod</id>
             <properties>
@@ -350,13 +370,13 @@
                 <plugins>
                     <plugin>
                         <groupId>org.xiangqian</groupId>
-                        <artifactId>defoliation-maven-plugin</artifactId>
+                        <artifactId>maven-tool-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>properties</id>
+                                <id>file</id>
                                 <configuration>
                                     <includes>
-                                        <include>${project.basedir}/conf/profile/prod.properties</include>
+                                        <include>${project.basedir}/profile/prod.yml</include>
                                     </includes>
                                     <skip>false</skip>
                                 </configuration>
@@ -365,7 +385,6 @@
                     </plugin>
                 </plugins>
             </build>
-
         </profile>
 
     </profiles>
