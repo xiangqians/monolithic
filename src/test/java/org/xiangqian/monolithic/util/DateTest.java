@@ -6,8 +6,6 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiangqian
@@ -15,7 +13,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class DateTest {
-
 
     @Test
     public void test() {

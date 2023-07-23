@@ -18,6 +18,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.xiangqian.monolithic.Application;
@@ -32,6 +33,7 @@ import java.util.Set;
  */
 @Slf4j
 @Configuration
+@Profile({"dev", "test"}) // 仅在 dev、test环境下开启openapi文档
 public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
 
     // 默认组
@@ -58,8 +60,8 @@ public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         Set<String> pkgs = getPkgs();
         for (String pkg : pkgs) {
-            // 扫描 org.xiangqian.monolithic.biz.*.controller
-            String name = pkg.substring(String.format("%s.biz.", Application.BASE_PKG).length(), pkg.length() - ".controller".length());
+            // 扫描 org.xiangqian.monolithic.*.controller
+            String name = pkg.substring(String.format("%s.", Application.BASE_PKG).length(), pkg.length() - ".controller".length());
             if (name.contains(".")) {
                 name = name.replace(".", "");
             }
@@ -83,7 +85,7 @@ public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
 
     public static Set<String> getPkgs() {
         try {
-            return ResourceScanUtil.scanPkgs(String.format("%s.biz.*.controller", Application.BASE_PKG));
+            return ResourceScanUtil.scanPkgs(String.format("%s.*.controller", Application.BASE_PKG));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

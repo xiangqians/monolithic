@@ -6,6 +6,7 @@ import org.springdoc.core.properties.SwaggerUiConfigProperties;
 import org.springdoc.webmvc.ui.SwaggerConfig;
 import org.springdoc.webmvc.ui.SwaggerConfigResource;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashSet;
@@ -28,6 +29,7 @@ import java.util.Set;
  */
 @Lazy(false)
 @Component
+@Profile({"dev", "test"}) // 仅在 dev、test环境下开启openapi文档
 public class CustomSwaggerUiConfigParameters extends SwaggerUiConfigParameters {
 
     public CustomSwaggerUiConfigParameters(SwaggerUiConfigProperties swaggerUiConfig) {

@@ -230,9 +230,20 @@
     <build>
         <finalName>${project.name}-${project.version}</finalName>
         <resources>
+            <!-- 解决Maven压缩资源导致文件损坏问题，如：ico文件 -->
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>**/**.ico</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/**.ico</include>
+                </includes>
             </resource>
         </resources>
 

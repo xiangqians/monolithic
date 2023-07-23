@@ -19,6 +19,7 @@ import org.springdoc.webmvc.core.configuration.SpringDocWebMvcConfiguration;
 import org.springdoc.webmvc.core.service.RequestService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
  */
 @Lazy(false)
 @Component
+@Profile({"dev", "test"}) // 仅在 dev、test环境下开启openapi文档
 public class CustomRequestService extends RequestService {
 
     public CustomRequestService(GenericParameterService parameterBuilder, RequestBodyService requestBodyService, OperationService operationService, Optional<List<ParameterCustomizer>> parameterCustomizers, SpringDocParameterNameDiscoverer localSpringDocParameterNameDiscoverer) {

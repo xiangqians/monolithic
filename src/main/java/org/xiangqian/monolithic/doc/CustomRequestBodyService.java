@@ -16,6 +16,7 @@ import org.springdoc.core.service.GenericParameterService;
 import org.springdoc.core.service.RequestBodyService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +40,7 @@ import java.util.Objects;
  */
 @Lazy(false)
 @Component
+@Profile({"dev", "test"}) // 仅在 dev、test环境下开启openapi文档
 public class CustomRequestBodyService extends RequestBodyService {
 
     public CustomRequestBodyService(GenericParameterService parameterBuilder) {
