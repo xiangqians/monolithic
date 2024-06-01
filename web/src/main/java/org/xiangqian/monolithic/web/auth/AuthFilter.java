@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.web;
+package org.xiangqian.monolithic.web.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,11 +7,15 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.JsonUtil;
+import org.xiangqian.monolithic.biz.Redis;
+import org.xiangqian.monolithic.web.Response;
 
 import java.io.IOException;
 
@@ -26,6 +30,9 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE) // 设置执行顺序为最高优先级
 public class AuthFilter extends HttpFilter {
 
+    @Autowired
+    private Redis redis;
+
     @Value("${spring.profiles.active}")
     private String profile;
 
@@ -34,7 +41,7 @@ public class AuthFilter extends HttpFilter {
         String servletPath = request.getServletPath();
         log.debug("servletPath {}", servletPath);
 
-        // 开发环境或测试环境，放行接口文档请求
+        // 开发环境或测试环境，放行【接口文档请求】
         if (profile.equals("dev") || profile.equals("test")) {
             if (servletPath.startsWith("/v3/")
                     || servletPath.startsWith("/swagger-ui/")
@@ -45,8 +52,20 @@ public class AuthFilter extends HttpFilter {
             }
         }
 
-        String authorization = request.getHeader("Authorization");
-        if (authorization == null) {
+        // 放行【获取令牌请求】
+        if (servletPath.equals("/auth/token")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        String authorization = StringUtils.trim(request.getHeader("Authorization"));
+        if (StringUtils.isEmpty(authorization)) {
+            unauthorized(response);
+            return;
+        }
+
+        Object value = redis.string().get(authorization);
+        if (value == null) {
             unauthorized(response);
             return;
         }

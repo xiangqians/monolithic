@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.Description;
+import org.xiangqian.monolithic.biz.auth.AuthCode;
 import org.xiangqian.monolithic.biz.sys.SysCode;
 
 import java.lang.reflect.Field;
@@ -33,11 +34,11 @@ public class Response<T> {
     private T data;
 
     public Response(String code) {
-        this(code, codeDescriptionMap.get(code), null);
+        this(code, null);
     }
 
-    public Response(String code, String msg) {
-        this(code, msg, null);
+    public Response(String code, T data) {
+        this(code, codeDescriptionMap.get(code), data);
     }
 
     public Response(String code, String msg, T data) {
@@ -50,7 +51,7 @@ public class Response<T> {
     private static final Map<String, String> codeDescriptionMap;
 
     static {
-        List<Class> classes = List.of(Code.class, SysCode.class);
+        List<Class> classes = List.of(Code.class, AuthCode.class, SysCode.class);
 
         int size = 0;
         List<Field[]> fieldsList = new ArrayList<>(classes.size());

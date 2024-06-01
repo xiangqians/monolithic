@@ -1,7 +1,7 @@
 server:
   port: ${MONOLITHIC_WEBMVC_PORT:8080}
   servlet:
-    context-path: /test1
+    context-path: /
     session:
       persistent: false
 

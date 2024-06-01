@@ -16,9 +16,11 @@ import java.util.concurrent.TimeUnit;
 public class Redis {
 
     private RedisTemplate<java.lang.String, Object> redisTemplate;
+    private String string;
 
     public Redis(RedisTemplate<java.lang.String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
+        this.string = new String();
     }
 
     /**
@@ -42,7 +44,7 @@ public class Redis {
     }
 
     public String string() {
-        return new String();
+        return string;
     }
 
     /**
@@ -52,6 +54,7 @@ public class Redis {
      * 使用场景：缓存、短信验证码、计数器、分布式session
      */
     public class String {
+
         private ValueOperations<java.lang.String, Object> valueOperations;
 
         public String() {

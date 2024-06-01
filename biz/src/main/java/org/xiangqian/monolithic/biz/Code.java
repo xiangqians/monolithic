@@ -6,16 +6,19 @@ package org.xiangqian.monolithic.biz;
  */
 public interface Code {
 
-    @Description("Ok")
+    @Description("成功")
     String OK = "ok";
 
-    @Description("Not Found")
+    @Description("未找到")
     String NOT_FOUND = "not_found";
 
-    @Description("Unauthorized")
+    @Description("未授权")
     String UNAUTHORIZED = "unauthorized";
 
-    @Description("Error")
+    @Description("不支持请求方法")
+    String REQUEST_METHOD_NOT_SUPPORTED = "request_method_not_supported";
+
+    @Description("网络异常")
     String ERROR = "error";
 
 }
