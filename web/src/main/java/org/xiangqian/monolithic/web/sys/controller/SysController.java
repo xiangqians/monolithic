@@ -1,8 +1,10 @@
 package org.xiangqian.monolithic.web.sys.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.auth.vo.AuthTokenRequest;
@@ -14,8 +16,9 @@ import org.xiangqian.monolithic.web.Response;
  * @date 00:07 2024/06/02
  */
 @RestController
-@RequestMapping("/api/sys")
 @Tag(name = "系统接口")
+@RequestMapping("/api/sys")
+@SecurityRequirement(name = HttpHeaders.AUTHORIZATION)
 public class SysController {
 
     @GetMapping("/c")

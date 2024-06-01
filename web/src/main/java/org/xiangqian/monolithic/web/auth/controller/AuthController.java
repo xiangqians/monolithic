@@ -1,9 +1,11 @@
 package org.xiangqian.monolithic.web.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +21,8 @@ import org.xiangqian.monolithic.web.Response;
  * @date 23:33 2024/05/30
  */
 @RestController
-@RequestMapping("/api/auth")
 @Tag(name = "授权接口")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
@@ -34,6 +36,7 @@ public class AuthController {
 
     @RequestMapping("/revoke")
     @Operation(summary = "撤销令牌")
+    @SecurityRequirement(name = HttpHeaders.AUTHORIZATION)
     public Response<Boolean> revoke() {
         return new Response<>(Code.OK, authService.revoke());
     }

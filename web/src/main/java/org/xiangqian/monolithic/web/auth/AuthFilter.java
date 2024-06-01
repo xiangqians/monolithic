@@ -62,7 +62,7 @@ public class AuthFilter extends HttpFilter {
         }
 
         String token = StringUtils.trim(request.getHeader("Authorization"));
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(token) || !token.startsWith("Bearer ") || StringUtils.isEmpty(token = token.substring("Bearer ".length()))) {
             unauthorized(response);
             return;
         }
