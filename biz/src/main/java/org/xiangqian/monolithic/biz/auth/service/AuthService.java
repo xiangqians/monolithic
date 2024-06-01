@@ -1,6 +1,7 @@
 package org.xiangqian.monolithic.biz.auth.service;
 
-import org.xiangqian.monolithic.biz.auth.vo.AuthRequest;
+import org.xiangqian.monolithic.biz.auth.vo.AuthTokenRequest;
+import org.xiangqian.monolithic.biz.auth.vo.AuthTokenResponse;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 
 /**
@@ -21,10 +22,10 @@ public interface AuthService {
     /**
      * 获取令牌
      *
-     * @param authRequest
+     * @param authTokenRequest
      * @return 令牌
      */
-    String token(AuthRequest authRequest);
+    AuthTokenResponse token(AuthTokenRequest authTokenRequest);
 
     /**
      * 撤销令牌

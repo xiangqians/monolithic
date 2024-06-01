@@ -1,12 +1,9 @@
 package org.xiangqian.monolithic.biz;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -19,7 +16,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -32,9 +28,15 @@ public class JsonUtil {
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     static {
-        // 序列化包含设置
-//        OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.ALWAYS); // 默认
-        OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL); // 属性为NULL不序列化
+        // 默认
+//        OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+
+        // 属性为NULL不序列化
+        OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        // 忽略未知属性
+        // 当禁用反序列化时遇到未知属性报错时，Jackson 默认情况下要求 JSON 字符串中的所有属性都要与 Java 类的字段完全匹配，如果 JSON 中包含了未知属性，就会抛出异常
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         // 查找和注册模块
 //        OBJECT_MAPPER.findAndRegisterModules();
@@ -60,8 +62,8 @@ public class JsonUtil {
         return serializeAsString(object, false);
     }
 
-    public static String serializeAsString(Object object, boolean pretty) throws IOException {
-        if (pretty) {
+    public static String serializeAsString(Object object, boolean indent) throws IOException {
+        if (indent) {
             return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object);
         }
         return OBJECT_MAPPER.writeValueAsString(object);

@@ -66,6 +66,7 @@ public class UserEntity implements Serializable {
 
     @JsonIgnore
     @Schema(hidden = true)
+    @TableField(exist = false)
     private String token;
 
     /**
@@ -73,7 +74,7 @@ public class UserEntity implements Serializable {
      *
      * @return
      */
-    public boolean isSysAdminRole() {
+    public boolean isAdminRole() {
         return id != null && id.longValue() == 1;
     }
 

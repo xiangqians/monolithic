@@ -10,8 +10,8 @@ import org.xiangqian.monolithic.biz.auth.AuthCode;
  * @date 16:40 2024/06/01
  */
 @Data
-@Schema(description = "授权请求")
-public class AuthRequest {
+@Schema(description = "授权令牌请求")
+public class AuthTokenRequest {
 
     @Schema(description = "用户名或手机号")
     private String nop;
@@ -20,7 +20,7 @@ public class AuthRequest {
     private String poc;
 
     @NotNull(message = AuthCode.TYPE_NOT_EMPTY)
-    @Schema(description = "授权类型：1-用户名/密码，2-手机号/密码，3-手机号/短信验证码")
+    @Schema(description = "类型：1-用户名/密码，2-手机号/密码，3-手机号/短信验证码")
     private Byte type;
 
 }

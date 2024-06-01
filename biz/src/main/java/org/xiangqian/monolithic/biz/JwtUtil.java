@@ -26,7 +26,7 @@ public class JwtUtil {
      * 生成JWT
      *
      * @param claims 声明数据
-     * @param exp    JWT的过期时间
+     * @param exp    过期时间
      * @return token
      */
     public static String generate(Map<String, Object> claims, Duration exp, SecretKey key) {

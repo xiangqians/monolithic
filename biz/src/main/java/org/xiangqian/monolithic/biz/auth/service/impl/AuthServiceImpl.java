@@ -16,12 +16,14 @@ import org.xiangqian.monolithic.biz.*;
 import org.xiangqian.monolithic.biz.auth.AuthCode;
 import org.xiangqian.monolithic.biz.auth.AuthUtil;
 import org.xiangqian.monolithic.biz.auth.service.AuthService;
-import org.xiangqian.monolithic.biz.auth.vo.AuthRequest;
+import org.xiangqian.monolithic.biz.auth.vo.AuthTokenRequest;
+import org.xiangqian.monolithic.biz.auth.vo.AuthTokenResponse;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 import org.xiangqian.monolithic.biz.sys.mapper.UserMapper;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,15 +70,15 @@ public class AuthServiceImpl implements AuthService {
 
     @SneakyThrows
     @Override
-    public String token(AuthRequest authRequest) {
+    public AuthTokenResponse token(AuthTokenRequest authTokenRequest) {
         UserEntity user = null;
         // 授权类型
-        byte type = authRequest.getType();
+        byte type = authTokenRequest.getType();
         // 用户名/密码
         if (type == 1) {
-            String name = StringUtils.trim(authRequest.getNop());
+            String name = StringUtils.trim(authTokenRequest.getNop());
             Assert.notEmpty(name, AuthCode.NAME_NOT_EMPTY);
-            String passwd = StringUtils.trim(authRequest.getPoc());
+            String passwd = StringUtils.trim(authTokenRequest.getPoc());
             Assert.notEmpty(passwd, AuthCode.PASSWD_NOT_EMPTY);
 
             user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
@@ -87,9 +89,9 @@ public class AuthServiceImpl implements AuthService {
         }
         // 手机号/密码
         else if (type == 2) {
-            String phone = StringUtils.trim(authRequest.getNop());
+            String phone = StringUtils.trim(authTokenRequest.getNop());
             Assert.notEmpty(phone, AuthCode.PHONE_NOT_EMPTY);
-            String passwd = StringUtils.trim(authRequest.getPoc());
+            String passwd = StringUtils.trim(authTokenRequest.getPoc());
             Assert.notEmpty(passwd, AuthCode.PASSWD_NOT_EMPTY);
 
             UserEntity userEntity = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
@@ -99,9 +101,9 @@ public class AuthServiceImpl implements AuthService {
         }
         // 手机号/短信验证码
         else if (type == 3) {
-            String phone = StringUtils.trim(authRequest.getNop());
+            String phone = StringUtils.trim(authTokenRequest.getNop());
             Assert.notEmpty(phone, AuthCode.PHONE_NOT_EMPTY);
-            String smsCode = StringUtils.trim(authRequest.getPoc());
+            String smsCode = StringUtils.trim(authTokenRequest.getPoc());
             Assert.notEmpty(smsCode, AuthCode.SMS_CODE_NOT_EMPTY);
         }
         // ?
@@ -115,7 +117,11 @@ public class AuthServiceImpl implements AuthService {
         if (CollectionUtils.isNotEmpty(keys)) {
             token = keys.iterator().next();
             token = token.substring(prefix.length());
-            return token;
+
+            Jws<Claims> jws = JwtUtil.parseClaims(token, jwtKey);
+            Claims claims = jws.getPayload();
+
+            return new AuthTokenResponse(token, DateTimeUtil.ofDate(claims.getExpiration()));
         }
 
         token = JwtUtil.generate(Map.of("id", user.getId()), jwtExp, jwtKey);
@@ -124,7 +130,7 @@ public class AuthServiceImpl implements AuthService {
                         "name", user.getName(),
                         "phone", user.getPhone())),
                 jwtExp);
-        return token;
+        return new AuthTokenResponse(token, LocalDateTime.now().plusSeconds(jwtExp.toSeconds()));
     }
 
     @Override

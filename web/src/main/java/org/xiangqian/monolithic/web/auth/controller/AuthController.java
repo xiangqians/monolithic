@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.auth.service.AuthService;
-import org.xiangqian.monolithic.biz.auth.vo.AuthRequest;
+import org.xiangqian.monolithic.biz.auth.vo.AuthTokenRequest;
+import org.xiangqian.monolithic.biz.auth.vo.AuthTokenResponse;
 import org.xiangqian.monolithic.web.Response;
 
 /**
@@ -27,7 +28,7 @@ public class AuthController {
 
     @PostMapping("/token")
     @Operation(summary = "获取令牌")
-    public Response<String> token(@Valid @RequestBody AuthRequest authRequest) {
+    public Response<AuthTokenResponse> token(@Valid @RequestBody AuthTokenRequest authRequest) {
         return new Response<>(Code.OK, authService.token(authRequest));
     }
 

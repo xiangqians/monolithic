@@ -7,6 +7,6 @@ package org.xiangqian.monolithic.biz.sys;
 public interface RoleCode {
 
     // 系统管理员
-    String SYS_ADMIN = "SYS_ADMIN";
+    String ADMIN = "ADMIN";
 
 }

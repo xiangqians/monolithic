@@ -19,8 +19,7 @@ public class JwtUtilTest {
         String key = "GkiYzIiLCJpc3MYjQzODLTQ1MWMtYjM1Ny1hMjMwZjE5M2JiOiJ4aWFuZ3FpYW4iLCJpYXQNkYy1hNGY0sInN1YiI6Ikp";
 
         String token = JwtUtil.generate(Map.of("id", Long.valueOf(1).toString()), Duration.ofSeconds(30), key);
-        token = "yJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ4aWFuZ3FpYW4iLCJpYXQiOjE3MTcyNDk0OTEsInN1YiI6IkpXVCIsImV4cCI6MTcxNzI1MDQ5MSwianRpIjoiNmYwZjc3MzMtMjJlNi00NDM0LThiODMtYjk3NDZmZTQwODQyIiwiaWQiOiIxIn0.tf88WyjaKhstSewOjrr3v7HHPFS-V7SBcrZF8Y5MUu4";
-        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ4aWFuZ3FpYW4iLCJpYXQiOjE3MTcyNDk0OTEsInN1YiI6IkpXVCIsImV4cCI6MTcxNzI1MDQ5MSwianRpIjoiNmYwZjc3MzMtMjJlNi00NDM0LThiODMtYjk3NDZmZTQwODQyIiwiaWQiOiIxIn0.tf88WyjaKhstSewOjrr3v7HHPFS-V7SBcrZF8Y5MUu4";
+        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ4aWFuZ3FpYW4iLCJpYXQiOjE3MTcyNDk2NDMsInN1YiI6IkpXVCIsImV4cCI6MTcxNzI5Mjg0MywianRpIjoiNGUxMzI2N2EtNGIxNy00NGNjLTkwZjMtMWQzNzc3Mjg2MjBhIiwiaWQiOjF9.sGgLeDDyy1Nj_r4Dw5P1p7F_zJANedBEq3_hI68BILs";
         System.out.println(token);
         System.out.println(JwtUtil.isValid(token, key));
 

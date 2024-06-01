@@ -33,14 +33,6 @@ spring:
       # 池中最小空闲连接数量
       minimum-idle: 1
 
-  # jackson
-  jackson:
-    date-format: yyyy/MM/dd HH:mm:ss
-    custom-data-time-format: yyyy/MM/dd HH:mm:ss
-    custom-date-format: yyyy/MM/dd
-    custom-time-format: HH:mm:ss
-    time-zone: GMT+8
-
   data:
     # Redis服务器配置
     redis:
