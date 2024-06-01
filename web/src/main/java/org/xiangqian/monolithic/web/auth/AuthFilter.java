@@ -56,7 +56,7 @@ public class AuthFilter extends HttpFilter {
         }
 
         // 放行【获取令牌请求】
-        if (servletPath.equals("/auth/token")) {
+        if (servletPath.equals("/api/auth/token")) {
             chain.doFilter(request, response);
             return;
         }
