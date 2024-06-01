@@ -1,0 +1,15 @@
+package ${package.Service};
+
+/**
+ * $!{table.comment}服务
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#if(${kotlin})
+interface ${table.serviceName} : ${superServiceClass}<${entity}>
+#else
+public interface ${table.serviceName} {
+
+}
+#end

@@ -1,0 +1,2 @@
+org.xiangqian.monolithic.biz.DbAutoConfiguration
+org.xiangqian.monolithic.biz.RedisAutoConfiguration
