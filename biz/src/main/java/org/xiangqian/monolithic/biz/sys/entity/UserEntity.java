@@ -1,6 +1,7 @@
 package org.xiangqian.monolithic.biz.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.xiangqian.monolithic.biz.DateTimeUtil;
@@ -62,6 +63,10 @@ public class UserEntity implements Serializable {
 
     @Schema(description = "修改时间")
     private LocalDateTime updTime;
+
+    @JsonIgnore
+    @Schema(hidden = true)
+    private String token;
 
     /**
      * 是否是系统管理员角色

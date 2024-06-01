@@ -14,6 +14,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.JsonUtil;
+import org.xiangqian.monolithic.biz.auth.AuthUtil;
 import org.xiangqian.monolithic.biz.auth.service.AuthService;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 import org.xiangqian.monolithic.web.Response;
@@ -70,6 +71,9 @@ public class AuthFilter extends HttpFilter {
             unauthorized(response);
             return;
         }
+
+        user.setToken(token);
+        AuthUtil.setUser(user);
 
         // 放行
         chain.doFilter(request, response);

@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.xiangqian.monolithic.biz.*;
 import org.xiangqian.monolithic.biz.auth.AuthCode;
+import org.xiangqian.monolithic.biz.auth.AuthUtil;
 import org.xiangqian.monolithic.biz.auth.service.AuthService;
 import org.xiangqian.monolithic.biz.auth.vo.AuthRequest;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
@@ -128,7 +129,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Boolean revoke() {
-        return null;
+        UserEntity user = AuthUtil.getUser();
+        String token = user.getToken();
+        return redis.delete(String.format("%s_%s", user.getId(), token));
     }
 
 }
