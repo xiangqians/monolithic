@@ -1,9 +1,12 @@
 package org.xiangqian.monolithic.biz;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.redis.core.*;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +24,49 @@ public class Redis {
     public Redis(RedisTemplate<java.lang.String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.string = new String();
+    }
+
+    /**
+     * 判断是否存在某个前缀的键
+     *
+     * @param prefix
+     * @return
+     */
+    public boolean hasKeyWithPrefix(java.lang.String prefix) {
+        return CollectionUtils.isNotEmpty(keyWithPrefix(prefix, 1));
+    }
+
+    /**
+     * 根据键前缀获取键集合
+     *
+     * @param prefix
+     * @param count
+     * @return
+     */
+    public java.util.Set<java.lang.String> keyWithPrefix(java.lang.String prefix, int count) {
+        return redisTemplate.execute((RedisCallback<java.util.Set<java.lang.String>>) connection -> {
+            ScanOptions scanOptions = ScanOptions.scanOptions().match(prefix + "*").count(count).build();
+            Cursor<byte[]> cursor = connection.scan(scanOptions);
+            java.util.Set<java.lang.String> keys = null;
+            while (cursor.hasNext()) {
+                if (keys == null) {
+                    keys = new HashSet<>(count);
+                }
+                java.lang.String key = new java.lang.String(cursor.next());
+                keys.add(key);
+            }
+            return keys;
+        });
+    }
+
+    /**
+     * 判断指定的键是否存在
+     *
+     * @param key
+     * @return
+     */
+    public boolean hasKey(java.lang.String key) {
+        return BooleanUtils.toBoolean(redisTemplate.hasKey(key));
     }
 
     /**

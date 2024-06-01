@@ -1,25 +1,39 @@
 package org.xiangqian.monolithic.biz.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.security.Keys;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.xiangqian.monolithic.biz.Assert;
-import org.xiangqian.monolithic.biz.CodeException;
-import org.xiangqian.monolithic.biz.Redis;
+import org.xiangqian.monolithic.biz.*;
 import org.xiangqian.monolithic.biz.auth.AuthCode;
 import org.xiangqian.monolithic.biz.auth.service.AuthService;
 import org.xiangqian.monolithic.biz.auth.vo.AuthRequest;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 import org.xiangqian.monolithic.biz.sys.mapper.UserMapper;
 
+import javax.crypto.SecretKey;
+import java.time.Duration;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author xiangqian
  * @date 17:04 2024/06/01
  */
+@Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
+
+    private SecretKey jwtKey;
+    private Duration jwtExp;
 
     @Autowired
     private Redis redis;
@@ -30,8 +44,31 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public AuthServiceImpl(@Value("${jwt.key}") String jwtKey, @Value("${jwt.exp}") Duration jwtExp) {
+        this.jwtKey = Keys.hmacShaKeyFor(jwtKey.getBytes());
+        this.jwtExp = jwtExp;
+    }
+
+    @SneakyThrows
+    @Override
+    public UserEntity getUser(String token) {
+        try {
+            Jws<Claims> jws = JwtUtil.parseClaims(token, jwtKey);
+            Object id = jws.getPayload().get("id");
+            Object value = redis.string().get(String.format("%s_%s", id, token));
+            if (value != null) {
+                return JsonUtil.deserialize(value.toString(), UserEntity.class);
+            }
+        } catch (Exception e) {
+            log.error("", e);
+        }
+        return null;
+    }
+
+    @SneakyThrows
     @Override
     public String token(AuthRequest authRequest) {
+        UserEntity user = null;
         // 授权类型
         byte type = authRequest.getType();
         // 用户名/密码
@@ -41,16 +78,11 @@ public class AuthServiceImpl implements AuthService {
             String passwd = StringUtils.trim(authRequest.getPoc());
             Assert.notEmpty(passwd, AuthCode.PASSWD_NOT_EMPTY);
 
-            UserEntity userEntity = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
+            user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
                     .eq(UserEntity::getName, name)
                     .last("LIMIT 1"));
-            Assert.notNull(userEntity, AuthCode.NAME_OR_PASSWD_INCORRECT);
-            Assert.isTrue(passwordEncoder.matches(passwd, userEntity.getPasswd()), AuthCode.NAME_OR_PASSWD_INCORRECT);
-
-            String token = userEntity.getId().toString();
-            redis.string().set(token, true);
-
-            return token;
+            Assert.notNull(user, AuthCode.NAME_OR_PASSWD_INCORRECT);
+            Assert.isTrue(passwordEncoder.matches(passwd, user.getPasswd()), AuthCode.NAME_OR_PASSWD_INCORRECT);
         }
         // 手机号/密码
         else if (type == 2) {
@@ -76,7 +108,22 @@ public class AuthServiceImpl implements AuthService {
             throw new CodeException(AuthCode.TYPE_ILLEGAL);
         }
 
-        return null;
+        String token = null;
+        String prefix = String.format("%s_", user.getId());
+        Set<String> keys = redis.keyWithPrefix(prefix, 1);
+        if (CollectionUtils.isNotEmpty(keys)) {
+            token = keys.iterator().next();
+            token = token.substring(prefix.length());
+            return token;
+        }
+
+        token = JwtUtil.generate(Map.of("id", user.getId()), jwtExp, jwtKey);
+        redis.string().set(String.format("%s_%s", user.getId(), token),
+                JsonUtil.serializeAsString(Map.of("id", user.getId(),
+                        "name", user.getName(),
+                        "phone", user.getPhone())),
+                jwtExp);
+        return token;
     }
 
     @Override

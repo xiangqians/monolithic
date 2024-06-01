@@ -14,7 +14,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.JsonUtil;
-import org.xiangqian.monolithic.biz.Redis;
+import org.xiangqian.monolithic.biz.auth.service.AuthService;
+import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 import org.xiangqian.monolithic.web.Response;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ import java.io.IOException;
 public class AuthFilter extends HttpFilter {
 
     @Autowired
-    private Redis redis;
+    private AuthService authService;
 
     @Value("${spring.profiles.active}")
     private String profile;
@@ -58,14 +59,14 @@ public class AuthFilter extends HttpFilter {
             return;
         }
 
-        String authorization = StringUtils.trim(request.getHeader("Authorization"));
-        if (StringUtils.isEmpty(authorization)) {
+        String token = StringUtils.trim(request.getHeader("Authorization"));
+        if (StringUtils.isEmpty(token)) {
             unauthorized(response);
             return;
         }
 
-        Object value = redis.string().get(authorization);
-        if (value == null) {
+        UserEntity user = authService.getUser(token);
+        if (user == null) {
             unauthorized(response);
             return;
         }
