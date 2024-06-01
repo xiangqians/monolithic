@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,20 +36,20 @@ public class AuthFilter extends HttpFilter {
     @Autowired
     private AuthService authService;
 
-    @Value("${spring.profiles.active}")
-    private String profile;
+    @Value("${springdoc.api-docs.enabled}")
+    private Boolean enabledApiDoc;
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String servletPath = request.getServletPath();
         log.debug("servletPath {}", servletPath);
 
-        // 开发环境或测试环境，放行【接口文档请求】
-        if (profile.equals("dev") || profile.equals("test")) {
-            if (servletPath.startsWith("/v3/")
-                    || servletPath.startsWith("/swagger-ui/")
-                    || servletPath.startsWith("/api-docs")
-                    || servletPath.equals("/doc.html")) {
+        // 如果开启接口文档，则放行【接口文档请求】
+        if (BooleanUtils.toBoolean(enabledApiDoc)) {
+            if (servletPath.startsWith("/swagger-ui/")
+                    || servletPath.startsWith("/v3/api-docs")
+                    || servletPath.equals("/doc.html")
+                    || servletPath.startsWith("/webjars")) {
                 chain.doFilter(request, response);
                 return;
             }

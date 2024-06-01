@@ -19,7 +19,7 @@ import org.xiangqian.monolithic.web.Response;
  * @date 23:33 2024/05/30
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @Tag(name = "授权接口")
 public class AuthController {
 

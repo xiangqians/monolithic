@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.xiangqian.monolithic.biz.DateTimeUtil;
 import org.xiangqian.monolithic.biz.DateUtil;
@@ -36,10 +37,14 @@ public class WebApplication implements WebMvcConfigurer {
 
     @SneakyThrows
     public static void main(String[] args) {
-        // 初始化Response Code
-        Class.forName(Response.class.getName());
-
         SpringApplication.run(WebApplication.class, args);
+    }
+
+    // 配置knife4j文档
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     // 解决 spring.jackson.date-format 配置不生效问题

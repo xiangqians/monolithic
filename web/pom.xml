@@ -9,7 +9,7 @@
     </parent>
     <artifactId>web</artifactId>
     <name>${artifactId}</name>
-    <description>webmvc模块</description>
+    <description>web模块</description>
 
     <dependencies>
         <dependency>

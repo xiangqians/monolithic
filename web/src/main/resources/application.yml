@@ -1,4 +1,9 @@
 spring:
+  application:
+    name: @name@
+    version: @version@
+    description: @description@
+
   # 当HTTP状态码为4xx时直接抛出异常
   mvc:
     throw-exception-if-no-handler-found: true
