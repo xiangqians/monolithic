@@ -49,7 +49,7 @@ public class UserEntity implements Serializable {
     private Byte locked;
 
     @Schema(description = "用户连续错误登陆次数，超过3次则锁定用户")
-    private Byte deny;
+    private Byte denyCount;
 
     @Schema(description = "登录历史")
     private String loginHistory;
@@ -94,7 +94,7 @@ public class UserEntity implements Serializable {
      */
     public boolean isNonLimitedTimeLocked() {
         // 连续输错密码小于3次
-        return deny < 3
+        return denyCount < 3
                 // 锁定24小时
                 || Duration.ofSeconds(DateTimeUtil.toSecond(LocalDateTime.now()) - DateTimeUtil.toSecond(updTime)).toHours() >= 24;
     }

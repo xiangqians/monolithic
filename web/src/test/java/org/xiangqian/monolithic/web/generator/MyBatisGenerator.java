@@ -33,7 +33,7 @@ public class MyBatisGenerator {
     public static void main(String[] args) throws IOException {
         execute("sys",
                 "xiangqian",
-                new String[]{"role"},
+                new String[]{"authority"},
                 false);
     }
 
@@ -50,10 +50,10 @@ public class MyBatisGenerator {
                                String[] tables,
                                boolean replaceExisting) throws IOException {
         // 输出目录
-        Path outputDir = getOutputDir();
+        Path outputDirPath = getOutputDirPath();
 
         // 获取生成器
-        AutoGenerator generator = getGenerator(moduleName, "org.xiangqian.monolithic", author, tables, outputDir);
+        AutoGenerator generator = getGenerator(moduleName, "org.xiangqian.monolithic", author, tables, outputDirPath);
 
         // 获取模板引擎
         AbstractTemplateEngine templateEngine = getTemplateEngine();
@@ -62,12 +62,12 @@ public class MyBatisGenerator {
         generator.execute(templateEngine);
 
         // 打印输出目录
-        System.out.format("输出目录 %s\n", outputDir).println();
-        Path javaPath = outputDir.resolve("java");
-        Path resourcesPath = outputDir.resolve("resources");
+        System.out.format("输出目录 %s\n", outputDirPath).println();
+        Path javaPath = outputDirPath.resolve("java");
+        Path resourcesPath = outputDirPath.resolve("resources");
 
         // web
-        Path webPath = outputDir.resolve("web");
+        Path webPath = outputDirPath.resolve("web");
         if (Files.exists(webPath)) {
             PathUtils.deleteDirectory(webPath);
         }
@@ -135,7 +135,7 @@ public class MyBatisGenerator {
         });
 
         // biz
-        Path bizPath = outputDir.resolve("biz");
+        Path bizPath = outputDirPath.resolve("biz");
         if (Files.exists(bizPath)) {
             PathUtils.deleteDirectory(bizPath);
         }
@@ -225,6 +225,8 @@ public class MyBatisGenerator {
 
         PathUtils.deleteDirectory(javaPath);
         PathUtils.deleteDirectory(resourcesPath);
+        PathUtils.deleteDirectory(webPath);
+        PathUtils.deleteDirectory(bizPath);
     }
 
     /**
@@ -272,7 +274,7 @@ public class MyBatisGenerator {
      *
      * @return
      */
-    private static Path getOutputDir() {
+    private static Path getOutputDirPath() {
         URL url = Thread.currentThread().getContextClassLoader().getResource("");
         String path = new File(url.getPath().substring(1)).getParentFile().getPath();
         File file = Paths.get(path, "generated-sources").toFile();
@@ -285,14 +287,14 @@ public class MyBatisGenerator {
     /**
      * 获取生成器
      *
-     * @param moduleName 模块名
-     * @param basePkg    基础包
-     * @param author     作者
-     * @param tables     数据表集合
-     * @param outputDir  输出目录
+     * @param moduleName    模块名
+     * @param basePkg       基础包
+     * @param author        作者
+     * @param tables        数据表集合
+     * @param outputDirPath 输出目录
      * @return
      */
-    private static AutoGenerator getGenerator(String moduleName, String basePkg, String author, String[] tables, Path outputDir) throws IOException {
+    private static AutoGenerator getGenerator(String moduleName, String basePkg, String author, String[] tables, Path outputDirPath) throws IOException {
         // 获取数据源配置
         DataSourceConfig dataSourceConfig = getDataSourceConfig();
 
@@ -304,7 +306,7 @@ public class MyBatisGenerator {
                 .author(author)
                 .enableSwagger()
                 .disableOpenDir()
-                .outputDir(outputDir.resolve("java").toFile().getAbsolutePath())
+                .outputDir(outputDirPath.resolve("java").toFile().getAbsolutePath())
                 .dateType(DateType.TIME_PACK)
                 .commentDate("HH:mm yyyy/MM/dd")
                 .build());
@@ -318,7 +320,7 @@ public class MyBatisGenerator {
                 .service(String.format("biz.%s.service", moduleName))
                 .serviceImpl(String.format("biz.%s.service.impl", moduleName))
                 .controller(String.format("web.%s.controller", moduleName))
-                .pathInfo(Map.of(OutputFile.xml, outputDir.resolve("resources").resolve("mybatis").resolve("mapper").resolve(moduleName).toFile().getAbsolutePath()))
+                .pathInfo(Map.of(OutputFile.xml, outputDirPath.resolve("resources").resolve("mybatis").resolve("mapper").resolve(moduleName).toFile().getAbsolutePath()))
                 .build());
 
         // 策略配置

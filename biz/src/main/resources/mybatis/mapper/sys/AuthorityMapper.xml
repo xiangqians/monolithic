@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper">
+
+    <select id="getOne" resultType="org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity">
+        SELECT a.id, a.method, a.`path`, a.rem, a.del, a.add_time, a.upd_time
+        FROM authority a
+        <where>
+            <if test="id != null">AND a.id = #{id}</if>
+            <if test="method != null">AND a.method = #{method}</if>
+            <if test="path != null">AND a.`path` = #{path}</if>
+            <if test="rem != null">AND a.rem = #{rem}</if>
+            <if test="del != null">AND a.del = #{del}</if>
+            <if test="addTime != null">AND a.add_time = #{addTime}</if>
+            <if test="updTime != null">AND a.upd_time = #{updTime}</if>
+        </where>
+        LIMIT 1
+    </select>
+
+    <update id="updById">
+        UPDATE authority
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="method != null">method = #{method},</if>
+            <if test="path != null">`path` = #{path},</if>
+            <if test="rem != null">rem = #{rem},</if>
+            <if test="del != null">del = #{del},</if>
+            <if test="addTime != null">add_time = #{addTime},</if>
+            <if test="updTime != null">upd_time = #{updTime},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

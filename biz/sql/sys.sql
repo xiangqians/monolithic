@@ -64,8 +64,9 @@ DROP TABLE IF EXISTS `authority`;
 CREATE TABLE `authority`
 (
     `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
-    `url`      VARCHAR(128)      DEFAULT '' COMMENT '请求地址',
-    `rem`      VARCHAR(64)       DEFAULT '' COMMENT '备注',
+    `method`   VARCHAR(8)        DEFAULT '' COMMENT '方法',
+    `path`     VARCHAR(128)      DEFAULT '' COMMENT '路径',
+    `rem`      VARCHAR(128)      DEFAULT '' COMMENT '备注',
     `del`      TINYINT           DEFAULT 0 COMMENT '逻辑删除，0-未删除，1-已删除',
     `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
