@@ -6,7 +6,7 @@
 - Filter（安全验证过滤器）
 - Redis
 
-# 项目目录结构
+# 项目结构
 
 ```text
 ├ monolithic
