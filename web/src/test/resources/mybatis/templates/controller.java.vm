@@ -1,6 +1,9 @@
 package ${package.Controller};
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpHeaders;
 #if(${restControllerStyle})
 import org.springframework.web.bind.annotation.RestController;
 #else
@@ -11,8 +14,6 @@ import ${superControllerClassPackage};
 #end
 
 /**
- * $!{table.comment} 前端控制器
- *
  * @author ${author}
  * @date ${date}
  */
@@ -21,7 +22,9 @@ import ${superControllerClassPackage};
 #else
 @Controller
 #end
+@Tag(name = "$!{table.comment}")
 @RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+@SecurityRequirement(name = HttpHeaders.AUTHORIZATION)
 #if(${kotlin})
 class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
 

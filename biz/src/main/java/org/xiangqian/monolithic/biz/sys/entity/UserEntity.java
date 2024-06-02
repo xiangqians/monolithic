@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("user")
-@Schema(description = "用户表")
+@Schema(description = "用户信息")
 public class UserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
