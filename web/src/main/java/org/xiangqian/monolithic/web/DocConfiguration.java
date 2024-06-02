@@ -35,7 +35,7 @@ import java.util.Set;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = {"springdoc.api-docs.enabled"}, matchIfMissing = true) // 开启openapi文档条件判断
-public class DocumentConfiguration implements BeanDefinitionRegistryPostProcessor {
+public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
 
     @Bean
     public GroupedOpenApi authGroupedOpenApi() {

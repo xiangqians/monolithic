@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.biz.auth.vo;
+package org.xiangqian.monolithic.biz.auth.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import org.xiangqian.monolithic.biz.auth.AuthCode;
  */
 @Data
 @Schema(description = "授权令牌请求")
-public class AuthTokenRequest {
+public class AuthTokenReq {
 
     @Schema(description = "用户名或手机号")
     private String nop;

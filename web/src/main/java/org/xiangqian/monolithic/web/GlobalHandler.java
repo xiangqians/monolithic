@@ -168,6 +168,7 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
             methodAuthoritiesMap.put(handlerMethod.getMethod(), authorities);
         }
 
+        // 存在多节点部署问题！
         List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
         for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
             for (AuthorityEntity authority : authorities) {
@@ -186,7 +187,6 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
                 authorityIds.add(authority.getId());
             }
         }
-
         authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
     }
 

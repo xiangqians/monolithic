@@ -7,8 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.auth.vo.AuthTokenRequest;
-import org.xiangqian.monolithic.biz.auth.vo.AuthTokenResponse;
+import org.xiangqian.monolithic.biz.auth.model.AuthTokenReq;
+import org.xiangqian.monolithic.biz.auth.model.AuthTokenResp;
 import org.xiangqian.monolithic.web.Response;
 
 /**
@@ -35,7 +35,7 @@ public class SysController {
 
     @PostMapping("/token")
     @Operation(summary = "获取令牌")
-    public Response<AuthTokenResponse> token(@Valid @RequestBody AuthTokenRequest authRequest) {
+    public Response<AuthTokenResp> token(@Valid @RequestBody AuthTokenReq authTokenReq) {
         return new Response<>(Code.OK, null);
     }
 

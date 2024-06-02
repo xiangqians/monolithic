@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.biz.auth.vo;
+package org.xiangqian.monolithic.biz.auth.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "授权令牌信息")
-public class AuthTokenResponse {
+public class AuthTokenResp {
 
     @Schema(description = "令牌")
     private String token;
