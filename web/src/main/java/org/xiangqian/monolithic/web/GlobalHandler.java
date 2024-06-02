@@ -1,16 +1,13 @@
 package org.xiangqian.monolithic.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -21,23 +18,17 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.util.pattern.PathPattern;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.CodeException;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 import org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper;
 
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.BiFunction;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 全局处理器
@@ -90,89 +81,14 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
     }
 
     @Autowired
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
-
-    @Autowired
     private AuthorityMapper authorityMapper;
 
+    @Autowired
+    @Qualifier("methodAuthoritiesMap")
     private Map<Method, List<AuthorityEntity>> methodAuthoritiesMap;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        BiFunction<String, String, String> toStringFunc = (name, description) -> {
-            name = StringUtils.trimToEmpty(name);
-            description = StringUtils.trimToEmpty(description);
-            if (StringUtils.isEmpty(name)) {
-                return description;
-            }
-
-            String string = name;
-            if (StringUtils.isNotEmpty(description)) {
-                string += "（" + description + "）";
-            }
-            return string;
-        };
-
-        methodAuthoritiesMap = new HashMap<>(64, 1f);
-        Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
-        for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
-            RequestMappingInfo reqMappingInfo = entry.getKey();
-            PathPatternsRequestCondition reqCondition = reqMappingInfo.getPathPatternsCondition();
-            if (Objects.isNull(reqCondition)) {
-                continue;
-            }
-
-            String rem = "";
-            HandlerMethod handlerMethod = entry.getValue();
-            Tag tag = handlerMethod.getBeanType().getAnnotation(Tag.class);
-            if (tag != null) {
-                rem = toStringFunc.apply(tag.name(), tag.description());
-            }
-            Operation operation = handlerMethod.getMethodAnnotation(Operation.class);
-            if (operation != null) {
-                String string = toStringFunc.apply(operation.summary(), operation.description());
-                if (StringUtils.isNotEmpty(string)) {
-                    if (StringUtils.isNotEmpty(rem)) {
-                        rem += " - " + string;
-                    } else {
-                        rem = string;
-                    }
-                }
-            }
-
-            byte allow = handlerMethod.getMethodAnnotation(Allow.class) == null ? 0 : (byte) 1;
-
-            RequestMethodsRequestCondition methodsCondition = reqMappingInfo.getMethodsCondition();
-            Set<RequestMethod> methods = Optional.ofNullable(methodsCondition).map(RequestMethodsRequestCondition::getMethods).orElse(null);
-            Set<PathPattern> patterns = reqCondition.getPatterns();
-            List<AuthorityEntity> authorities = new ArrayList<>(patterns.size());
-            for (PathPattern pattern : patterns) {
-                String path = pattern.getPatternString();
-                if (path.startsWith("/api/")) {
-                    if (CollectionUtils.isNotEmpty(methods)) {
-                        for (RequestMethod method : methods) {
-                            AuthorityEntity authority = new AuthorityEntity();
-                            authority.setMethod(method.name());
-                            authority.setPath(path);
-                            authority.setAllow(allow);
-                            authority.setRem(rem);
-                            authority.setDel((byte) 0);
-                            authorities.add(authority);
-                        }
-                    } else {
-                        AuthorityEntity authority = new AuthorityEntity();
-                        authority.setMethod("");
-                        authority.setPath(path);
-                        authority.setAllow(allow);
-                        authority.setRem(rem);
-                        authority.setDel((byte) 0);
-                        authorities.add(authority);
-                    }
-                }
-            }
-            methodAuthoritiesMap.put(handlerMethod.getMethod(), authorities);
-        }
-
         // 存在多节点部署问题！
         List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
         for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
