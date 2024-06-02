@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.auth.model.AuthTokenReq;
 import org.xiangqian.monolithic.biz.auth.model.AuthTokenResp;
+import org.xiangqian.monolithic.web.Allow;
 import org.xiangqian.monolithic.web.Response;
 
 /**
@@ -21,7 +22,7 @@ import org.xiangqian.monolithic.web.Response;
 @SecurityRequirement(name = HttpHeaders.AUTHORIZATION)
 public class SysController {
 
-//    @GetMapping("/c")
+    //    @GetMapping("/c")
 //    @Operation(summary = "c")
     public Response<Boolean> c(@PathVariable Long id) {
         return new Response<>(Code.OK, null);
@@ -39,12 +40,14 @@ public class SysController {
         return new Response<>(Code.OK, null);
     }
 
+    @Allow
     @GetMapping("/a")
     @Operation(summary = "a")
     public Response<Boolean> a() {
         return new Response<>(Code.OK, null);
     }
 
+    @Allow
     @GetMapping("/revoke")
     @Operation(summary = "撤销令牌")
     public Response<Boolean> revoke() {

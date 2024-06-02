@@ -1,15 +1,11 @@
 package org.xiangqian.monolithic.biz.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import jakarta.validation.constraints.*;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author xiangqian
@@ -29,15 +25,18 @@ public class AuthorityEntity implements Serializable {
     @Schema(description = "方法")
     private String method;
 
-    @Schema(description = "路径")
     @TableField("`path`")
+    @Schema(description = "路径")
     private String path;
+
+    @Schema(description = "允许未经授权访问，0-不允许，1-允许")
+    private Byte allow;
 
     @Schema(description = "备注")
     private String rem;
 
-    @Schema(description = "逻辑删除，0-未删除，1-已删除")
     @TableLogic
+    @Schema(description = "逻辑删除，0-未删除，1-已删除")
     private Byte del;
 
     @Schema(description = "创建时间")

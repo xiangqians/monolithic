@@ -54,6 +54,7 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
+
         log.debug("---------【around】-------- {}", method);
 
         return joinPoint.proceed();
@@ -139,6 +140,8 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
                 }
             }
 
+            byte allow = handlerMethod.getMethodAnnotation(Allow.class) == null ? 0 : (byte) 1;
+
             RequestMethodsRequestCondition methodsCondition = reqMappingInfo.getMethodsCondition();
             Set<RequestMethod> methods = Optional.ofNullable(methodsCondition).map(RequestMethodsRequestCondition::getMethods).orElse(null);
             Set<PathPattern> patterns = reqCondition.getPatterns();
@@ -151,6 +154,7 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
                             AuthorityEntity authority = new AuthorityEntity();
                             authority.setMethod(method.name());
                             authority.setPath(path);
+                            authority.setAllow(allow);
                             authority.setRem(rem);
                             authority.setDel((byte) 0);
                             authorities.add(authority);
@@ -159,6 +163,7 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
                         AuthorityEntity authority = new AuthorityEntity();
                         authority.setMethod("");
                         authority.setPath(path);
+                        authority.setAllow(allow);
                         authority.setRem(rem);
                         authority.setDel((byte) 0);
                         authorities.add(authority);
@@ -180,7 +185,9 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
                     authorityMapper.insert(authority);
                 } else {
                     authority.setId(storedAuthority.getId());
-                    if (!storedAuthority.getRem().equals(authority.getRem()) || storedAuthority.getDel() == 1) {
+                    if (!storedAuthority.getAllow().equals(authority.getAllow())
+                            || !storedAuthority.getRem().equals(authority.getRem())
+                            || storedAuthority.getDel() == 1) {
                         authorityMapper.updById(authority);
                     }
                 }
