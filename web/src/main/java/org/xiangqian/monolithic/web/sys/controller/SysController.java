@@ -21,9 +21,15 @@ import org.xiangqian.monolithic.web.Response;
 @SecurityRequirement(name = HttpHeaders.AUTHORIZATION)
 public class SysController {
 
-    @GetMapping("/c")
-    @Operation(summary = "c")
-    public Response<Boolean> c() {
+//    @GetMapping("/c")
+//    @Operation(summary = "c")
+    public Response<Boolean> c(@PathVariable Long id) {
+        return new Response<>(Code.OK, null);
+    }
+
+    @GetMapping("/c/{id}")
+    @Operation(summary = "cid")
+    public Response<Boolean> cid(@PathVariable Long id) {
         return new Response<>(Code.OK, null);
     }
 

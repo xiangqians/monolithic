@@ -1,5 +1,6 @@
 package org.xiangqian.monolithic.web;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -167,6 +168,7 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
             methodAuthoritiesMap.put(handlerMethod.getMethod(), authorities);
         }
 
+        List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
         for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
             for (AuthorityEntity authority : authorities) {
                 AuthorityEntity queryAuthority = new AuthorityEntity();
@@ -181,8 +183,11 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
                         authorityMapper.updById(authority);
                     }
                 }
+                authorityIds.add(authority.getId());
             }
         }
+
+        authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
     }
 
 }
