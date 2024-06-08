@@ -7,7 +7,7 @@ CREATE TABLE `tenant`
     `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `name`     VARCHAR(64)       DEFAULT '' COMMENT '名称',
     `rem`      VARCHAR(64)       DEFAULT '' COMMENT '备注',
-    `del`      TINYINT           DEFAULT 0 COMMENT '逻辑删除，0-未删除，1-已删除',
+    `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
     `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
@@ -29,15 +29,16 @@ CREATE TABLE `user`
     `passwd`        VARCHAR(128)      DEFAULT '' COMMENT '密码',
     `locked`        TINYINT           DEFAULT 0 COMMENT '是否已锁定，0-否，1-是',
     `deny_count`    TINYINT           DEFAULT 0 COMMENT '用户连续错误登陆次数，超过3次则锁定用户',
-    `login_history` VARCHAR(64)       DEFAULT '' COMMENT '登录历史', -- [{"ip": "localhost", "time": "2024/05/30 21:55:18"}]
-    `del`           TINYINT           DEFAULT 0 COMMENT '逻辑删除，0-未删除，1-已删除',
+    `login_history` VARCHAR(512)      DEFAULT '' COMMENT '登录历史', -- [{"ip": "localhost", "time": "2024/05/30 21:55:18"}]
+    `del`           TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
     `add_time`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `upd_time`      DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
+-- 密码：admin
 INSERT INTO `user`(`name`, `email`, `passwd`)
-VALUES ('管理员', 'admin@admin.org', '$2a$10$ZsS2bA7B7AQtIBBpW7xz3OIw3FWU0CnXX7HZMi6vBNt9ZNcA2RNGG');
+VALUES ('系统管理员', 'admin@xiangqain.org', '$2a$10$ZsS2bA7B7AQtIBBpW7xz3OIw3FWU0CnXX7HZMi6vBNt9ZNcA2RNGG');
 
 
 -- ------------------------
@@ -48,9 +49,9 @@ CREATE TABLE `role`
 (
     `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `name`     VARCHAR(64)       DEFAULT '' COMMENT '名称',
-    `code`     VARCHAR(16)       DEFAULT '' COMMENT '唯一识别码',
+    `code`     VARCHAR(16)       DEFAULT '' COMMENT '识别码',
     `rem`      VARCHAR(64)       DEFAULT '' COMMENT '备注',
-    `del`      TINYINT           DEFAULT 0 COMMENT '逻辑删除，0-未删除，1-已删除',
+    `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
     `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
@@ -63,12 +64,12 @@ CREATE TABLE `role`
 DROP TABLE IF EXISTS `authority`;
 CREATE TABLE `authority`
 (
-    `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `method`   VARCHAR(8)        DEFAULT '' COMMENT '方法',
     `path`     VARCHAR(128)      DEFAULT '' COMMENT '路径',
-    `allow`    TINYINT           DEFAULT 0 COMMENT '允许未经授权访问，0-不允许，1-允许',
+    `allow`    TINYINT           DEFAULT 0 COMMENT '是否允许未经授权访问，0-不允许，1-允许',
     `rem`      VARCHAR(128)      DEFAULT '' COMMENT '备注',
-    `del`      TINYINT           DEFAULT 0 COMMENT '逻辑删除，0-未删除，1-已删除',
+    `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
     `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
