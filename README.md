@@ -2,18 +2,22 @@
 
 单体式架构
 
-- Spring Boot 3.x
+- Spring Boot
 - Filter（安全验证过滤器）
+- MyBatis Plus
 - Redis
 
 # 项目结构
 
 ```text
 ├ monolithic
-├── biz        （业务模块）
-├── scheduling （任务调度模块）
-├── web        （Web模块）
-└── websocket  （WebSocket模块）
+├── util      （工具模块）
+├── biz       （业务模块）
+├── schedule  （任务调度模块）
+├── web       （Web模块）
+├── websocket （WebSocket模块）
+├── deploy    （部署模块）
+└── monitor   （监控模块）
 ```
 
 # 接口文档

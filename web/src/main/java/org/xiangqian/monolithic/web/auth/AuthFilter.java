@@ -16,11 +16,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.JsonUtil;
 import org.xiangqian.monolithic.biz.auth.AuthUtil;
 import org.xiangqian.monolithic.biz.auth.service.AuthService;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
+import org.xiangqian.monolithic.util.JsonUtil;
 import org.xiangqian.monolithic.web.Response;
 
 import java.io.IOException;
@@ -46,6 +46,9 @@ public class AuthFilter extends HttpFilter {
 
     @Value("${springdoc.api-docs.enabled}")
     private Boolean enabledApiDoc;
+
+    @Value("${spring.boot.admin.secret}")
+    private String secret;
 
     private Set<String> allows;
 
@@ -78,15 +81,26 @@ public class AuthFilter extends HttpFilter {
             }
         }
 
+        // 放行【获取令牌请求】
+        if (servletPath.equals("/api/auth/token")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         // 允许未经授权访问
         if (CollectionUtils.isNotEmpty(allows) && allows.contains(request.getMethod() + servletPath)) {
             chain.doFilter(request, response);
             return;
         }
 
-        // 放行【获取令牌请求】
-        if (servletPath.equals("/api/auth/token")) {
-            chain.doFilter(request, response);
+        // /actuator/*
+        if (servletPath.startsWith("/actuator")) {
+            String secret = StringUtils.trim(request.getHeader("Secret"));
+            if (StringUtils.isNotEmpty(secret) && secret.equals(secret)) {
+                chain.doFilter(request, response);
+            } else {
+                unauthorized(response);
+            }
             return;
         }
 

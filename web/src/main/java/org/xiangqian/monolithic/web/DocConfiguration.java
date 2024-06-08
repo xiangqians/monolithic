@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
-import org.xiangqian.monolithic.biz.ResourceUtil;
+import org.xiangqian.monolithic.util.ResourceUtil;
 
 import java.util.Set;
 

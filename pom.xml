@@ -12,10 +12,13 @@
     <description>单体式应用</description>
 
     <modules>
+        <module>util</module>
         <module>biz</module>
+        <module>schedule</module>
         <module>web</module>
         <module>websocket</module>
-        <module>scheduling</module>
+        <module>deploy</module>
+        <module>monitor</module>
     </modules>
 
     <properties>
@@ -67,22 +70,58 @@
         <bootstrap.version>5.3.0</bootstrap.version>
 
         <jwt.version>0.12.5</jwt.version>
+
+        <spring-boot-admin.version>3.3.1</spring-boot-admin.version>
+
+        <!-- javascript解释器 -->
+        <mozilla-rhino.version>1.7.14</mozilla-rhino.version>
     </properties>
 
     <dependencyManagement>
-
         <dependencies>
 
             <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
-                <version>${jwt.version}</version>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>util</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
                 <artifactId>biz</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.mozilla</groupId>
+                <artifactId>rhino</artifactId>
+                <version>${mozilla-rhino.version}</version>
+            </dependency>
+
+            <!--
+             | Actuator官方的定义：
+             | Definition of Actuator
+             | An actuator is a manufacturing term that refers to a mechanical device for moving or controlling something.
+             | Actuators can generate a large amount of motion from a small change.
+            -->
+            <!-- @spring-boot-admin::start -->
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-server</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+            <!-- @spring-boot-admin::end -->
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jwt.version}</version>
             </dependency>
 
             <dependency>

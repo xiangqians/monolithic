@@ -1,10 +1,10 @@
-package org.xiangqian.monolithic.webmvc.generator;
+package org.xiangqian.monolithic.web.generator;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.xiangqian.monolithic.biz.NamingUtil;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
+import org.xiangqian.monolithic.util.NamingUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

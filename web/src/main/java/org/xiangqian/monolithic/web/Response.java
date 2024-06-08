@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.Description;
-import org.xiangqian.monolithic.biz.ResourceUtil;
+import org.xiangqian.monolithic.util.ResourceUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -51,7 +51,7 @@ public class Response<T> {
     static {
         try {
             codeDescriptionMap = new HashMap<>(64, 1f);
-            Set<Class> classes = ResourceUtil.getClasses("org.xiangqian.monolithic.biz.**");
+            Set<Class<?>> classes = ResourceUtil.getClasses("org.xiangqian.monolithic.biz.**");
             for (Class clazz : classes) {
                 if (clazz == Code.class || Code.class.isAssignableFrom(clazz)) {
                     Field[] fields = clazz.getDeclaredFields();

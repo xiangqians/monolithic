@@ -23,9 +23,9 @@ CREATE TABLE `user`
     `id`            INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `tenant_id`     INT(8) UNSIGNED DEFAULT 0 COMMENT '租户id',
     `role_id`       INT(8) UNSIGNED DEFAULT 0 COMMENT '角色id',
-    `nickname`      VARCHAR(64)       DEFAULT '' COMMENT '昵称',
-    `phone`         VARCHAR(64)       DEFAULT '' COMMENT '手机号',
     `name`          VARCHAR(64)       DEFAULT '' COMMENT '用户名',
+    `email`         VARCHAR(64)       DEFAULT '' COMMENT '邮箱',
+    `phone`         VARCHAR(64)       DEFAULT '' COMMENT '手机号',
     `passwd`        VARCHAR(128)      DEFAULT '' COMMENT '密码',
     `locked`        TINYINT           DEFAULT 0 COMMENT '是否已锁定，0-否，1-是',
     `deny_count`    TINYINT           DEFAULT 0 COMMENT '用户连续错误登陆次数，超过3次则锁定用户',
@@ -36,8 +36,8 @@ CREATE TABLE `user`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
-INSERT INTO `user`(`nickname`, `name`, `passwd`)
-VALUES ('管理员', 'admin', '$2a$10$ZsS2bA7B7AQtIBBpW7xz3OIw3FWU0CnXX7HZMi6vBNt9ZNcA2RNGG');
+INSERT INTO `user`(`name`, `email`, `passwd`)
+VALUES ('管理员', 'admin@admin.org', '$2a$10$ZsS2bA7B7AQtIBBpW7xz3OIw3FWU0CnXX7HZMi6vBNt9ZNcA2RNGG');
 
 
 -- ------------------------

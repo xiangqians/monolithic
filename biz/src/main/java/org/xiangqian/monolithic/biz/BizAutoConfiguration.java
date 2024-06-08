@@ -67,11 +67,6 @@ public class BizAutoConfiguration {
     }
 
     @Bean
-    public Redis redis(RedisTemplate<String, Object> redisTemplate) {
-        return new Redis(redisTemplate);
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

@@ -1,19 +1,25 @@
 server:
-  port: ${MONOLITHIC_WEBMVC_PORT:8080}
+  port: ${MONOLITHIC_WEB_PORT:8080}
   servlet:
     context-path: /
     session:
       persistent: false
 
-application:
-  security:
-    jwt:
-      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      expiration: 86400000 # a day
-      refresh-token:
-        expiration: 604800000 # 7 days
-
 spring:
+  # Spring Boot Admin 配置
+  boot:
+    admin:
+      # 密钥
+      secret: kiiI6IkphFra!NUB4iLCJpYXQN^LRXN~Xo@4a1hMWF%y1hNGYODLT0skjM1u2?nKzIiWunf!Z3FpInYkYNW1Y&U
+
+      client:
+        # 监控服务器地址
+        url: http://localhost:9000
+        # 客户端实例配置
+        instance:
+          # 默认使用的是主机名注册，改为使用ip注册
+          prefer-ip: true
+
   # 数据源配置
   datasource:
     # 驱动

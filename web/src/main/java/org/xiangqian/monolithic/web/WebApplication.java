@@ -18,9 +18,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.xiangqian.monolithic.biz.DateTimeUtil;
-import org.xiangqian.monolithic.biz.DateUtil;
-import org.xiangqian.monolithic.biz.TimeUtil;
+import org.xiangqian.monolithic.util.DateTimeUtil;
+import org.xiangqian.monolithic.util.DateUtil;
+import org.xiangqian.monolithic.util.TimeUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
