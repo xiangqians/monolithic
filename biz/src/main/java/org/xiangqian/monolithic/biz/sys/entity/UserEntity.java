@@ -31,15 +31,15 @@ public class UserEntity implements Serializable {
     @Schema(description = "角色id")
     private Long roleId;
 
-    @Schema(description = "昵称")
-    private String nickname;
-
-    @Schema(description = "手机号")
-    private String phone;
-
     @Schema(description = "用户名")
     @TableField("`name`")
     private String name;
+
+    @Schema(description = "邮箱")
+    private String email;
+
+    @Schema(description = "手机号")
+    private String phone;
 
     @Schema(description = "密码")
     private String passwd;
@@ -51,11 +51,12 @@ public class UserEntity implements Serializable {
     @Schema(description = "用户连续错误登陆次数，超过3次则锁定用户")
     private Byte denyCount;
 
+    // [{"ip": "localhost", "time": "2024/05/30 21:55:18"}]
     @Schema(description = "登录历史")
     private String loginHistory;
 
     @TableLogic
-    @Schema(description = "逻辑删除，0-未删除，1-已删除")
+    @Schema(description = "是否已删除，0-未删除，1-已删除")
     private Byte del;
 
     @Schema(description = "创建时间")

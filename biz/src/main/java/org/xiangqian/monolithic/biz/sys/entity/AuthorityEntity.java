@@ -18,7 +18,7 @@ public class AuthorityEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "id")
+    @Schema(description = "主键")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
@@ -29,14 +29,14 @@ public class AuthorityEntity implements Serializable {
     @Schema(description = "路径")
     private String path;
 
-    @Schema(description = "允许未经授权访问，0-不允许，1-允许")
+    @Schema(description = "是否允许未经授权访问，0-不允许，1-允许")
     private Byte allow;
 
     @Schema(description = "备注")
     private String rem;
 
     @TableLogic
-    @Schema(description = "逻辑删除，0-未删除，1-已删除")
+    @Schema(description = "是否已删除，0-未删除，1-已删除")
     private Byte del;
 
     @Schema(description = "创建时间")

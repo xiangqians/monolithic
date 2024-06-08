@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.web.auth;
+package org.xiangqian.monolithic.web;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,12 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.auth.AuthUtil;
-import org.xiangqian.monolithic.biz.auth.service.AuthService;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
+import org.xiangqian.monolithic.biz.sys.service.UserService;
 import org.xiangqian.monolithic.util.JsonUtil;
-import org.xiangqian.monolithic.web.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -39,10 +37,10 @@ import java.util.Set;
 @Slf4j
 @WebFilter(urlPatterns = "/*") // 拦截所有路径
 @Order(Ordered.HIGHEST_PRECEDENCE) // 设置执行顺序为最高优先级
-public class AuthFilter extends HttpFilter {
+public class SecurityFilter extends HttpFilter {
 
     @Autowired
-    private AuthService authService;
+    private UserService userService;
 
     @Value("${springdoc.api-docs.enabled}")
     private Boolean enabledApiDoc;
@@ -82,7 +80,7 @@ public class AuthFilter extends HttpFilter {
         }
 
         // 放行【获取令牌请求】
-        if (servletPath.equals("/api/auth/token")) {
+        if (servletPath.equals("/api/sys/user/token/email") || servletPath.equals("/api/sys/user/token/phone")) {
             chain.doFilter(request, response);
             return;
         }
@@ -95,8 +93,7 @@ public class AuthFilter extends HttpFilter {
 
         // /actuator/*
         if (servletPath.startsWith("/actuator")) {
-            String secret = StringUtils.trim(request.getHeader("Secret"));
-            if (StringUtils.isNotEmpty(secret) && secret.equals(secret)) {
+            if (secret.equals(StringUtils.trim(request.getHeader("Secret")))) {
                 chain.doFilter(request, response);
             } else {
                 unauthorized(response);
@@ -110,14 +107,14 @@ public class AuthFilter extends HttpFilter {
             return;
         }
 
-        UserEntity user = authService.getUser(token);
+        UserEntity user = userService.getByToken(token);
         if (user == null) {
             unauthorized(response);
             return;
         }
 
         user.setToken(token);
-        AuthUtil.setUser(user);
+        userService.setUser(user);
 
         // 放行
         chain.doFilter(request, response);

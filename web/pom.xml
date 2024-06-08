@@ -43,17 +43,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- @缓存::start -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <!-- @缓存::end -->
-
         <!-- @api-doc::start -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
@@ -64,11 +53,6 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
         <!-- @api-doc::end -->
-
-        <dependency>
-            <groupId>org.xiangqian.monolithic</groupId>
-            <artifactId>util</artifactId>
-        </dependency>
 
         <!-- @MyBatis代码生成器::start -->
         <dependency>

@@ -203,6 +203,9 @@ public class MyBatisGenerator {
                     e.printStackTrace();
                 }
             } else if (fileName.endsWith("Service.java")) {
+                if(true){
+                    throw new RuntimeException("不解析了");
+                }
                 try {
                     boolean modified = false;
                     List<String> lines = Files.readAllLines(srcPath);

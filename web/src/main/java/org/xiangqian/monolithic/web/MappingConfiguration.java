@@ -17,31 +17,16 @@ import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.BiFunction;
 
 /**
  * @author xiangqian
  * @date 21:15 2024/06/02
  */
 @Configuration(proxyBeanMethods = false)
-public class MamConfiguration {
+public class MappingConfiguration {
 
     @Bean
     public Map<Method, List<AuthorityEntity>> methodAuthoritiesMap(RequestMappingHandlerMapping requestMappingHandlerMapping) {
-        BiFunction<String, String, String> toStringFunc = (name, description) -> {
-            name = StringUtils.trimToEmpty(name);
-            description = StringUtils.trimToEmpty(description);
-            if (StringUtils.isEmpty(name)) {
-                return description;
-            }
-
-            String string = name;
-            if (StringUtils.isNotEmpty(description)) {
-                string += "（" + description + "）";
-            }
-            return string;
-        };
-
         Map<Method, List<AuthorityEntity>> methodAuthoritiesMap = new HashMap<>(64, 1f);
         Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
@@ -55,11 +40,11 @@ public class MamConfiguration {
             HandlerMethod handlerMethod = entry.getValue();
             Tag tag = handlerMethod.getBeanType().getAnnotation(Tag.class);
             if (tag != null) {
-                rem = toStringFunc.apply(tag.name(), tag.description());
+                rem = toString(tag.name(), tag.description());
             }
             Operation operation = handlerMethod.getMethodAnnotation(Operation.class);
             if (operation != null) {
-                String string = toStringFunc.apply(operation.summary(), operation.description());
+                String string = toString(operation.summary(), operation.description());
                 if (StringUtils.isNotEmpty(string)) {
                     if (StringUtils.isNotEmpty(rem)) {
                         rem += " - " + string;
@@ -77,31 +62,43 @@ public class MamConfiguration {
             List<AuthorityEntity> authorities = new ArrayList<>(patterns.size());
             for (PathPattern pattern : patterns) {
                 String path = pattern.getPatternString();
-                if (path.startsWith("/api/")) {
-                    if (CollectionUtils.isNotEmpty(methods)) {
-                        for (RequestMethod method : methods) {
-                            AuthorityEntity authority = new AuthorityEntity();
-                            authority.setMethod(method.name());
-                            authority.setPath(path);
-                            authority.setAllow(allow);
-                            authority.setRem(rem);
-                            authority.setDel((byte) 0);
-                            authorities.add(authority);
-                        }
-                    } else {
+                if (CollectionUtils.isNotEmpty(methods)) {
+                    for (RequestMethod method : methods) {
                         AuthorityEntity authority = new AuthorityEntity();
-                        authority.setMethod("");
+                        authority.setMethod(method.name());
                         authority.setPath(path);
                         authority.setAllow(allow);
                         authority.setRem(rem);
                         authority.setDel((byte) 0);
                         authorities.add(authority);
                     }
+                } else {
+                    AuthorityEntity authority = new AuthorityEntity();
+                    authority.setMethod("");
+                    authority.setPath(path);
+                    authority.setAllow(allow);
+                    authority.setRem(rem);
+                    authority.setDel((byte) 0);
+                    authorities.add(authority);
                 }
             }
             methodAuthoritiesMap.put(handlerMethod.getMethod(), authorities);
         }
         return methodAuthoritiesMap;
+    }
+
+    private String toString(String name, String description) {
+        name = StringUtils.trimToEmpty(name);
+        description = StringUtils.trimToEmpty(description);
+        if (StringUtils.isEmpty(name)) {
+            return description;
+        }
+
+        String string = name;
+        if (StringUtils.isNotEmpty(description)) {
+            string += "（" + description + "）";
+        }
+        return string;
     }
 
 }

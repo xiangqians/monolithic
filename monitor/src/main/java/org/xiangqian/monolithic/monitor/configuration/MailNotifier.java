@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 
 /**
  * JVM通知器
+ * <p>
+ * {@link de.codecentric.boot.admin.server.config.AdminServerNotifierAutoConfiguration}
  *
  * @author xiangqian
  * @date 19:30 2024/06/04

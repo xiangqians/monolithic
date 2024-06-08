@@ -60,19 +60,15 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         .requestMatchers("/assets/**").permitAll()
                         // /instances
                         .requestMatchers(request -> {
-                            String method = request.getMethod();
-                            String servletPath = request.getServletPath();
-                            String secret = null;
                             /**
                              * HTTP POST http://localhost:9000/instances
                              * {@link de.codecentric.boot.admin.server.web.InstancesController#register(de.codecentric.boot.admin.server.domain.values.Registration, org.springframework.web.util.UriComponentsBuilder)}
                              */
-                            if ("POST".equals(method)
-                                    && servletPath.equals("/instances")
-                                    && StringUtils.isNotEmpty(StringUtils.trim(request.getHeader("Secret"))) && secret.equals(secret)) {
+                            if ("POST".equals(request.getMethod())
+                                    && "/instances".equals(request.getServletPath())
+                                    && secret.equals(StringUtils.trim(request.getHeader("Secret")))) {
                                 return true;
                             }
-
                             return false;
                         }).permitAll()
                         // 其他请求需要授权

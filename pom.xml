@@ -92,7 +92,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>org.mozilla</groupId>
                 <artifactId>rhino</artifactId>

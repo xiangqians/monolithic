@@ -38,8 +38,8 @@ import java.util.Set;
 public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
 
     @Bean
-    public GroupedOpenApi authGroupedOpenApi() {
-        return buildGroupedOpenApi("auth", "org.xiangqian.monolithic.web.auth.controller");
+    public GroupedOpenApi sysGroupedOpenApi() {
+        return buildGroupedOpenApi("sys", "org.xiangqian.monolithic.web.sys.controller");
     }
 
     /**
@@ -53,7 +53,7 @@ public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
         Set<String> pkgs = getPkgs();
         for (String pkg : pkgs) {
             String name = pkg.substring("org.xiangqian.monolithic.web.".length(), pkg.length() - ".controller".length());
-            if ("auth".equals(name)) {
+            if ("sys".equals(name)) {
                 continue;
             }
 
