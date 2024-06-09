@@ -1,3 +1,41 @@
+/*
+TINYINT
+1个字节
+有符号范围：-128到127
+无符号范围：0到255
+
+SMALLINT
+2个字节
+有符号范围：-32768到32767
+无符号范围：0到65535
+
+MEDIUMINT
+3个字节
+有符号范围：-8388608到8388607
+无符号范围：0到16777215
+
+INT或INTEGER
+4个字节
+有符号范围：-2147483648到2147483647
+无符号范围：0到4294967295
+
+BIGINT
+8个字节
+有符号范围：-9223372036854775808到9223372036854775807
+无符号范围：0到18446744073709551615
+
+TEXT
+最大存储容量为 65,535 个字节或字符（约 64 KB）
+
+MEDIUMTEXT
+最大存储容量为 16,777,215 个字节或字符（约 16 MB）
+
+LONGTEXT
+最大存储容量为 4,294,967,295 个字节或字符（约 4 GB）
+
+*/
+
+
 -- --------------------------
 -- Table structure for tenant
 -- --------------------------
@@ -87,3 +125,27 @@ CREATE TABLE `role_authority`
     `add_time`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`role_id`, `authority_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色权限表';
+
+
+-- -----------------------
+-- Table structure for log
+-- -----------------------
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log`
+(
+    `id`           INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `user_id`      INT(8) UNSIGNED DEFAULT 0 COMMENT '用户id',
+    `authority_id` INT(8) UNSIGNED DEFAULT 0 COMMENT '权限id',
+    `ip`           VARCHAR(128)      DEFAULT '' COMMENT 'IP',
+    `port`         SMALLINT UNSIGNED DEFAULT 0 COMMENT '端口',
+    `method`       VARCHAR(8)        DEFAULT '' COMMENT '方法',
+    `path`         VARCHAR(128)      DEFAULT '' COMMENT '路径',
+    `status`       SMALLINT UNSIGNED DEFAULT 0 COMMENT '状态',
+    `req_header`   TEXT              DEFAULT NULL COMMENT '请求头',
+    `req_body`     MEDIUMTEXT        DEFAULT NULL COMMENT '请求报文',
+    `resp_header`  TEXT              DEFAULT NULL COMMENT '响应头',
+    `resp_body`    MEDIUMTEXT        DEFAULT NULL COMMENT '响应报文',
+    `time`         MEDIUMINT UNSIGNED DEFAULT 0 COMMENT '耗时，单位ms',
+    `add_time`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='日志表';

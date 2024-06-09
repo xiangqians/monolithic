@@ -4,10 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
 import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -16,23 +19,42 @@ import org.springframework.web.util.pattern.PathPattern;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author xiangqian
  * @date 21:15 2024/06/02
  */
 @Configuration(proxyBeanMethods = false)
-public class MappingConfiguration {
+public class WebConfiguration implements WebMvcConfigurer {
 
+    @Autowired
+    private LogHandlerInterceptor logHandlerInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry
+                // 添加拦截器
+                .addInterceptor(logHandlerInterceptor)
+                // 配置拦截地址
+                .addPathPatterns("/api/**");
+    }
+
+    /**
+     * @param requestMappingHandlerMapping
+     * @return Map<Method, Map < RequestMethod, AuthorityEntity>>
+     */
     @Bean
-    public Map<Method, List<AuthorityEntity>> methodAuthoritiesMap(RequestMappingHandlerMapping requestMappingHandlerMapping) {
-        Map<Method, List<AuthorityEntity>> methodAuthoritiesMap = new HashMap<>(64, 1f);
+    public Map<Method, Map<String, AuthorityEntity>> methodMap(RequestMappingHandlerMapping requestMappingHandlerMapping) {
         Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
+        Map<Method, Map<String, AuthorityEntity>> methodMap = new HashMap<>(map.size(), 1f);
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
-            RequestMappingInfo reqMappingInfo = entry.getKey();
-            PathPatternsRequestCondition reqCondition = reqMappingInfo.getPathPatternsCondition();
-            if (Objects.isNull(reqCondition)) {
+            RequestMappingInfo requestMappingInfo = entry.getKey();
+            PathPatternsRequestCondition pathPatternsRequestCondition = requestMappingInfo.getPathPatternsCondition();
+            if (pathPatternsRequestCondition == null) {
                 continue;
             }
 
@@ -56,12 +78,14 @@ public class MappingConfiguration {
 
             byte allow = handlerMethod.getMethodAnnotation(Allow.class) == null ? 0 : (byte) 1;
 
-            RequestMethodsRequestCondition methodsCondition = reqMappingInfo.getMethodsCondition();
+            Map<String, AuthorityEntity> requestMethodMap = new HashMap<>(4, 1f);
+
+            RequestMethodsRequestCondition methodsCondition = requestMappingInfo.getMethodsCondition();
             Set<RequestMethod> methods = Optional.ofNullable(methodsCondition).map(RequestMethodsRequestCondition::getMethods).orElse(null);
-            Set<PathPattern> patterns = reqCondition.getPatterns();
-            List<AuthorityEntity> authorities = new ArrayList<>(patterns.size());
-            for (PathPattern pattern : patterns) {
-                String path = pattern.getPatternString();
+            Set<PathPattern> patterns = pathPatternsRequestCondition.getPatterns();
+            PathPattern pattern = patterns.iterator().next();
+            String path = pattern.getPatternString();
+            if (path.startsWith("/api/")) {
                 if (CollectionUtils.isNotEmpty(methods)) {
                     for (RequestMethod method : methods) {
                         AuthorityEntity authority = new AuthorityEntity();
@@ -70,7 +94,7 @@ public class MappingConfiguration {
                         authority.setAllow(allow);
                         authority.setRem(rem);
                         authority.setDel((byte) 0);
-                        authorities.add(authority);
+                        requestMethodMap.put(authority.getMethod(), authority);
                     }
                 } else {
                     AuthorityEntity authority = new AuthorityEntity();
@@ -79,12 +103,12 @@ public class MappingConfiguration {
                     authority.setAllow(allow);
                     authority.setRem(rem);
                     authority.setDel((byte) 0);
-                    authorities.add(authority);
+                    requestMethodMap.put(authority.getMethod(), authority);
                 }
             }
-            methodAuthoritiesMap.put(handlerMethod.getMethod(), authorities);
+            methodMap.put(handlerMethod.getMethod(), requestMethodMap);
         }
-        return methodAuthoritiesMap;
+        return methodMap;
     }
 
     private String toString(String name, String description) {

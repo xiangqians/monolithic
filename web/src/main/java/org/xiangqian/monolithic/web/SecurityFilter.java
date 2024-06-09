@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.util.AntPathMatcher;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
@@ -23,10 +26,10 @@ import org.xiangqian.monolithic.util.JsonUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 安全验证过滤器
@@ -48,19 +51,62 @@ public class SecurityFilter extends HttpFilter {
     @Value("${spring.boot.admin.secret}")
     private String secret;
 
-    private Set<String> allows;
+    private Map<String, List<String>> allowMap;
+
+    private AntPathMatcher antPathMatcher;
+
+    public SecurityFilter() {
+        this.antPathMatcher = new AntPathMatcher();
+    }
 
     @Autowired
-    @Qualifier("methodAuthoritiesMap")
-    public void setMethodAuthoritiesMap(Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
-        allows = new HashSet<>(16, 1f);
-        for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
-            for (AuthorityEntity authority : authorities) {
+    @Qualifier("methodMap")
+    public void setMethodMap(Map<Method, Map<String, AuthorityEntity>> methodMap) {
+        allowMap = new HashMap<>(16, 1f);
+        for (Map<String, AuthorityEntity> requestMethodMap : methodMap.values()) {
+            for (AuthorityEntity authority : requestMethodMap.values()) {
                 if (Byte.valueOf((byte) 1).equals(authority.getAllow())) {
-                    allows.add(authority.getMethod() + authority.getPath());
+                    String method = authority.getMethod();
+                    String path = authority.getPath();
+                    if (StringUtils.isNotEmpty(method)) {
+                        addAllow(method, path);
+                    } else {
+                        addAllow(HttpMethod.GET.name(), path);
+                        addAllow(HttpMethod.POST.name(), path);
+                        addAllow(HttpMethod.PUT.name(), path);
+                        addAllow(HttpMethod.DELETE.name(), path);
+                    }
                 }
             }
         }
+    }
+
+    private void addAllow(String method, String path) {
+        List<String> paths = allowMap.get(method);
+        if (paths == null) {
+            paths = new ArrayList<>(8);
+            allowMap.put(method, paths);
+        }
+        paths.add(path);
+    }
+
+    private boolean isAllow(String method, String path) {
+        if (MapUtils.isEmpty(allowMap)) {
+            return false;
+        }
+
+        List<String> paths = allowMap.get(method);
+        if (CollectionUtils.isEmpty(paths)) {
+            return false;
+        }
+
+        for (String pattern : paths) {
+            if (antPathMatcher.match(pattern, path)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -86,7 +132,7 @@ public class SecurityFilter extends HttpFilter {
         }
 
         // 允许未经授权访问
-        if (CollectionUtils.isNotEmpty(allows) && allows.contains(request.getMethod() + servletPath)) {
+        if (isAllow(request.getMethod(), servletPath)) {
             chain.doFilter(request, response);
             return;
         }

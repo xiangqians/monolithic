@@ -29,10 +29,11 @@ public class TestController {
         return new Response<>(Code.OK, null);
     }
 
+    @Allow
     @GetMapping("/c/{id}")
     @Operation(summary = "cid")
-    public Response<Boolean> cid(@PathVariable Long id) {
-        return new Response<>(Code.OK, null);
+    public Response<Long> cid(@PathVariable Long id) {
+        return new Response<>(Code.OK, 1 / id);
     }
 
     @PostMapping("/token")

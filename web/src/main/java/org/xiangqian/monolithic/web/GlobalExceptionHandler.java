@@ -1,11 +1,13 @@
 package org.xiangqian.monolithic.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
@@ -23,33 +25,32 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.CodeException;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
+import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 import org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper;
+import org.xiangqian.monolithic.biz.sys.service.UserService;
+import org.xiangqian.monolithic.util.JsonUtil;
+import org.xiangqian.monolithic.util.ServletUtil;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
- * 全局处理器
+ * 全局异常处理器
  *
  * @author xiangqian
  * @date 14:28 2024/06/01
  */
 @Slf4j
-@Aspect
 @RestControllerAdvice
-public class GlobalHandler implements ErrorController, ApplicationRunner {
+public class GlobalExceptionHandler implements ErrorController, ApplicationRunner {
 
-    @Around("execution(public * org.xiangqian.monolithic.web..controller.*.*(..))) && (@annotation(org.springframework.web.bind.annotation.RequestMapping) || @annotation(org.springframework.web.bind.annotation.GetMapping) || @annotation(org.springframework.web.bind.annotation.PostMapping) || @annotation(org.springframework.web.bind.annotation.PutMapping) || @annotation(org.springframework.web.bind.annotation.DeleteMapping)))")
-    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-
-        log.debug("---------【around】-------- {}", method);
-
-        return joinPoint.proceed();
-    }
+    @Autowired
+    @Qualifier("methodMap")
+    private Map<Method, Map<String, AuthorityEntity>> methodMap;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Response> handleException(Exception exception) {
@@ -83,16 +84,12 @@ public class GlobalHandler implements ErrorController, ApplicationRunner {
     @Autowired
     private AuthorityMapper authorityMapper;
 
-    @Autowired
-    @Qualifier("methodAuthoritiesMap")
-    private Map<Method, List<AuthorityEntity>> methodAuthoritiesMap;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         // 存在多节点部署问题！
-        List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
-        for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
-            for (AuthorityEntity authority : authorities) {
+        List<Long> authorityIds = new ArrayList<>(methodMap.size());
+        for (Map<String, AuthorityEntity> requestMethodMap : methodMap.values()) {
+            for (AuthorityEntity authority : requestMethodMap.values()) {
                 AuthorityEntity queryAuthority = new AuthorityEntity();
                 queryAuthority.setMethod(authority.getMethod());
                 queryAuthority.setPath(authority.getPath());

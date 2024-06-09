@@ -10,6 +10,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +26,6 @@ import java.util.Collections;
  * @date 23:58 2024/06/04
  */
 @Configuration(proxyBeanMethods = false)
-//@ConditionalOnProperty(name = "management")
 public class ActuatorConfiguration {
 
     @Value("${spring.boot.admin.secret}")
@@ -74,6 +74,7 @@ public class ActuatorConfiguration {
      * @return
      */
     @Bean
+    @Profile({"dev", "test"}) // 仅在 dev、test 环境下开启 HTTP Exchanges
     public HttpExchangeRepository httpTraceRepository() {
         InMemoryHttpExchangeRepository repository = new InMemoryHttpExchangeRepository();
         // 默认保存1000条http请求记录
