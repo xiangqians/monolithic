@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xiangqian.monolithic.biz.sys.mapper.LogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xiangqian.monolithic.biz.sys.entity.LogEntity">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="authority_id" property="authorityId" />
+        <result column="code" property="code" />
+        <result column="address" property="address" />
+        <result column="req_method" property="reqMethod" />
+        <result column="req_url" property="reqUrl" />
+        <result column="req_header" property="reqHeader" />
+        <result column="req_body" property="reqBody" />
+        <result column="resp_header" property="respHeader" />
+        <result column="resp_body" property="respBody" />
+        <result column="time" property="time" />
+        <result column="add_time" property="addTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, authority_id, `code`, address, req_method, req_url, req_header, req_body, resp_header, resp_body, `time`, add_time
+    </sql>
+
+</mapper>

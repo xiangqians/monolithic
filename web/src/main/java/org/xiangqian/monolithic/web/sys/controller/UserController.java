@@ -15,6 +15,7 @@ import org.xiangqian.monolithic.biz.sys.model.UserTokenEmailArg;
 import org.xiangqian.monolithic.biz.sys.model.UserTokenPhoneArg;
 import org.xiangqian.monolithic.biz.sys.model.UserTokenResult;
 import org.xiangqian.monolithic.biz.sys.service.UserService;
+import org.xiangqian.monolithic.web.Allow;
 import org.xiangqian.monolithic.web.Response;
 
 /**
@@ -29,12 +30,14 @@ public class UserController {
     @Autowired
     private UserService service;
 
+    @Allow
     @PostMapping("/token/email")
     @Operation(summary = "根据邮箱获取令牌")
     public Response<UserTokenResult> getTokenByEmail(@Valid @RequestBody UserTokenEmailArg arg) {
         return new Response<>(Code.OK, service.getTokenByEmail(arg));
     }
 
+    @Allow
     @PostMapping("/token/phone")
     @Operation(summary = "根据手机号获取令牌")
     public Response<UserTokenResult> getTokenByEmail(@Valid @RequestBody UserTokenPhoneArg arg) {

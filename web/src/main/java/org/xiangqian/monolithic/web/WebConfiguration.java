@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
@@ -13,8 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
 import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -31,7 +30,7 @@ import java.util.*;
  * @date 21:15 2024/06/02
  */
 @Configuration(proxyBeanMethods = false)
-public class WebConfiguration implements WebMvcConfigurer, ApplicationRunner {
+public class WebConfiguration implements ApplicationRunner {
 
     @Autowired
     private AuthorityMapper authorityMapper;
@@ -39,22 +38,14 @@ public class WebConfiguration implements WebMvcConfigurer, ApplicationRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
-    private LogHandlerInterceptor logHandlerInterceptor;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry
-                // 添加拦截器
-                .addInterceptor(logHandlerInterceptor)
-                // 配置拦截地址
-                .addPathPatterns("/api/**");
-    }
-
-    // 存在多节点部署问题！
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Map<Method, List<AuthorityEntity>> methodAuthoritiesMap = (Map<Method, List<AuthorityEntity>>) applicationContext.getBean("methodAuthoritiesMap");
+        addOrDelAuthorities(methodAuthoritiesMap);
+    }
+
+    // 存在多节点部署问题！
+    private void addOrDelAuthorities(Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
         List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
         for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
             for (AuthorityEntity authority : authorities) {
@@ -79,6 +70,21 @@ public class WebConfiguration implements WebMvcConfigurer, ApplicationRunner {
     }
 
     /**
+     * Map<控制器方法，Set<角色id集合>>
+     *
+     * @param methodAuthoritiesMap
+     * @return
+     */
+    @Bean
+    public Map<Method, Set<Long>> methodRoleIdsMap(@Qualifier("methodAuthoritiesMap") Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
+
+
+        return new HashMap<>();
+    }
+
+    /**
+     * Map<控制器方法，List<权限集合>>
+     *
      * @param requestMappingHandlerMapping
      * @return
      */

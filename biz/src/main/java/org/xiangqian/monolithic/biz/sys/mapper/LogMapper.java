@@ -1,16 +1,16 @@
 package org.xiangqian.monolithic.biz.sys.mapper;
 
+import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 
 /**
- * 用户表Mapper
+ * 日志表Mapper
  *
  * @author xiangqian
- * @date 22:18 2024/05/30
+ * @date 14:18 2024/06/09
  */
 @Mapper
-public interface UserMapper extends BaseMapper<UserEntity> {
+public interface LogMapper extends BaseMapper<LogEntity> {
 
 }

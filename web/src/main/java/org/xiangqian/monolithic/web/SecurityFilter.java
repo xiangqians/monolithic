@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.util.AntPathMatcher;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
@@ -27,7 +25,6 @@ import org.xiangqian.monolithic.util.JsonUtil;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,66 +48,26 @@ public class SecurityFilter extends HttpFilter {
     @Value("${spring.boot.admin.secret}")
     private String secret;
 
-    private Map<String, List<String>> allowMap;
-
     private AntPathMatcher antPathMatcher;
+    private List<AuthorityEntity> allowAuthorities;
 
-    public SecurityFilter() {
+    public SecurityFilter(@Qualifier("methodAuthoritiesMap") Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
         this.antPathMatcher = new AntPathMatcher();
-    }
 
-    @Autowired
-    @Qualifier("methodMap")
-    public void setMethodMap(Map<Method, Map<String, AuthorityEntity>> methodMap) {
-        allowMap = new HashMap<>(16, 1f);
-        for (Map<String, AuthorityEntity> requestMethodMap : methodMap.values()) {
-            for (AuthorityEntity authority : requestMethodMap.values()) {
+        this.allowAuthorities = new ArrayList<>(16);
+        for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
+            for (AuthorityEntity authority : authorities) {
                 if (Byte.valueOf((byte) 1).equals(authority.getAllow())) {
-                    String method = authority.getMethod();
-                    String path = authority.getPath();
-                    if (StringUtils.isNotEmpty(method)) {
-                        addAllow(method, path);
-                    } else {
-                        addAllow(HttpMethod.GET.name(), path);
-                        addAllow(HttpMethod.POST.name(), path);
-                        addAllow(HttpMethod.PUT.name(), path);
-                        addAllow(HttpMethod.DELETE.name(), path);
-                    }
+                    this.allowAuthorities.add(authority);
                 }
             }
         }
     }
 
-    private void addAllow(String method, String path) {
-        List<String> paths = allowMap.get(method);
-        if (paths == null) {
-            paths = new ArrayList<>(8);
-            allowMap.put(method, paths);
-        }
-        paths.add(path);
-    }
-
-    private boolean isAllow(String method, String path) {
-        if (MapUtils.isEmpty(allowMap)) {
-            return false;
-        }
-
-        List<String> paths = allowMap.get(method);
-        if (CollectionUtils.isEmpty(paths)) {
-            return false;
-        }
-
-        for (String pattern : paths) {
-            if (antPathMatcher.match(pattern, path)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        request.setAttribute(AttributeName.AUTHORITY, null);
+
         String servletPath = request.getServletPath();
         log.debug("servletPath {}", servletPath);
 
@@ -125,18 +82,6 @@ public class SecurityFilter extends HttpFilter {
             }
         }
 
-        // 放行【获取令牌请求】
-        if (servletPath.equals("/api/sys/user/token/email") || servletPath.equals("/api/sys/user/token/phone")) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        // 允许未经授权访问
-        if (isAllow(request.getMethod(), servletPath)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
         // /actuator/*
         if (servletPath.startsWith("/actuator")) {
             if (secret.equals(StringUtils.trim(request.getHeader("Secret")))) {
@@ -145,6 +90,19 @@ public class SecurityFilter extends HttpFilter {
                 unauthorized(response);
             }
             return;
+        }
+
+        // 允许未经授权访问
+        String method = request.getMethod();
+        if (CollectionUtils.isNotEmpty(allowAuthorities)) {
+            for (AuthorityEntity allowAuthority : allowAuthorities) {
+                if ((method.equals(allowAuthority.getMethod()) || "".equals(allowAuthority.getMethod())) && antPathMatcher.match(allowAuthority.getPath(), servletPath)) {
+                    log.debug("允许未经授权访问 {}", allowAuthority);
+                    request.setAttribute(AttributeName.AUTHORITY, allowAuthority);
+                    chain.doFilter(request, response);
+                    return;
+                }
+            }
         }
 
         String token = StringUtils.trim(request.getHeader("Authorization"));

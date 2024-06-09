@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 
 /**
- * 权限Mapper
+ * 权限表Mapper
  *
  * @author xiangqian
  * @date 13:02 2024/06/02

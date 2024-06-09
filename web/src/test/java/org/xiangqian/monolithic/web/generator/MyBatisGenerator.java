@@ -33,7 +33,7 @@ public class MyBatisGenerator {
     public static void main(String[] args) throws IOException {
         execute("sys",
                 "xiangqian",
-                new String[]{"authority"},
+                new String[]{"log"},
                 false);
     }
 
@@ -94,22 +94,7 @@ public class MyBatisGenerator {
                     List<String> lines = Files.readAllLines(srcPath);
                     for (int i = 0, size = lines.size(); i < size; i++) {
                         String line = lines.get(i);
-                        if (line.startsWith("@Tag(name = ")) {
-                            Matcher matcher = pattern.matcher(line);
-                            StringBuffer stringBuffer = new StringBuffer();
-                            while (matcher.find()) {
-                                String string = matcher.group(1);
-                                if (string.endsWith("表")) {
-                                    string = string.substring(0, string.length() - 1);
-                                }
-                                string += "接口";
-                                matcher.appendReplacement(stringBuffer, String.format("\"%s\"", string));
-                            }
-                            matcher.appendTail(stringBuffer);
-                            lines.set(i, stringBuffer.toString());
-                            modified = true;
-
-                        } else if (line.startsWith("@RequestMapping(")) {
+                        if (line.startsWith("@RequestMapping(")) {
                             Matcher matcher = pattern.matcher(line);
                             StringBuffer stringBuffer = new StringBuffer();
                             while (matcher.find()) {
@@ -148,83 +133,7 @@ public class MyBatisGenerator {
         projectPath = projectPath.getParent().resolve("biz");
         // /monolithic/biz/src/main
         mainPath = projectPath.resolve("src").resolve("main");
-        copyDirectory(bizPath, mainPath, replaceExisting, srcPath -> {
-            String fileName = srcPath.getFileName().toString();
-            if (fileName.endsWith("Entity.java")) {
-                try {
-                    String regex = "\"([^\"]*)\"";
-                    Pattern pattern = Pattern.compile(regex);
-
-                    boolean modified = false;
-                    List<String> lines = Files.readAllLines(srcPath);
-                    for (int i = 0, size = lines.size(); i < size; i++) {
-                        String line = lines.get(i);
-                        if (line.startsWith("@Schema(description = ")) {
-                            Matcher matcher = pattern.matcher(line);
-                            StringBuffer stringBuffer = new StringBuffer();
-                            while (matcher.find()) {
-                                String string = matcher.group(1);
-                                if (string.endsWith("表")) {
-                                    string = string.substring(0, string.length() - 1);
-                                }
-                                if (!string.endsWith("string")) {
-                                    string += "信息";
-                                }
-                                matcher.appendReplacement(stringBuffer, String.format("\"%s\"", string));
-                            }
-                            matcher.appendTail(stringBuffer);
-                            lines.set(i, stringBuffer.toString());
-                            modified = true;
-                        }
-                    }
-                    if (modified) {
-                        Files.writeString(srcPath, StringUtils.join(lines, "\n"));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            } else if (fileName.endsWith("Mapper.java")) {
-                try {
-                    boolean modified = false;
-                    List<String> lines = Files.readAllLines(srcPath);
-                    for (int i = 0, size = lines.size(); i < size; i++) {
-                        String line = lines.get(i);
-                        if (line.startsWith(" * ") && line.endsWith("表Mapper")) {
-                            line = line.substring(0, line.length() - "表Mapper".length()) + "Mapper";
-                            lines.set(i, line);
-                            modified = true;
-                        }
-                    }
-                    if (modified) {
-                        Files.writeString(srcPath, StringUtils.join(lines, "\n"));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else if (fileName.endsWith("Service.java")) {
-                if(true){
-                    throw new RuntimeException("不解析了");
-                }
-                try {
-                    boolean modified = false;
-                    List<String> lines = Files.readAllLines(srcPath);
-                    for (int i = 0, size = lines.size(); i < size; i++) {
-                        String line = lines.get(i);
-                        if (line.startsWith(" * ") && line.endsWith("表服务")) {
-                            line = line.substring(0, line.length() - "表服务".length()) + "服务";
-                            lines.set(i, line);
-                            modified = true;
-                        }
-                    }
-                    if (modified) {
-                        Files.writeString(srcPath, StringUtils.join(lines, "\n"));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        copyDirectory(bizPath, mainPath, replaceExisting, null);
 
         PathUtils.deleteDirectory(javaPath);
         PathUtils.deleteDirectory(resourcesPath);
