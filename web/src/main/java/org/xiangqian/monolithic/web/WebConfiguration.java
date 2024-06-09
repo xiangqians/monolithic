@@ -1,10 +1,14 @@
 package org.xiangqian.monolithic.web;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,19 +21,23 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPattern;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
+import org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author xiangqian
  * @date 21:15 2024/06/02
  */
 @Configuration(proxyBeanMethods = false)
-public class WebConfiguration implements WebMvcConfigurer {
+public class WebConfiguration implements WebMvcConfigurer, ApplicationRunner {
+
+    @Autowired
+    private AuthorityMapper authorityMapper;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Autowired
     private LogHandlerInterceptor logHandlerInterceptor;
@@ -43,21 +51,42 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/api/**");
     }
 
+    // 存在多节点部署问题！
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        Map<Method, List<AuthorityEntity>> methodAuthoritiesMap = (Map<Method, List<AuthorityEntity>>) applicationContext.getBean("methodAuthoritiesMap");
+        List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
+        for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
+            for (AuthorityEntity authority : authorities) {
+                AuthorityEntity queryAuthority = new AuthorityEntity();
+                queryAuthority.setMethod(authority.getMethod());
+                queryAuthority.setPath(authority.getPath());
+                AuthorityEntity storedAuthority = authorityMapper.getOne(queryAuthority);
+                if (storedAuthority == null) {
+                    authorityMapper.insert(authority);
+                } else {
+                    authority.setId(storedAuthority.getId());
+                    if (!storedAuthority.getAllow().equals(authority.getAllow())
+                            || !storedAuthority.getRem().equals(authority.getRem())
+                            || storedAuthority.getDel() == 1) {
+                        authorityMapper.updById(authority);
+                    }
+                }
+                authorityIds.add(authority.getId());
+            }
+        }
+        authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
+    }
+
     /**
      * @param requestMappingHandlerMapping
-     * @return Map<Method, Map < RequestMethod, AuthorityEntity>>
+     * @return
      */
     @Bean
-    public Map<Method, Map<String, AuthorityEntity>> methodMap(RequestMappingHandlerMapping requestMappingHandlerMapping) {
+    public Map<Method, List<AuthorityEntity>> methodAuthoritiesMap(RequestMappingHandlerMapping requestMappingHandlerMapping) {
         Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
-        Map<Method, Map<String, AuthorityEntity>> methodMap = new HashMap<>(map.size(), 1f);
+        Map<Method, List<AuthorityEntity>> methodAuthoritiesMap = new HashMap<>(map.size(), 1f);
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
-            RequestMappingInfo requestMappingInfo = entry.getKey();
-            PathPatternsRequestCondition pathPatternsRequestCondition = requestMappingInfo.getPathPatternsCondition();
-            if (pathPatternsRequestCondition == null) {
-                continue;
-            }
-
             String rem = "";
             HandlerMethod handlerMethod = entry.getValue();
             Tag tag = handlerMethod.getBeanType().getAnnotation(Tag.class);
@@ -78,37 +107,48 @@ public class WebConfiguration implements WebMvcConfigurer {
 
             byte allow = handlerMethod.getMethodAnnotation(Allow.class) == null ? 0 : (byte) 1;
 
-            Map<String, AuthorityEntity> requestMethodMap = new HashMap<>(4, 1f);
-
-            RequestMethodsRequestCondition methodsCondition = requestMappingInfo.getMethodsCondition();
-            Set<RequestMethod> methods = Optional.ofNullable(methodsCondition).map(RequestMethodsRequestCondition::getMethods).orElse(null);
+            RequestMappingInfo requestMappingInfo = entry.getKey();
+            RequestMethodsRequestCondition requestMethodsRequestCondition = requestMappingInfo.getMethodsCondition();
+            Set<RequestMethod> methods = Optional.ofNullable(requestMethodsRequestCondition).map(RequestMethodsRequestCondition::getMethods).orElse(null);
+            PathPatternsRequestCondition pathPatternsRequestCondition = requestMappingInfo.getPathPatternsCondition();
             Set<PathPattern> patterns = pathPatternsRequestCondition.getPatterns();
-            PathPattern pattern = patterns.iterator().next();
-            String path = pattern.getPatternString();
-            if (path.startsWith("/api/")) {
-                if (CollectionUtils.isNotEmpty(methods)) {
-                    for (RequestMethod method : methods) {
+            List<AuthorityEntity> authorities = new ArrayList<>(patterns.size());
+            for (PathPattern pattern : patterns) {
+                String path = pattern.getPatternString();
+                if (path.startsWith("/api/")) {
+                    if (CollectionUtils.isNotEmpty(methods)) {
+                        for (RequestMethod method : methods) {
+                            AuthorityEntity authority = new AuthorityEntity();
+                            authority.setMethod(method.name());
+                            authority.setPath(path);
+                            authority.setAllow(allow);
+                            authority.setRem(rem);
+                            authority.setDel((byte) 0);
+                            authorities.add(authority);
+                        }
+                    } else {
                         AuthorityEntity authority = new AuthorityEntity();
-                        authority.setMethod(method.name());
+                        authority.setMethod("");
                         authority.setPath(path);
                         authority.setAllow(allow);
                         authority.setRem(rem);
                         authority.setDel((byte) 0);
-                        requestMethodMap.put(authority.getMethod(), authority);
+                        authorities.add(authority);
                     }
-                } else {
-                    AuthorityEntity authority = new AuthorityEntity();
-                    authority.setMethod("");
-                    authority.setPath(path);
-                    authority.setAllow(allow);
-                    authority.setRem(rem);
-                    authority.setDel((byte) 0);
-                    requestMethodMap.put(authority.getMethod(), authority);
                 }
             }
-            methodMap.put(handlerMethod.getMethod(), requestMethodMap);
+
+            if (CollectionUtils.isNotEmpty(authorities)) {
+                Method method = handlerMethod.getMethod();
+                List<AuthorityEntity> alreadyExistsAuthorities = methodAuthoritiesMap.get(method);
+                if (alreadyExistsAuthorities != null) {
+                    alreadyExistsAuthorities.addAll(authorities);
+                } else {
+                    methodAuthoritiesMap.put(method, authorities);
+                }
+            }
         }
-        return methodMap;
+        return methodAuthoritiesMap;
     }
 
     private String toString(String name, String description) {

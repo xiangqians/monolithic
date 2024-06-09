@@ -97,6 +97,17 @@ public class LogHandlerInterceptor implements HandlerInterceptor {
         }
 
         UserEntity user = userService.get();
+        Long userId = Optional.ofNullable(user).map(UserEntity::getId).orElse(null);
+
+
+        String url = request.getRequestURL().toString();
+
+
+        logger.info("Request URL: {}", );
+        logger.info("Request Method: {}", request.getMethod());
+        logger.info("Request Headers: {}", getRequestHeaders(request));
+        logger.info("Request Body: {}", getRequestBody(request));
+
         Long userId = Optional.ofNullable(user).map(UserEntity::getId).orElse(0L);
         Long authorityId = Optional.ofNullable(authority.getId()).orElse(0L);
         String ip = null;
