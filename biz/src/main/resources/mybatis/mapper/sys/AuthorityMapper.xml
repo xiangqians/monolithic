@@ -2,6 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper">
 
+    <select id="list" resultType="org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity">
+        SELECT GROUP_CONCAT(ra.role_id) AS 'role_ids', a.id, a.method, a.`path`, a.allow, a.rem, a.del, a.add_time, a.upd_time
+        FROM authority a
+        LEFT JOIN role_authority ra ON ra.authority_id = a.id
+        WHERE a.del = 0
+        GROUP BY a.id
+    </select>
+
     <select id="getOne" resultType="org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity">
         SELECT a.id, a.method, a.`path`, a.allow, a.rem, a.del, a.add_time, a.upd_time
         FROM authority a

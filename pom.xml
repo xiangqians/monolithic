@@ -75,6 +75,8 @@
 
         <!-- javascript解释器 -->
         <mozilla-rhino.version>1.7.14</mozilla-rhino.version>
+
+        <redisson.version>3.31.0</redisson.version>
     </properties>
 
     <dependencyManagement>
@@ -90,6 +92,12 @@
                 <groupId>org.xiangqian.monolithic</groupId>
                 <artifactId>biz</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
 
             <dependency>

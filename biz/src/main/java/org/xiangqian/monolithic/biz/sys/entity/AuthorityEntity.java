@@ -3,9 +3,13 @@ package org.xiangqian.monolithic.biz.sys.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author xiangqian
@@ -21,6 +25,10 @@ public class AuthorityEntity implements Serializable {
     @Schema(description = "主键")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+
+    @Schema(description = "角色id")
+    @TableField(exist = false)
+    private List<Long> roleIds;
 
     @Schema(description = "方法")
     private String method;
@@ -44,5 +52,11 @@ public class AuthorityEntity implements Serializable {
 
     @Schema(description = "修改时间")
     private LocalDateTime updTime;
+
+    public void setRoleIds(String roleIds) {
+        if (StringUtils.isNotEmpty(roleIds)) {
+            this.roleIds = Arrays.stream(roleIds.split(",")).map(Long::parseLong).collect(Collectors.toList());
+        }
+    }
 
 }

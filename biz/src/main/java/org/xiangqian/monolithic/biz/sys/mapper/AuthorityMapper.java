@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 
+import java.util.List;
+
 /**
  * 权限表Mapper
  *
@@ -12,6 +14,8 @@ import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
  */
 @Mapper
 public interface AuthorityMapper extends BaseMapper<AuthorityEntity> {
+
+    List<AuthorityEntity> list();
 
     AuthorityEntity getOne(AuthorityEntity authority);
 

@@ -24,7 +24,7 @@ import org.xiangqian.monolithic.biz.sys.service.UserService;
 import org.xiangqian.monolithic.util.DateTimeUtil;
 import org.xiangqian.monolithic.util.JsonUtil;
 import org.xiangqian.monolithic.util.JwtUtil;
-import org.xiangqian.monolithic.util.Redis;
+import org.xiangqian.monolithic.util.redis.RedisString;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private Duration jwtExp;
 
     @Autowired
-    private Redis redis;
+    private RedisString redis;
 
     @Autowired
     private UserMapper userMapper;

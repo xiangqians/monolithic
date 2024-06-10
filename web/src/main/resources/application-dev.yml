@@ -63,6 +63,8 @@ spring:
           min-idle: 0
           # 连接用完时，新的请求等待时间（s秒、ms毫秒），超过该时间抛出异常，默认-1（负值表示没有限制）
           max-wait: 5s
+      redisson:
+        config: classpath:redisson-dev.yml
 
 jwt:
   key: GkiYzIiLCJpc3MYjQzODLTQ1MWMtYjM1Ny1hMjMwZjE5M2JiOiJ4aWFuZ3FpYW4iLCJpYXQNkYy1hNGY0sInN1YiI6Ikp

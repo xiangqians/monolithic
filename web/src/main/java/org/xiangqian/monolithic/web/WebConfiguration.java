@@ -30,44 +30,13 @@ import java.util.*;
  * @date 21:15 2024/06/02
  */
 @Configuration(proxyBeanMethods = false)
-public class WebConfiguration implements ApplicationRunner {
+public class WebConfiguration {
 
     @Autowired
     private AuthorityMapper authorityMapper;
 
     @Autowired
     private ApplicationContext applicationContext;
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        Map<Method, List<AuthorityEntity>> methodAuthoritiesMap = (Map<Method, List<AuthorityEntity>>) applicationContext.getBean("methodAuthoritiesMap");
-        addOrDelAuthorities(methodAuthoritiesMap);
-    }
-
-    // 存在多节点部署问题！
-    private void addOrDelAuthorities(Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
-        List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
-        for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
-            for (AuthorityEntity authority : authorities) {
-                AuthorityEntity queryAuthority = new AuthorityEntity();
-                queryAuthority.setMethod(authority.getMethod());
-                queryAuthority.setPath(authority.getPath());
-                AuthorityEntity storedAuthority = authorityMapper.getOne(queryAuthority);
-                if (storedAuthority == null) {
-                    authorityMapper.insert(authority);
-                } else {
-                    authority.setId(storedAuthority.getId());
-                    if (!storedAuthority.getAllow().equals(authority.getAllow())
-                            || !storedAuthority.getRem().equals(authority.getRem())
-                            || storedAuthority.getDel() == 1) {
-                        authorityMapper.updById(authority);
-                    }
-                }
-                authorityIds.add(authority.getId());
-            }
-        }
-        authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
-    }
 
     /**
      * Map<控制器方法，Set<角色id集合>>
@@ -77,7 +46,7 @@ public class WebConfiguration implements ApplicationRunner {
      */
     @Bean
     public Map<Method, Set<Long>> methodRoleIdsMap(@Qualifier("methodAuthoritiesMap") Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
-
+        authorityMapper.list();
 
         return new HashMap<>();
     }
@@ -154,6 +123,31 @@ public class WebConfiguration implements ApplicationRunner {
                 }
             }
         }
+
+        // 存在多节点部署问题！（后续添加分布式锁）
+        List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
+        for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
+            for (AuthorityEntity authority : authorities) {
+                AuthorityEntity queryAuthority = new AuthorityEntity();
+                queryAuthority.setMethod(authority.getMethod());
+                queryAuthority.setPath(authority.getPath());
+                AuthorityEntity storedAuthority = authorityMapper.getOne(queryAuthority);
+                if (storedAuthority == null) {
+                    authorityMapper.insert(authority);
+                } else {
+                    authority.setId(storedAuthority.getId());
+                    if (!storedAuthority.getAllow().equals(authority.getAllow())
+                            || !storedAuthority.getRem().equals(authority.getRem())
+                            || storedAuthority.getDel() == 1) {
+                        authorityMapper.updById(authority);
+                    }
+                }
+                authorityIds.add(authority.getId());
+            }
+        }
+        authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
+
+
         return methodAuthoritiesMap;
     }
 
