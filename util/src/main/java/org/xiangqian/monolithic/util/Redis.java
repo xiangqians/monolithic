@@ -119,7 +119,7 @@ public class Redis {
     public static class String {
         private ValueOperations<java.lang.String, Object> valueOperations;
 
-        public String(ValueOperations<java.lang.String, Object> valueOperations) {
+        private String(ValueOperations<java.lang.String, Object> valueOperations) {
             this.valueOperations = valueOperations;
         }
 
@@ -271,7 +271,7 @@ public class Redis {
         private ListOperations<java.lang.String, Object> listOperations;
         private java.lang.String key;
 
-        public List(ListOperations<java.lang.String, Object> listOperations, java.lang.String key) {
+        private List(ListOperations<java.lang.String, Object> listOperations, java.lang.String key) {
             this.listOperations = listOperations;
             this.key = key;
         }
@@ -401,7 +401,7 @@ public class Redis {
         private SetOperations<java.lang.String, Object> setOperations;
         private java.lang.String key;
 
-        public Set(SetOperations<java.lang.String, Object> setOperations, java.lang.String key) {
+        private Set(SetOperations<java.lang.String, Object> setOperations, java.lang.String key) {
             this.setOperations = setOperations;
             this.key = key;
         }
@@ -517,7 +517,7 @@ public class Redis {
         private HashOperations<java.lang.String, Object, Object> hashOperations;
         private java.lang.String key;
 
-        public Hash(HashOperations<java.lang.String, Object, Object> hashOperations, java.lang.String key) {
+        private Hash(HashOperations<java.lang.String, Object, Object> hashOperations, java.lang.String key) {
             this.hashOperations = hashOperations;
             this.key = key;
         }
@@ -626,7 +626,7 @@ public class Redis {
 
         private RLock rLock;
 
-        public Lock(RedissonClient redissonClient, java.lang.String key) {
+        private Lock(RedissonClient redissonClient, java.lang.String key) {
             this.rLock = redissonClient.getLock(key);
         }
 

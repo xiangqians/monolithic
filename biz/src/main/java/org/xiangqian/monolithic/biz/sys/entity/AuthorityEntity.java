@@ -53,9 +53,9 @@ public class AuthorityEntity implements Serializable {
     @Schema(description = "修改时间")
     private LocalDateTime updTime;
 
-    public void setRoleIds(String roleIds) {
-        if (StringUtils.isNotEmpty(roleIds)) {
-            this.roleIds = Arrays.stream(roleIds.split(",")).map(Long::parseLong).collect(Collectors.toList());
+    public void setRoleIdsStr(String roleIdsStr) {
+        if (StringUtils.isNotEmpty(roleIdsStr)) {
+            this.roleIds = Arrays.stream(roleIdsStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
         }
     }
 

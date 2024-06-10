@@ -3,7 +3,7 @@
 <mapper namespace="org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper">
 
     <select id="list" resultType="org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity">
-        SELECT GROUP_CONCAT(ra.role_id) AS 'role_ids', a.id, a.method, a.`path`, a.allow, a.rem, a.del, a.add_time, a.upd_time
+        SELECT GROUP_CONCAT(ra.role_id) AS 'role_ids_str', a.id, a.method, a.`path`, a.allow, a.rem, a.del, a.add_time, a.upd_time
         FROM authority a
         LEFT JOIN role_authority ra ON ra.authority_id = a.id
         WHERE a.del = 0

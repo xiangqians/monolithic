@@ -22,7 +22,8 @@ import org.xiangqian.monolithic.util.Redis;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author xiangqian
@@ -45,9 +46,15 @@ public class WebConfiguration {
      */
     @Bean
     public Map<Method, Set<Long>> methodRoleIdsMap(@Qualifier("methodAuthoritiesMap") Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
-        authorityMapper.list();
-
-        return new HashMap<>();
+        Map<Method, Set<Long>> methodRoleIdsMap = new HashMap<>(methodAuthoritiesMap.size(), 1f);
+        for (Map.Entry<Method, List<AuthorityEntity>> entry : methodAuthoritiesMap.entrySet()) {
+            methodRoleIdsMap.put(entry.getKey(), entry.getValue().stream()
+                    .map(AuthorityEntity::getRoleIds)
+                    .filter(CollectionUtils::isNotEmpty)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toSet()));
+        }
+        return methodRoleIdsMap;
     }
 
     /**
@@ -123,41 +130,45 @@ public class WebConfiguration {
             }
         }
 
-        boolean isInit = true;
-        Redis.Lock lock = redis.Lock("authorityIds");
+        Redis.Lock lock = redis.Lock("LOCK_AUTHORITIES");
         try {
-            if (lock.tryLock()) {
-                TimeUnit.SECONDS.sleep(30);
+            lock.lock();
+
+            List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
+            for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
+                for (AuthorityEntity authority : authorities) {
+                    AuthorityEntity queryAuthority = new AuthorityEntity();
+                    queryAuthority.setMethod(authority.getMethod());
+                    queryAuthority.setPath(authority.getPath());
+                    AuthorityEntity storedAuthority = authorityMapper.getOne(queryAuthority);
+                    if (storedAuthority == null) {
+                        authorityMapper.insert(authority);
+                    } else {
+                        authority.setId(storedAuthority.getId());
+                        if (!storedAuthority.getAllow().equals(authority.getAllow())
+                                || !storedAuthority.getRem().equals(authority.getRem())
+                                || storedAuthority.getDel() == 1) {
+                            authorityMapper.updById(authority);
+                        }
+                    }
+                    authorityIds.add(authority.getId());
+                }
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
         } finally {
             lock.forceUnlock();
         }
 
-        // 存在多节点部署问题！（后续添加分布式锁）
-        List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
+        // 获取权限和角色关系
+        Map<Long, AuthorityEntity> authorityMap = authorityMapper.list().stream().collect(Collectors.toMap(AuthorityEntity::getId, Function.identity()));
         for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
             for (AuthorityEntity authority : authorities) {
-                AuthorityEntity queryAuthority = new AuthorityEntity();
-                queryAuthority.setMethod(authority.getMethod());
-                queryAuthority.setPath(authority.getPath());
-                AuthorityEntity storedAuthority = authorityMapper.getOne(queryAuthority);
-                if (storedAuthority == null) {
-                    authorityMapper.insert(authority);
-                } else {
-                    authority.setId(storedAuthority.getId());
-                    if (!storedAuthority.getAllow().equals(authority.getAllow())
-                            || !storedAuthority.getRem().equals(authority.getRem())
-                            || storedAuthority.getDel() == 1) {
-                        authorityMapper.updById(authority);
-                    }
+                AuthorityEntity value = authorityMap.get(authority.getId());
+                if (value != null) {
+                    authority.setRoleIds(value.getRoleIds());
                 }
-                authorityIds.add(authority.getId());
             }
         }
-        authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
-
 
         return methodAuthoritiesMap;
     }
