@@ -24,7 +24,7 @@ import org.xiangqian.monolithic.biz.sys.service.UserService;
 import org.xiangqian.monolithic.util.DateTimeUtil;
 import org.xiangqian.monolithic.util.JsonUtil;
 import org.xiangqian.monolithic.util.JwtUtil;
-import org.xiangqian.monolithic.util.redis.RedisString;
+import org.xiangqian.monolithic.util.Redis;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private Duration jwtExp;
 
     @Autowired
-    private RedisString redis;
+    private Redis redis;
 
     @Autowired
     private UserMapper userMapper;
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
         try {
             Jws<Claims> jws = JwtUtil.parseClaims(token, jwtKey);
             Object id = jws.getPayload().get("id");
-            Object value = redis.string().get(String.format("%s_%s", id, token));
+            Object value = redis.String().get(String.format("%s_%s", id, token));
             if (value != null) {
                 return JsonUtil.deserialize(value.toString(), UserEntity.class);
             }
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
         }
 
         token = JwtUtil.generate(Map.of("id", user.getId()), jwtExp, jwtKey);
-        redis.string().set(String.format("%s_%s", user.getId(), token),
+        redis.String().set(String.format("%s_%s", user.getId(), token),
                 JsonUtil.serializeAsString(Map.of("id", user.getId(),
                         "tenantId", user.getTenantId(),
                         "roleId", user.getRoleId(),

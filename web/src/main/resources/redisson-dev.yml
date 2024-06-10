@@ -11,11 +11,11 @@ singleServerConfig:
   # 命令重试间隔时间，单位：毫秒
   retryInterval: 1500
   # 连接密码，如果没有密码则为空
-  #password:
+  password: null
   # 单个连接最大订阅数量
   subscriptionsPerConnection: 5
   # 客户端名称
-  #clientName:
+  clientName: null
   # Redis服务器地址，格式为：redis://host:port
   address: "redis://localhost:6379"
   # 发布和订阅连接的最小空闲连接数

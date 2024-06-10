@@ -1,2 +1,3 @@
 org.xiangqian.monolithic.biz.MyBatisAutoConfiguration
 org.xiangqian.monolithic.biz.RedisAutoConfiguration
+org.xiangqian.monolithic.biz.MailAutoConfiguration

@@ -7,9 +7,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,9 +18,11 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.util.pattern.PathPattern;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 import org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper;
+import org.xiangqian.monolithic.util.Redis;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiangqian
@@ -36,7 +35,7 @@ public class WebConfiguration {
     private AuthorityMapper authorityMapper;
 
     @Autowired
-    private ApplicationContext applicationContext;
+    private Redis redis;
 
     /**
      * Map<控制器方法，Set<角色id集合>>
@@ -122,6 +121,18 @@ public class WebConfiguration {
                     methodAuthoritiesMap.put(method, authorities);
                 }
             }
+        }
+
+        boolean isInit = true;
+        Redis.Lock lock = redis.Lock("authorityIds");
+        try {
+            if (lock.tryLock()) {
+                TimeUnit.SECONDS.sleep(30);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.forceUnlock();
         }
 
         // 存在多节点部署问题！（后续添加分布式锁）
