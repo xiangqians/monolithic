@@ -251,18 +251,18 @@ public class MethodHandler implements
         log.setUrl(url);
 
         String body = null;
-        String contentType = StringUtils.trim(request.getContentType());
         ContentCachingRequestWrapper contentCachingRequestWrapper = (ContentCachingRequestWrapper) request;
         byte[] bytes = contentCachingRequestWrapper.getContentAsByteArray();
-        if (StringUtils.isNotEmpty(contentType) && contentType.startsWith("application/json")) {
-            body = new String(bytes, contentCachingRequestWrapper.getCharacterEncoding());
-            try {
-                body = JsonUtil.serializeAsString(JsonUtil.deserialize(body));
-            } catch (Exception e) {
-            }
-        } else {
-            int length = bytes.length;
-            if (length > 0) {
+        int length = bytes.length;
+        if (length > 0) {
+            String contentType = StringUtils.trim(request.getContentType());
+            if (StringUtils.isNotEmpty(contentType) && contentType.startsWith("application/json")) {
+                body = new String(bytes, contentCachingRequestWrapper.getCharacterEncoding());
+                try {
+                    body = JsonUtil.serializeAsString(JsonUtil.deserialize(body));
+                } catch (Exception e) {
+                }
+            } else {
                 body = String.format("(%s Byte)", length);
             }
         }
