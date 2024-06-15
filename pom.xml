@@ -17,8 +17,6 @@
         <module>schedule</module>
         <module>web</module>
         <module>websocket</module>
-        <module>deploy</module>
-        <module>monitor</module>
     </modules>
 
     <properties>
@@ -71,12 +69,12 @@
 
         <jwt.version>0.12.5</jwt.version>
 
-        <spring-boot-admin.version>3.3.1</spring-boot-admin.version>
-
         <!-- javascript解释器 -->
         <mozilla-rhino.version>1.7.14</mozilla-rhino.version>
 
         <redisson.version>3.31.0</redisson.version>
+
+        <minio.version>8.5.10</minio.version>
     </properties>
 
     <dependencyManagement>
@@ -95,6 +93,12 @@
             </dependency>
 
             <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.version}</version>
@@ -105,25 +109,6 @@
                 <artifactId>rhino</artifactId>
                 <version>${mozilla-rhino.version}</version>
             </dependency>
-
-            <!--
-             | Actuator官方的定义：
-             | Definition of Actuator
-             | An actuator is a manufacturing term that refers to a mechanical device for moving or controlling something.
-             | Actuators can generate a large amount of motion from a small change.
-            -->
-            <!-- @spring-boot-admin::start -->
-            <dependency>
-                <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-server</artifactId>
-                <version>${spring-boot-admin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-client</artifactId>
-                <version>${spring-boot-admin.version}</version>
-            </dependency>
-            <!-- @spring-boot-admin::end -->
 
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>

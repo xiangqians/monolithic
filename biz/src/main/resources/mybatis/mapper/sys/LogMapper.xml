@@ -2,26 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.xiangqian.monolithic.biz.sys.mapper.LogMapper">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.xiangqian.monolithic.biz.sys.entity.LogEntity">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="authority_id" property="authorityId" />
-        <result column="code" property="code" />
-        <result column="address" property="address" />
-        <result column="req_method" property="reqMethod" />
-        <result column="req_url" property="reqUrl" />
-        <result column="req_header" property="reqHeader" />
-        <result column="req_body" property="reqBody" />
-        <result column="resp_header" property="respHeader" />
-        <result column="resp_body" property="respBody" />
-        <result column="time" property="time" />
-        <result column="add_time" property="addTime" />
-    </resultMap>
-
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, user_id, authority_id, `code`, address, req_method, req_url, req_header, req_body, resp_header, resp_body, `time`, add_time
+    <sql id="query">
+        SELECT
+        l.id, l.user_id, l.authority_id,
+        l.`code`, l.address,
+        l.req_method, l.req_url,
+        l.req_header, l.req_body,
+        l.resp_header, l.resp_body,
+        l.`time`, l.add_time
+        FROM log l
+        <where>
+            <if test="log.id != null">AND l.id = #{log.id}</if>
+            <if test="log.userId != null">AND l.user_id = #{log.userId}</if>
+            <if test="log.authorityId != null">AND l.authority_id = #{log.authorityId}</if>
+            <if test="log.code != null">AND l.`code` = #{log.code}</if>
+            <if test="log.address != null">AND l.address = #{log.address}</if>
+            <if test="log.reqMethod != null">AND l.req_method = #{log.reqMethod}</if>
+            <if test="log.reqUrl != null">AND l.req_url = #{log.reqUrl}</if>
+            <if test="log.reqHeader != null">AND l.req_header = #{log.reqHeader}</if>
+            <if test="log.reqBody != null">AND l.req_body = #{log.reqBody}</if>
+            <if test="log.respHeader != null">AND l.resp_header = #{log.respHeader}</if>
+            <if test="log.respBody != null">AND l.resp_body = #{log.respBody}</if>
+            <if test="log.time != null">AND l.`time` = #{log.time}</if>
+            <if test="log.addTime != null">AND l.add_time = #{log.addTime}</if>
+        </where>
     </sql>
+
+    <select id="list" resultType="org.xiangqian.monolithic.biz.sys.entity.LogEntity">
+        <include refid="query"></include>
+    </select>
+
+    <select id="page" resultType="org.xiangqian.monolithic.biz.sys.entity.LogEntity">
+        <include refid="query"></include>
+    </select>
 
 </mapper>

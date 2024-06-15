@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 public class Redis {
 
     private RedisTemplate<java.lang.String, Object> redisTemplate;
-
     private ValueOperations<java.lang.String, Object> valueOperations;
     private ListOperations<java.lang.String, Object> listOperations;
     private SetOperations<java.lang.String, Object> setOperations;
@@ -104,6 +103,16 @@ public class Redis {
      */
     public Boolean delete(java.lang.String key) {
         return redisTemplate.delete(key);
+    }
+
+    /**
+     * 删除缓存
+     *
+     * @param keys
+     * @return
+     */
+    public Long delete(java.util.Set<java.lang.String> keys) {
+        return redisTemplate.delete(keys);
     }
 
     public String String() {
@@ -657,6 +666,17 @@ public class Redis {
          */
         public boolean tryLock() {
             return rLock.tryLock();
+        }
+
+        /**
+         * 尝试在指定的等待时间内非阻塞式获取锁
+         * 如果在等待时间内获取到了锁，则返回true，否则返回false
+         *
+         * @param waitTime 最多等待锁时间
+         * @param timeUnit 时间单位
+         */
+        public boolean tryLock(long waitTime, TimeUnit timeUnit) throws InterruptedException {
+            return rLock.tryLock(waitTime, timeUnit);
         }
 
         /**

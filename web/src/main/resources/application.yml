@@ -73,15 +73,8 @@ management:
     metrics:
       enabled: true
 
-# Spring Boot Admin 日志配置
-logging:
-  file:
-    name: ./log/${spring.application.name}/debug.log
+  metrics:
+    # 设置tag
+    tags:
+      application: ${spring.application.name}
 
-# Spring Boot Admin 信息配置
-info:
-  port: ${server.port}
-  name: ${spring.application.name}
-  version: ${spring.application.version}
-  description: ${spring.application.description}
-  profile: ${spring.profiles.active}

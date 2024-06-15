@@ -136,9 +136,11 @@ public class UserServiceImpl implements UserService {
         try {
             Jws<Claims> jws = JwtUtil.parseClaims(token, jwtKey);
             Object id = jws.getPayload().get("id");
-            Object value = redis.String().get(String.format("%s_%s", id, token));
+            Object value = redis.String().get(getTokenKey(id, token));
             if (value != null) {
-                return JsonUtil.deserialize(value.toString(), UserEntity.class);
+                UserEntity user = JsonUtil.deserialize(value.toString(), UserEntity.class);
+                user.setToken(token);
+                return user;
             }
         } catch (Exception e) {
             log.error("", e);
@@ -160,13 +162,13 @@ public class UserServiceImpl implements UserService {
     public Boolean revokeToken() {
         UserEntity user = get();
         String token = user.getToken();
-        return redis.delete(String.format("%s_%s", user.getId(), token));
+        return redis.delete(getTokenKey(user.getId(), token));
     }
 
     @SneakyThrows
     private UserTokenResult getTokenByUser(UserEntity user) {
         String token = null;
-        String prefix = String.format("%s_", user.getId());
+        String prefix = getTokenKeyPrefix(user.getId());
         Set<String> keys = redis.keyWithPrefix(prefix, 1);
         if (CollectionUtils.isNotEmpty(keys)) {
             token = keys.iterator().next();
@@ -179,7 +181,7 @@ public class UserServiceImpl implements UserService {
         }
 
         token = JwtUtil.generate(Map.of("id", user.getId()), jwtExp, jwtKey);
-        redis.String().set(String.format("%s_%s", user.getId(), token),
+        redis.String().set(getTokenKey(user.getId(), token),
                 JsonUtil.serializeAsString(Map.of("id", user.getId(),
                         "tenantId", user.getTenantId(),
                         "roleId", user.getRoleId(),
@@ -188,6 +190,14 @@ public class UserServiceImpl implements UserService {
                         "phone", user.getPhone())),
                 jwtExp.minus(Duration.ofSeconds(30)));
         return new UserTokenResult(token, LocalDateTime.now().plusSeconds(jwtExp.toSeconds()));
+    }
+
+    private String getTokenKey(Object userId, Object token) {
+        return getTokenKeyPrefix(userId) + token;
+    }
+
+    private String getTokenKeyPrefix(Object userId) {
+        return "biz_sys_user_" + userId + "_";
     }
 
 }

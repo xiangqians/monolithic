@@ -6,9 +6,10 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +27,12 @@ public class AuthorityEntity implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @Schema(description = "权限组id")
+    private Long groupId;
+
     @Schema(description = "角色id")
     @TableField(exist = false)
-    private List<Long> roleIds;
+    private Set<Long> roleIds;
 
     @Schema(description = "方法")
     private String method;
@@ -53,9 +57,16 @@ public class AuthorityEntity implements Serializable {
     @Schema(description = "修改时间")
     private LocalDateTime updTime;
 
+    /**
+     * 处理方法（@RequestMapping）
+     */
+    @Schema(hidden = true)
+    @TableField(exist = false)
+    private Method handleMethod;
+
     public void setRoleIdsStr(String roleIdsStr) {
         if (StringUtils.isNotEmpty(roleIdsStr)) {
-            this.roleIds = Arrays.stream(roleIdsStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
+            this.roleIds = Arrays.stream(roleIdsStr.split(",")).map(Long::parseLong).collect(Collectors.toSet());
         }
     }
 

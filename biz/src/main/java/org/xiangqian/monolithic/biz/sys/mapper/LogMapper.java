@@ -1,8 +1,11 @@
 package org.xiangqian.monolithic.biz.sys.mapper;
 
-import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.xiangqian.monolithic.biz.LazyList;
+import org.xiangqian.monolithic.biz.Page;
+import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
 
 /**
  * 日志表Mapper
@@ -12,5 +15,9 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface LogMapper extends BaseMapper<LogEntity> {
+
+    LazyList<LogEntity> list(LazyList<LogEntity> list, @Param("log") LogEntity log);
+
+    Page<LogEntity> page(Page<LogEntity> page, @Param("log") LogEntity log);
 
 }

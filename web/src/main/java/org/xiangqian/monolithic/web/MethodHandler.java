@@ -2,26 +2,26 @@ package org.xiangqian.monolithic.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.CodeException;
@@ -34,13 +34,16 @@ import org.xiangqian.monolithic.util.HttpServletUtil;
 import org.xiangqian.monolithic.util.JsonUtil;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 全局处理器
- * 1、日志处理器
- * 2、权限处理器
- * 3、异常处理器
+ * 方法处理器
+ * 1、日志处理
+ * 2、权限处理
+ * 3、异常处理
  *
  * @author xiangqian
  * @date 14:28 2024/06/01
@@ -49,17 +52,7 @@ import java.util.*;
 @Aspect
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class GlobalHandler implements ErrorController {
-
-    private AntPathMatcher antPathMatcher;
-
-    @Autowired
-    @Qualifier("methodAuthoritiesMap")
-    private Map<Method, List<AuthorityEntity>> methodAuthoritiesMap;
-
-    @Autowired
-    @Qualifier("methodRoleIdsMap")
-    private Map<Method, Set<Long>> methodRoleIdsMap;
+public class MethodHandler implements ErrorController {
 
     @Autowired
     private UserService userService;
@@ -67,32 +60,32 @@ public class GlobalHandler implements ErrorController {
     @Autowired
     private LogMapper logMapper;
 
-    public GlobalHandler() {
-        this.antPathMatcher = new AntPathMatcher();
-    }
+    @Autowired
+    private MethodSecurity methodSecurity;
+
+    private final String START_TIME = "__start_time__";
+    private final String ARGS = "__args__";
+    private final String AUTHORITY = "__authority__";
 
     @Around("execution(public * org.xiangqian.monolithic.web..controller.*.*(..))) && (@annotation(org.springframework.web.bind.annotation.RequestMapping) || @annotation(org.springframework.web.bind.annotation.GetMapping) || @annotation(org.springframework.web.bind.annotation.PostMapping) || @annotation(org.springframework.web.bind.annotation.PutMapping) || @annotation(org.springframework.web.bind.annotation.DeleteMapping)))")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-
         HttpServletRequest request = HttpServletUtil.getRequest();
-        request.setAttribute(AttributeName.START_TIME, System.currentTimeMillis());
+        request.setAttribute(START_TIME, System.currentTimeMillis());
 
-        AuthorityEntity authority = (AuthorityEntity) request.getAttribute(AttributeName.AUTHORITY);
+        String method = request.getMethod();
+
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method handleMethod = methodSignature.getMethod();
+
+        Object[] args = joinPoint.getArgs();
+        request.setAttribute(ARGS, args);
+
+        AuthorityEntity authority = methodSecurity.getAuthority(handleMethod, method);
         if (authority == null) {
-            List<AuthorityEntity> authorities = methodAuthoritiesMap.get(method);
-            String reqMethod = request.getMethod();
-            String servletPath = request.getServletPath();
-            for (AuthorityEntity e : authorities) {
-                if ((reqMethod.equals(e.getMethod()) || "".equals(e.getMethod())) && antPathMatcher.match(e.getPath(), servletPath)) {
-                    authority = e;
-                    break;
-                }
-            }
+            throw new CodeException(Code.FORBIDDEN);
         }
 
-        request.setAttribute(AttributeName.AUTHORITY, authority);
+        request.setAttribute(AUTHORITY, authority);
 
         if (Byte.valueOf((byte) 0).equals(authority.getAllow())) {
             UserEntity user = userService.get();
@@ -101,8 +94,7 @@ public class GlobalHandler implements ErrorController {
             }
 
             if (!user.isAdminRole()) {
-                Set<Long> roleIds = methodRoleIdsMap.get(method);
-                if (CollectionUtils.isEmpty(roleIds) || !roleIds.contains(user.getRoleId())) {
+                if (!methodSecurity.hasRoleId(handleMethod, method, user.getRoleId())) {
                     throw new CodeException(Code.FORBIDDEN);
                 }
             }
@@ -116,8 +108,13 @@ public class GlobalHandler implements ErrorController {
     private void log(Object result) {
         try {
             HttpServletRequest request = HttpServletUtil.getRequest();
-            Long startTime = (Long) request.getAttribute(AttributeName.START_TIME);
+            Long startTime = (Long) request.getAttribute(START_TIME);
             if (startTime == null) {
+                return;
+            }
+
+            // 不记录日志接口日志
+            if (request.getServletPath().startsWith("/api/sys/log/")) {
                 return;
             }
 
@@ -128,7 +125,7 @@ public class GlobalHandler implements ErrorController {
                 log.setUserId(user.getId());
             }
 
-            AuthorityEntity authority = (AuthorityEntity) request.getAttribute(AttributeName.AUTHORITY);
+            AuthorityEntity authority = (AuthorityEntity) request.getAttribute(AUTHORITY);
             if (authority != null) {
                 log.setAuthorityId(authority.getId());
             }
@@ -142,7 +139,7 @@ public class GlobalHandler implements ErrorController {
             }
             log.setCode(code);
 
-            String address = request.getRemoteAddr();
+            String address = request.getRemoteAddr() + ":" + request.getRemotePort();
             log.setAddress(address);
 
             log.setReqMethod(request.getMethod());
@@ -156,6 +153,25 @@ public class GlobalHandler implements ErrorController {
                 reqHeaderMap.put(reqHeaderName, reqHeaderValue);
             }
             log.setReqHeader(JsonUtil.serializeAsString(reqHeaderMap));
+
+            Object[] args = (Object[]) request.getAttribute(ARGS);
+            if (ArrayUtils.isNotEmpty(args)) {
+                StringBuilder reqBodyBuilder = new StringBuilder();
+                for (Object arg : args) {
+                    // 排除序列化实例
+                    if (arg instanceof HttpServletRequest
+                            || arg instanceof HttpServletResponse
+                            || arg instanceof HttpSession
+                            || arg instanceof MultipartFile) {
+                        continue;
+                    }
+                    if (!reqBodyBuilder.isEmpty()) {
+                        reqBodyBuilder.append(",");
+                    }
+                    reqBodyBuilder.append(JsonUtil.serializeAsString(arg));
+                }
+                log.setReqBody("[" + reqBodyBuilder + "]");
+            }
 
             HttpServletResponse response = HttpServletUtil.getResponse();
             Collection<String> respHeaderNames = response.getHeaderNames();

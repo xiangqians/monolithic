@@ -69,6 +69,13 @@ public class DateTimeUtil {
         return date.toInstant().atZone(ZoneIdUtil.DEFAULT).toLocalDateTime();
     }
 
+    public static LocalDateTime ofZonedDateTime(ZonedDateTime zonedDateTime) {
+        // 时区转换
+        zonedDateTime = zonedDateTime.withZoneSameInstant(ZoneIdUtil.DEFAULT);
+
+        return zonedDateTime.toLocalDateTime();
+    }
+
     /**
      * 人性化日期时间戳（单位s）
      *

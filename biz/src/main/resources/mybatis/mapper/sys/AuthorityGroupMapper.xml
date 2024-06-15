@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xiangqian.monolithic.biz.sys.mapper.AuthorityGroupMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xiangqian.monolithic.biz.sys.entity.AuthorityGroupEntity">
+        <id column="id" property="id"/>
+        <result column="path" property="path"/>
+        <result column="rem" property="rem"/>
+        <result column="del" property="del"/>
+        <result column="add_time" property="addTime"/>
+        <result column="upd_time" property="updTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , `path`, rem, del, add_time, upd_time
+    </sql>
+
+    <select id="getOne" resultType="org.xiangqian.monolithic.biz.sys.entity.AuthorityGroupEntity">
+        SELECT a.id, a.`path`, a.rem, a.del, a.add_time, a.upd_time
+        FROM authority_group a
+        <where>
+            <if test="id != null">AND a.id = #{id}</if>
+            <if test="path != null">AND a.`path` = #{path}</if>
+            <if test="rem != null">AND a.rem = #{rem}</if>
+            <if test="del != null">AND a.del = #{del}</if>
+            <if test="addTime != null">AND a.add_time = #{addTime}</if>
+            <if test="updTime != null">AND a.upd_time = #{updTime}</if>
+        </where>
+        LIMIT 1
+    </select>
+
+    <update id="updById">
+        UPDATE authority_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null">id = #{id},</if>
+            <if test="path != null">`path` = #{path},</if>
+            <if test="rem != null">rem = #{rem},</if>
+            <if test="del != null">del = #{del},</if>
+            <if test="addTime != null">add_time = #{addTime},</if>
+            <if test="updTime != null">upd_time = #{updTime},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -3,7 +3,8 @@ package org.xiangqian.monolithic.web.generator;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
+import lombok.SneakyThrows;
+import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
 import org.xiangqian.monolithic.util.NamingUtil;
 
 import java.lang.reflect.Field;
@@ -19,22 +20,23 @@ import java.util.stream.Collectors;
  */
 public class XmlGenerator {
 
+    @SneakyThrows
     public static void main(String[] args) {
-        select(AuthorityEntity.class);
+//        select(LogEntity.class, null, null);
+        select(LogEntity.class, "l", "log");
     }
 
-    private static void select(Class<?> type) {
+    private static void select(Class<?> type, String alias, String name) {
         Table table = getTable(type);
-        String alias = table.getName().substring(0, 1);
         List<Column> columns = table.getColumns();
         StringBuilder xmlBuilder = new StringBuilder();
         xmlBuilder.append("<select id=\"\">");
-        xmlBuilder.append("\n\t").append("SELECT ").append(columns.stream().map(column -> alias + "." + column.getName()).collect(Collectors.joining(", ")));
+        xmlBuilder.append("\n\t").append("SELECT ").append(columns.stream().map(column -> getAlias(alias) + column.getName()).collect(Collectors.joining(", ")));
         xmlBuilder.append("\n\t").append("FROM ").append(table.getName()).append(" ").append(alias);
 
         xmlBuilder.append("\n\t").append("<where>");
         for (Column column : columns) {
-            xmlBuilder.append("\n\t\t").append("<if test=\"").append(column.getFieldName()).append(" != null\">").append("AND ").append(alias).append(".").append(column.getName()).append(" = ").append("#{").append(column.getFieldName()).append("}").append("</if>");
+            xmlBuilder.append("\n\t\t").append("<if test=\"").append(getName(name)).append(column.getFieldName()).append(" != null\">").append("AND ").append(getAlias(alias)).append(column.getName()).append(" = ").append("#{").append(getName(name)).append(column.getFieldName()).append("}").append("</if>");
         }
         xmlBuilder.append("\n\t").append("</where>");
 
@@ -109,6 +111,20 @@ public class XmlGenerator {
         table.setColumns(columns);
 
         return table;
+    }
+
+    private static String getName(String name) {
+        if (name == null) {
+            return "";
+        }
+        return name + ".";
+    }
+
+    private static String getAlias(String alias) {
+        if (alias == null) {
+            return "";
+        }
+        return alias + ".";
     }
 
     @Data

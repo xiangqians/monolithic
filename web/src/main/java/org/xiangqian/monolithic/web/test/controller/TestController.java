@@ -18,8 +18,8 @@ import org.xiangqian.monolithic.web.Response;
  * @date 23:33 2024/05/30
  */
 @RestController
-@Tag(name = "测试接口")
-@RequestMapping("/api/test")
+@Tag(name = "测试接口123")
+@RequestMapping("/api/test/1")
 @SecurityRequirement(name = HttpHeaders.AUTHORIZATION)
 public class TestController {
 
@@ -37,7 +37,7 @@ public class TestController {
     }
 
     @PostMapping("/token")
-    @Operation(summary = "获取令牌")
+    @Operation(summary = "获取令牌1")
     public Response<UserTokenResult> token(@Valid @RequestBody UserTokenEmailArg authTokenReq) {
         return new Response<>(Code.OK, null);
     }

@@ -77,7 +77,9 @@ scanPeriod : 设置监测配置文件是否有修改的时间间隔，如果没�
             <!-- 表示匹配该级别及以上 -->
             <onMatch>ACCEPT</onMatch>
             <!-- 表示不匹配该级别及以上 -->
+            <!--
             <onMismatch>DENY</onMismatch>
+            -->
         </filter>
     </appender>
 

@@ -1,190 +1,88 @@
 package org.xiangqian.monolithic.web;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.util.pattern.PathPattern;
-import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
-import org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper;
-import org.xiangqian.monolithic.util.Redis;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.xiangqian.monolithic.util.DateTimeUtil;
+import org.xiangqian.monolithic.util.DateUtil;
+import org.xiangqian.monolithic.util.TimeUtil;
 
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 /**
  * @author xiangqian
  * @date 21:15 2024/06/02
  */
 @Configuration(proxyBeanMethods = false)
-public class WebConfiguration {
+public class WebConfiguration implements WebMvcConfigurer {
 
     @Autowired
-    private AuthorityMapper authorityMapper;
+    private MethodHandlerInterceptor methodHandlerInterceptor;
 
-    @Autowired
-    private Redis redis;
-
-    /**
-     * Map<控制器方法，Set<角色id集合>>
-     *
-     * @param methodAuthoritiesMap
-     * @return
-     */
-    @Bean
-    public Map<Method, Set<Long>> methodRoleIdsMap(@Qualifier("methodAuthoritiesMap") Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
-        Map<Method, Set<Long>> methodRoleIdsMap = new HashMap<>(methodAuthoritiesMap.size(), 1f);
-        for (Map.Entry<Method, List<AuthorityEntity>> entry : methodAuthoritiesMap.entrySet()) {
-            methodRoleIdsMap.put(entry.getKey(), entry.getValue().stream()
-                    .map(AuthorityEntity::getRoleIds)
-                    .filter(CollectionUtils::isNotEmpty)
-                    .flatMap(List::stream)
-                    .collect(Collectors.toSet()));
-        }
-        return methodRoleIdsMap;
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 添加拦截器
+        registry.addInterceptor(methodHandlerInterceptor).addPathPatterns("/api/**");
     }
 
-    /**
-     * Map<控制器方法，List<权限集合>>
-     *
-     * @param requestMappingHandlerMapping
-     * @return
-     */
-    @Bean
-    public Map<Method, List<AuthorityEntity>> methodAuthoritiesMap(RequestMappingHandlerMapping requestMappingHandlerMapping) {
-        Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
-        Map<Method, List<AuthorityEntity>> methodAuthoritiesMap = new HashMap<>(map.size(), 1f);
-        for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
-            String rem = "";
-            HandlerMethod handlerMethod = entry.getValue();
-            Tag tag = handlerMethod.getBeanType().getAnnotation(Tag.class);
-            if (tag != null) {
-                rem = toString(tag.name(), tag.description());
-            }
-            Operation operation = handlerMethod.getMethodAnnotation(Operation.class);
-            if (operation != null) {
-                String string = toString(operation.summary(), operation.description());
-                if (StringUtils.isNotEmpty(string)) {
-                    if (StringUtils.isNotEmpty(rem)) {
-                        rem += " - " + string;
-                    } else {
-                        rem = string;
-                    }
-                }
-            }
-
-            byte allow = handlerMethod.getMethodAnnotation(Allow.class) == null ? 0 : (byte) 1;
-
-            RequestMappingInfo requestMappingInfo = entry.getKey();
-            RequestMethodsRequestCondition requestMethodsRequestCondition = requestMappingInfo.getMethodsCondition();
-            Set<RequestMethod> methods = Optional.ofNullable(requestMethodsRequestCondition).map(RequestMethodsRequestCondition::getMethods).orElse(null);
-            PathPatternsRequestCondition pathPatternsRequestCondition = requestMappingInfo.getPathPatternsCondition();
-            Set<PathPattern> patterns = pathPatternsRequestCondition.getPatterns();
-            List<AuthorityEntity> authorities = new ArrayList<>(patterns.size());
-            for (PathPattern pattern : patterns) {
-                String path = pattern.getPatternString();
-                if (path.startsWith("/api/")) {
-                    if (CollectionUtils.isNotEmpty(methods)) {
-                        for (RequestMethod method : methods) {
-                            AuthorityEntity authority = new AuthorityEntity();
-                            authority.setMethod(method.name());
-                            authority.setPath(path);
-                            authority.setAllow(allow);
-                            authority.setRem(rem);
-                            authority.setDel((byte) 0);
-                            authorities.add(authority);
-                        }
-                    } else {
-                        AuthorityEntity authority = new AuthorityEntity();
-                        authority.setMethod("");
-                        authority.setPath(path);
-                        authority.setAllow(allow);
-                        authority.setRem(rem);
-                        authority.setDel((byte) 0);
-                        authorities.add(authority);
-                    }
-                }
-            }
-
-            if (CollectionUtils.isNotEmpty(authorities)) {
-                Method method = handlerMethod.getMethod();
-                List<AuthorityEntity> alreadyExistsAuthorities = methodAuthoritiesMap.get(method);
-                if (alreadyExistsAuthorities != null) {
-                    alreadyExistsAuthorities.addAll(authorities);
-                } else {
-                    methodAuthoritiesMap.put(method, authorities);
-                }
-            }
-        }
-
-        Redis.Lock lock = redis.Lock("LOCK_AUTHORITIES");
-        try {
-            lock.lock();
-
-            List<Long> authorityIds = new ArrayList<>(methodAuthoritiesMap.size());
-            for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
-                for (AuthorityEntity authority : authorities) {
-                    AuthorityEntity queryAuthority = new AuthorityEntity();
-                    queryAuthority.setMethod(authority.getMethod());
-                    queryAuthority.setPath(authority.getPath());
-                    AuthorityEntity storedAuthority = authorityMapper.getOne(queryAuthority);
-                    if (storedAuthority == null) {
-                        authorityMapper.insert(authority);
-                    } else {
-                        authority.setId(storedAuthority.getId());
-                        if (!storedAuthority.getAllow().equals(authority.getAllow())
-                                || !storedAuthority.getRem().equals(authority.getRem())
-                                || storedAuthority.getDel() == 1) {
-                            authorityMapper.updById(authority);
-                        }
-                    }
-                    authorityIds.add(authority.getId());
-                }
-            }
-            authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
-        } finally {
-            lock.forceUnlock();
-        }
-
-        // 获取权限和角色关系
-        Map<Long, AuthorityEntity> authorityMap = authorityMapper.list().stream().collect(Collectors.toMap(AuthorityEntity::getId, Function.identity()));
-        for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
-            for (AuthorityEntity authority : authorities) {
-                AuthorityEntity value = authorityMap.get(authority.getId());
-                if (value != null) {
-                    authority.setRoleIds(value.getRoleIds());
-                }
-            }
-        }
-
-        return methodAuthoritiesMap;
+    // 配置knife4j文档
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
-    private String toString(String name, String description) {
-        name = StringUtils.trimToEmpty(name);
-        description = StringUtils.trimToEmpty(description);
-        if (StringUtils.isEmpty(name)) {
-            return description;
-        }
+    // 解决 spring.jackson.date-format 配置不生效问题
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        for (HttpMessageConverter converter : converters) {
+            if (converter instanceof MappingJackson2HttpMessageConverter) {
+                MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = (MappingJackson2HttpMessageConverter) converter;
+                ObjectMapper objectMapper = new ObjectMapper();
 
-        String string = name;
-        if (StringUtils.isNotEmpty(description)) {
-            string += "（" + description + "）";
+                // 属性为NULL不序列化
+                objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+                // 忽略未知属性
+                // 当禁用反序列化时遇到未知属性报错时，Jackson 默认情况下要求 JSON 字符串中的所有属性都要与 Java 类的字段完全匹配，如果 JSON 中包含了未知属性，就会抛出异常
+                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+                JavaTimeModule javaTimeModule = new JavaTimeModule();
+
+                // LocalDateTime
+                javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeUtil.FORMATTER));
+                javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeUtil.FORMATTER));
+
+                // LocalDate
+                javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateUtil.FORMATTER));
+                javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateUtil.FORMATTER));
+
+                // LocalTime
+                javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(TimeUtil.FORMATTER));
+                javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(TimeUtil.FORMATTER));
+
+                objectMapper.registerModule(javaTimeModule);
+
+                mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
+            }
         }
-        return string;
     }
 
 }

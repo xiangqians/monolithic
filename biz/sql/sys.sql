@@ -96,6 +96,22 @@ CREATE TABLE `role`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
 
 
+-- -----------------------------------
+-- Table structure for authority_group
+-- -----------------------------------
+DROP TABLE IF EXISTS `authority_group`;
+CREATE TABLE `authority_group`
+(
+    `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `path`     VARCHAR(128)      DEFAULT '' COMMENT '路径',
+    `rem`      VARCHAR(128)      DEFAULT '' COMMENT '备注',
+    `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
+    `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='权限组表';
+
+
 -- -----------------------------
 -- Table structure for authority
 -- -----------------------------
@@ -103,6 +119,7 @@ DROP TABLE IF EXISTS `authority`;
 CREATE TABLE `authority`
 (
     `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `group_id` INT(8) UNSIGNED DEFAULT 0 COMMENT '权限组id',
     `method`   VARCHAR(8)        DEFAULT '' COMMENT '方法',
     `path`     VARCHAR(128)      DEFAULT '' COMMENT '路径',
     `allow`    TINYINT           DEFAULT 0 COMMENT '是否允许未经授权访问，0-不允许，1-允许',

@@ -7,26 +7,18 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.util.AntPathMatcher;
 import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 import org.xiangqian.monolithic.biz.sys.service.UserService;
 import org.xiangqian.monolithic.util.JsonUtil;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 安全验证过滤器
@@ -45,29 +37,14 @@ public class SecurityFilter extends HttpFilter {
     @Value("${springdoc.api-docs.enabled}")
     private Boolean enabledApiDoc;
 
-    @Value("${spring.boot.admin.secret}")
-    private String secret;
+    @Autowired
+    private MethodSecurity methodSecurity;
 
-    private AntPathMatcher antPathMatcher;
-    private List<AuthorityEntity> allowAuthorities;
-
-    public SecurityFilter(@Qualifier("methodAuthoritiesMap") Map<Method, List<AuthorityEntity>> methodAuthoritiesMap) {
-        this.antPathMatcher = new AntPathMatcher();
-
-        this.allowAuthorities = new ArrayList<>(16);
-        for (List<AuthorityEntity> authorities : methodAuthoritiesMap.values()) {
-            for (AuthorityEntity authority : authorities) {
-                if (Byte.valueOf((byte) 1).equals(authority.getAllow())) {
-                    this.allowAuthorities.add(authority);
-                }
-            }
-        }
-    }
+    @Value("${management.token}")
+    private String token;
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        request.setAttribute(AttributeName.AUTHORITY, null);
-
         String servletPath = request.getServletPath();
         log.debug("servletPath {}", servletPath);
 
@@ -84,7 +61,8 @@ public class SecurityFilter extends HttpFilter {
 
         // /actuator/*
         if (servletPath.startsWith("/actuator")) {
-            if (secret.equals(StringUtils.trim(request.getHeader("Secret")))) {
+            String authorization = StringUtils.trim(request.getHeader("Authorization"));
+            if (StringUtils.isNotEmpty(authorization) && authorization.startsWith("Bearer ") && token.equals(authorization.substring("Bearer ".length()))) {
                 chain.doFilter(request, response);
             } else {
                 unauthorized(response);
@@ -92,17 +70,15 @@ public class SecurityFilter extends HttpFilter {
             return;
         }
 
+        if (!servletPath.startsWith("/api/")) {
+            unauthorized(response);
+            return;
+        }
+
         // 允许未经授权访问
-        String method = request.getMethod();
-        if (CollectionUtils.isNotEmpty(allowAuthorities)) {
-            for (AuthorityEntity allowAuthority : allowAuthorities) {
-                if ((method.equals(allowAuthority.getMethod()) || "".equals(allowAuthority.getMethod())) && antPathMatcher.match(allowAuthority.getPath(), servletPath)) {
-                    log.debug("允许未经授权访问 {}", allowAuthority);
-                    request.setAttribute(AttributeName.AUTHORITY, allowAuthority);
-                    chain.doFilter(request, response);
-                    return;
-                }
-            }
+        if (methodSecurity.isAllow(request.getMethod(), servletPath)) {
+            chain.doFilter(request, response);
+            return;
         }
 
         String token = StringUtils.trim(request.getHeader("Authorization"));
@@ -117,7 +93,6 @@ public class SecurityFilter extends HttpFilter {
             return;
         }
 
-        user.setToken(token);
         userService.setUser(user);
 
         // 放行

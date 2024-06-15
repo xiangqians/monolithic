@@ -8,10 +8,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.xiangqian.monolithic.util.Redis;
 
 /**
+ * Redis配置
+ * <p>
+ * RedisTemplate
+ * {@link org.springframework.data.redis.core.RedisTemplate}
+ * {@link org.springframework.data.redis.core.ReactiveRedisTemplate}（响应式）
+ * <p>
+ * RedissonClient
+ * {@link org.redisson.api.RedissonClient}
+ * {@link org.redisson.api.RedissonRxClient}（响应式）
+ * {@link org.redisson.api.RedissonReactiveClient}（响应式）
+ *
  * @author xiangqian
  * @date 11:57 2024/06/08
  */
@@ -25,19 +37,18 @@ public class RedisAutoConfiguration {
 
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
-        // 设置key序列化器
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        RedisSerializer<?> valueSerializer = new GenericToStringSerializer<>(Object.class);
 
-        // 设置value序列化器
-        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Object.class));
+        // 使用 Jackson 提供的通用 Serializer
+//        GenericJackson2JsonRedisSerializer valueSerializer = new GenericJackson2JsonRedisSerializer(JsonUtil.OBJECT_MAPPER);
 
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        // String 类型的 key/value 序列化器
+        redisTemplate.setKeySerializer(StringRedisSerializer.UTF_8);
+        redisTemplate.setValueSerializer(valueSerializer);
 
-        // 设置hash key序列化器
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-
-        // 设置hash value序列化器
-        redisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
+        // Hash 类型的 key/value 序列化器
+        redisTemplate.setHashKeySerializer(StringRedisSerializer.UTF_8);
+        redisTemplate.setHashValueSerializer(valueSerializer);
 
         // 初始化RedisTemplate
         redisTemplate.afterPropertiesSet();

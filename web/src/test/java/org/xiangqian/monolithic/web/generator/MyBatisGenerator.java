@@ -33,7 +33,7 @@ public class MyBatisGenerator {
     public static void main(String[] args) throws IOException {
         execute("sys",
                 "xiangqian",
-                new String[]{"role_authority"},
+                new String[]{"authority_group"},
                 false);
     }
 
