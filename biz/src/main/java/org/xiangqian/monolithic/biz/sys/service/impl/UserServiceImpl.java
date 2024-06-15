@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
                 return user;
             }
         } catch (Exception e) {
-            log.error("", e);
+            log.warn("", e);
         }
         return null;
     }

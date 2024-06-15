@@ -23,6 +23,7 @@ import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityGroupEntity;
 import org.xiangqian.monolithic.biz.sys.mapper.AuthorityGroupMapper;
 import org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper;
+import org.xiangqian.monolithic.biz.sys.service.UserService;
 import org.xiangqian.monolithic.util.JsonUtil;
 import org.xiangqian.monolithic.util.Md5Util;
 import org.xiangqian.monolithic.util.Redis;
@@ -42,8 +43,13 @@ import java.util.stream.Collectors;
 @Component
 public class MethodSecurity implements ApplicationRunner {
 
+    private final String ALLOWS = "web_allows";
+
     @Autowired
     private Redis redis;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AuthorityMapper authorityMapper;
@@ -53,8 +59,6 @@ public class MethodSecurity implements ApplicationRunner {
 
     @Autowired
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
-
-    private final String ALLOWS = "web_allows";
 
     /**
      * 是否允许未经授权访问

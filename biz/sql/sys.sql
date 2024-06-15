@@ -103,6 +103,7 @@ DROP TABLE IF EXISTS `authority_group`;
 CREATE TABLE `authority_group`
 (
     `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `pid`      INT(8) UNSIGNED DEFAULT 0 COMMENT '父组id',
     `path`     VARCHAR(128)      DEFAULT '' COMMENT '路径',
     `rem`      VARCHAR(128)      DEFAULT '' COMMENT '备注',
     `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
@@ -153,14 +154,11 @@ CREATE TABLE `log`
     `id`           INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `user_id`      INT(8) UNSIGNED DEFAULT 0 COMMENT '用户id',
     `authority_id` INT(8) UNSIGNED DEFAULT 0 COMMENT '权限id',
-    `code`         VARCHAR(64)       DEFAULT '' COMMENT '状态码',
     `address`      VARCHAR(64)       DEFAULT '' COMMENT '远程地址',
-    `req_method`   VARCHAR(8)        DEFAULT '' COMMENT '请求方法',
-    `req_url`      VARCHAR(128)      DEFAULT '' COMMENT '请求地址',
-    `req_header`   TEXT              DEFAULT NULL COMMENT '请求头',
-    `req_body`     MEDIUMTEXT        DEFAULT NULL COMMENT '请求报文',
-    `resp_header`  TEXT              DEFAULT NULL COMMENT '响应头',
-    `resp_body`    MEDIUMTEXT        DEFAULT NULL COMMENT '响应报文',
+    `method`       VARCHAR(8)        DEFAULT '' COMMENT '请求方法',
+    `url`          VARCHAR(512)      DEFAULT '' COMMENT '请求地址',
+    `body`         MEDIUMTEXT        DEFAULT NULL COMMENT '请求报文',
+    `code`         VARCHAR(64)       DEFAULT '' COMMENT '状态码',
     `time`         MEDIUMINT UNSIGNED DEFAULT 0 COMMENT '耗时，单位ms',
     `add_time`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`) USING BTREE

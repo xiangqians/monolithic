@@ -34,12 +34,12 @@ import java.util.List;
 public class WebConfiguration implements WebMvcConfigurer {
 
     @Autowired
-    private MethodHandlerInterceptor methodHandlerInterceptor;
+    private MethodHandler methodHandler;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 添加拦截器
-        registry.addInterceptor(methodHandlerInterceptor).addPathPatterns("/api/**");
+        registry.addInterceptor(methodHandler).addPathPatterns("/api/**");
     }
 
     // 配置knife4j文档

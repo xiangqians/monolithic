@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
 import org.xiangqian.monolithic.biz.sys.service.UserService;
@@ -35,34 +36,41 @@ public class SecurityFilter extends HttpFilter {
     private UserService userService;
 
     @Value("${springdoc.api-docs.enabled}")
-    private Boolean enabledApiDoc;
+    private Boolean enabled;
 
     @Autowired
     private MethodSecurity methodSecurity;
+
+    @Autowired
+    private MethodHandler methodHandler;
 
     @Value("${management.token}")
     private String token;
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        // {@link org.springframework.web.util.ContentCachingRequestWrapper} 是 Spring Framework 提供的一个实用类，用于包装 HTTP 请求，以便能够多次读取请求体的内容。
+        request = new ContentCachingRequestWrapper(request);
+
+        methodHandler.reset(request);
+
         String servletPath = request.getServletPath();
         log.debug("servletPath {}", servletPath);
 
         // 如果开启接口文档，则放行【接口文档请求】
-        if (BooleanUtils.toBoolean(enabledApiDoc)) {
-            if (servletPath.startsWith("/swagger-ui/")
-                    || servletPath.startsWith("/v3/api-docs")
-                    || servletPath.equals("/doc.html")
-                    || servletPath.startsWith("/webjars")) {
-                chain.doFilter(request, response);
-                return;
-            }
+        if (BooleanUtils.toBoolean(enabled)
+                && (servletPath.startsWith("/swagger-ui/")
+                || servletPath.startsWith("/v3/api-docs")
+                || servletPath.equals("/doc.html")
+                || servletPath.startsWith("/webjars"))) {
+            chain.doFilter(request, response);
+            return;
         }
 
         // /actuator/*
         if (servletPath.startsWith("/actuator")) {
-            String authorization = StringUtils.trim(request.getHeader("Authorization"));
-            if (StringUtils.isNotEmpty(authorization) && authorization.startsWith("Bearer ") && token.equals(authorization.substring("Bearer ".length()))) {
+            String token = getToken(request);
+            if (StringUtils.isNotEmpty(token) && this.token.equals(token)) {
                 chain.doFilter(request, response);
             } else {
                 unauthorized(response);
@@ -81,8 +89,8 @@ public class SecurityFilter extends HttpFilter {
             return;
         }
 
-        String token = StringUtils.trim(request.getHeader("Authorization"));
-        if (StringUtils.isEmpty(token) || !token.startsWith("Bearer ") || StringUtils.isEmpty(token = token.substring("Bearer ".length()))) {
+        String token = getToken(request);
+        if (StringUtils.isEmpty(token)) {
             unauthorized(response);
             return;
         }
@@ -97,6 +105,14 @@ public class SecurityFilter extends HttpFilter {
 
         // 放行
         chain.doFilter(request, response);
+    }
+
+    private String getToken(HttpServletRequest request) {
+        String authorization = StringUtils.trim(request.getHeader("Authorization"));
+        if (StringUtils.isNotEmpty(authorization) && authorization.startsWith("Bearer ")) {
+            return authorization.substring("Bearer ".length()).trim();
+        }
+        return null;
     }
 
     private void unauthorized(HttpServletResponse response) throws IOException {

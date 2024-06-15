@@ -1,8 +1,10 @@
 package org.xiangqian.monolithic.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -71,6 +73,10 @@ public class JsonUtil {
 
     public static byte[] serializeAsBytes(Object object) throws IOException {
         return OBJECT_MAPPER.writeValueAsBytes(object);
+    }
+
+    public static JsonNode deserialize(String string) throws IOException {
+        return OBJECT_MAPPER.readTree(string);
     }
 
     public static <T> T deserialize(String string, Class<T> type) throws IOException {

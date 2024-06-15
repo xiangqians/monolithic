@@ -31,30 +31,21 @@ public class LogEntity implements Serializable {
     @Schema(description = "权限id")
     private Long authorityId;
 
-    @Schema(description = "状态码")
-    @TableField("`code`")
-    private String code;
-
     @Schema(description = "远程地址")
     private String address;
 
     @Schema(description = "请求方法")
-    private String reqMethod;
+    private String method;
 
     @Schema(description = "请求地址")
-    private String reqUrl;
-
-    @Schema(description = "请求头")
-    private String reqHeader;
+    private String url;
 
     @Schema(description = "请求报文")
-    private String reqBody;
+    private String body;
 
-    @Schema(description = "响应头")
-    private String respHeader;
-
-    @Schema(description = "响应报文")
-    private String respBody;
+    @Schema(description = "状态码")
+    @TableField("`code`")
+    private String code;
 
     @Schema(description = "耗时，单位ms")
     @TableField("`time`")
