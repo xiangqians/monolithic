@@ -34,9 +34,6 @@ public class LogEntity implements Serializable {
     @Schema(description = "远程地址")
     private String address;
 
-    @Schema(description = "请求方法")
-    private String method;
-
     @Schema(description = "请求地址")
     private String url;
 

@@ -155,7 +155,6 @@ CREATE TABLE `log`
     `user_id`      INT(8) UNSIGNED DEFAULT 0 COMMENT '用户id',
     `authority_id` INT(8) UNSIGNED DEFAULT 0 COMMENT '权限id',
     `address`      VARCHAR(64)       DEFAULT '' COMMENT '远程地址',
-    `method`       VARCHAR(8)        DEFAULT '' COMMENT '请求方法',
     `url`          VARCHAR(512)      DEFAULT '' COMMENT '请求地址',
     `body`         MEDIUMTEXT        DEFAULT NULL COMMENT '请求报文',
     `code`         VARCHAR(64)       DEFAULT '' COMMENT '状态码',

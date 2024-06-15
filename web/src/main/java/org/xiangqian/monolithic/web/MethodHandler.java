@@ -241,8 +241,6 @@ public class MethodHandler implements
         String address = request.getRemoteAddr() + ":" + request.getRemotePort();
         log.setAddress(address);
 
-        log.setMethod(request.getMethod());
-
         String url = request.getRequestURL().toString();
         String query = StringUtils.trim(request.getQueryString());
         if (StringUtils.isNotEmpty(query)) {
