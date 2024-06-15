@@ -252,21 +252,16 @@ public class MethodHandler implements
 
         String body = null;
         String contentType = StringUtils.trim(request.getContentType());
-        if (StringUtils.isNotEmpty(contentType) && request instanceof ContentCachingRequestWrapper) {
-            ContentCachingRequestWrapper contentCachingRequestWrapper = (ContentCachingRequestWrapper) request;
-
-            // JSON内容类型
-            if (contentType.startsWith("application/json")) {
-                body = new String(contentCachingRequestWrapper.getContentAsByteArray(), contentCachingRequestWrapper.getCharacterEncoding());
-                try {
-                    body = JsonUtil.serializeAsString(JsonUtil.deserialize(body));
-                } catch (Exception e) {
-                }
+        ContentCachingRequestWrapper contentCachingRequestWrapper = (ContentCachingRequestWrapper) request;
+        byte[] bytes = contentCachingRequestWrapper.getContentAsByteArray();
+        if (StringUtils.isNotEmpty(contentType) && contentType.startsWith("application/json")) {
+            body = new String(bytes, contentCachingRequestWrapper.getCharacterEncoding());
+            try {
+                body = JsonUtil.serializeAsString(JsonUtil.deserialize(body));
+            } catch (Exception e) {
             }
-            // 表单内容类型
-            else if (contentType.startsWith("application/x-www-form-urlencoded")) {
-                body = contentCachingRequestWrapper.getContentAsByteArray().length + " Byte";
-            }
+        } else {
+            body = String.format("(%s Byte)", bytes.length);
         }
         log.setBody(body);
 
