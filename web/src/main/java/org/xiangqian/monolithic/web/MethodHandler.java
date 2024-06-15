@@ -261,7 +261,10 @@ public class MethodHandler implements
             } catch (Exception e) {
             }
         } else {
-            body = String.format("(%s Byte)", bytes.length);
+            int length = bytes.length;
+            if (length > 0) {
+                body = String.format("(%s Byte)", length);
+            }
         }
         log.setBody(body);
 
