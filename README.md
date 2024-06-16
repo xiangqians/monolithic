@@ -26,7 +26,7 @@
 
 # 监控
 
-Prometheus + Grafana
+Prometheus + Grafana + Alertmanager
 
 ## Prometheus
 
@@ -304,9 +304,73 @@ https://grafana.com/grafana/dashboards
 `SpringBoot APM Dashboard（中文版本）`仪表板ID：21319
 
 
-### 设置邮件报警
+## Alertmanager
 
-- grafana-v11.0.0/conf/defaults.ini
+### 简介
+
+https://prometheus.wang/alert
+
+
+### 安装
+
+- 下载地址
+
+https://prometheus.io/download
+
+`alertmanager-0.27.0.windows-amd64.zip`
+
+`alertmanager.exe`
+
+
+- alertmanager.yml
+
+```yml
+# 路由
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'web.hook'
+
+# 接收器
+receivers:
+  - name: 'web.hook'
+    webhook_configs:
+      - url: 'http://127.0.0.1:5001/'
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'dev', 'instance']
+```
+
+- Web
+
+[首页](http://localhost:9093)
+
+
+- 关联 Prometheus 与 Alertmanager
+
+在 Prometheus 的架构中被划分成两个独立的部分。 Prometheus 负责产生告警，而 Alertmanager 负责告警产生后的后续处理。 因此 Alertmanager 部署完成后，需要在 Prometheus 中设置 Alertmanager 相关的信息。
+
+prometheus.yml
+
+```yml
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['localhost:9093']
+```
+
+重启 Prometheus 服务，成功后，可以从 http://localhost:9090/config 查看 alerting 配置是否生效。
+
+
+
+- ?
 
 ```ini
 #################################### SMTP / Emailing #####################
@@ -338,13 +402,4 @@ welcome_email_on_sign_up = false
 templates_pattern = emails/*.html, emails/*.txt
 content_types = text/html
 ```
-
-- Contact points
-
-![Contact points](doc/image/contact_points.png)
-
-- Add Contact point
-
-![Add contact point](doc/image/add_contact_point.png)
-
 
