@@ -369,37 +369,39 @@ alerting:
 重启 Prometheus 服务，成功后，可以从 http://localhost:9090/config 查看 alerting 配置是否生效。
 
 
+### 与 SMTP 邮件集成
 
-- ?
+alertmanager.yml
 
-```ini
-#################################### SMTP / Emailing #####################
-[smtp]
-enabled = true
-# 邮件SMTP服务器地址和端口
-host = smtp.example.com:465
-# 用户名
-user = your-email@example.com
-# 密码或授权码
-# If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
-password = your-password
-cert_file =
-key_file =
-skip_verify = true
-# 发件人邮箱地址
-from_address = your-email@example.com
-# 发件人邮箱名称
-from_name = your-email
-ehlo_identity =
-startTLS_policy =
-enable_tracing = false
+```yml
+global:
+  # 邮件SMTP服务器地址和端口
+  smtp_smarthost: smtp.example.com:25
+  # 发件人邮箱地址
+  smtp_from: your-email@example.com
+  # 用户名
+  smtp_auth_username: your-email@example.com
+  # 密码或授权码
+  smtp_auth_password: your-email-password
+  # 是否要求TLS加密
+  smtp_require_tls: true
 
-[smtp.static_headers]
-# Include custom static headers in all outgoing emails
+route:
+  group_by: ['alertname']
+  receiver: 'default-receiver'
 
-[emails]
-welcome_email_on_sign_up = false
-templates_pattern = emails/*.html, emails/*.txt
-content_types = text/html
+receivers:
+  - name: default-receiver
+    email_configs:
+      # 收件人邮箱地址
+      - to: recipient@example.com
+        send_resolved: true
 ```
+
+
+
+### 告警
+
+- SpringBoot 离线告警
+
 

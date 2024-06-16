@@ -68,7 +68,7 @@ spring:
 #    #   【设置】->【POP3/SMTP/IMAP】->开启【POP3/SMTP服务】
 #    host: ${MONOLITHIC_MONITOR_MAIL_HOST:smtp.example.com}
 #    # 端口
-#    port: ${MONOLITHIC_MONITOR_MAIL_PORT:465}
+#    port: ${MONOLITHIC_MONITOR_MAIL_PORT:25}
 #    # 使用的协议
 #    protocol: smtp
 #    # 默认编码
@@ -76,7 +76,7 @@ spring:
 #    # 用户名
 #    username: ${MONOLITHIC_MONITOR_MAIL_USERNAME:your-email@example.com}
 #    # 密码或授权码
-#    password: ${MONOLITHIC_MONITOR_MAIL_PASSWORD:your-password}
+#    password: ${MONOLITHIC_MONITOR_MAIL_PASSWORD:your-email-password}
 #    # 发件人邮箱地址
 #    from: ${spring.mail.username}
 #    # 其他的属性
