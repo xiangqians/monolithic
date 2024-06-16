@@ -33,7 +33,7 @@ import org.xiangqian.monolithic.biz.CodeException;
 import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
 import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
 import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
-import org.xiangqian.monolithic.biz.sys.mapper.LogMapper;
+import org.xiangqian.monolithic.biz.sys.service.LogService;
 import org.xiangqian.monolithic.biz.sys.service.UserService;
 import org.xiangqian.monolithic.util.JsonUtil;
 
@@ -66,7 +66,7 @@ public class MethodHandler implements
     private final String AUTHORITY = "__authority__";
 
     @Autowired
-    private LogMapper logMapper;
+    private LogService logService;
 
     @Autowired
     private UserService userService;
@@ -271,7 +271,7 @@ public class MethodHandler implements
         long endTime = System.currentTimeMillis();
         log.setTime((int) (endTime - startTime));
 
-        logMapper.insert(log);
+        logService.asyncSave(log);
     }
 
     @Override

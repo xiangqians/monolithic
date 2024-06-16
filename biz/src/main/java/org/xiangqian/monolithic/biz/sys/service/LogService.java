@@ -1,6 +1,5 @@
 package org.xiangqian.monolithic.biz.sys.service;
 
-import org.apache.ibatis.annotations.Param;
 import org.xiangqian.monolithic.biz.LazyList;
 import org.xiangqian.monolithic.biz.Page;
 import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
@@ -16,5 +15,7 @@ public interface LogService {
     LazyList<LogEntity> list(LazyList<LogEntity> list, LogEntity log);
 
     Page<LogEntity> page(Page<LogEntity> page, LogEntity log);
+
+    void asyncSave(LogEntity log);
 
 }

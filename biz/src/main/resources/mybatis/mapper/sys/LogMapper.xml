@@ -4,25 +4,16 @@
 
     <sql id="query">
         SELECT
-        l.id, l.user_id, l.authority_id,
-        l.`code`, l.address,
-        l.req_method, l.req_url,
-        l.req_header, l.req_body,
-        l.resp_header, l.resp_body,
-        l.`time`, l.add_time
+        l.id, l.user_id, l.authority_id, l.address, l.url, l.body, l.`code`, l.`time`, l.add_time
         FROM log l
         <where>
             <if test="log.id != null">AND l.id = #{log.id}</if>
             <if test="log.userId != null">AND l.user_id = #{log.userId}</if>
             <if test="log.authorityId != null">AND l.authority_id = #{log.authorityId}</if>
-            <if test="log.code != null">AND l.`code` = #{log.code}</if>
             <if test="log.address != null">AND l.address = #{log.address}</if>
-            <if test="log.reqMethod != null">AND l.req_method = #{log.reqMethod}</if>
-            <if test="log.reqUrl != null">AND l.req_url = #{log.reqUrl}</if>
-            <if test="log.reqHeader != null">AND l.req_header = #{log.reqHeader}</if>
-            <if test="log.reqBody != null">AND l.req_body = #{log.reqBody}</if>
-            <if test="log.respHeader != null">AND l.resp_header = #{log.respHeader}</if>
-            <if test="log.respBody != null">AND l.resp_body = #{log.respBody}</if>
+            <if test="log.url != null">AND l.url = #{log.url}</if>
+            <if test="log.body != null">AND l.body = #{log.body}</if>
+            <if test="log.code != null">AND l.`code` = #{log.code}</if>
             <if test="log.time != null">AND l.`time` = #{log.time}</if>
             <if test="log.addTime != null">AND l.add_time = #{log.addTime}</if>
         </where>
