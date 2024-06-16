@@ -386,10 +386,10 @@ global:
 
 route:
   group_by: ['alertname']
-  receiver: 'default-receiver'
+  receiver: 'email-receiver'
 
 receivers:
-  - name: default-receiver
+  - name: email-receiver
     email_configs:
       # 收件人邮箱地址
       - to: recipient@example.com
