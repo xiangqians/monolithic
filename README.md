@@ -308,8 +308,6 @@ https://grafana.com/grafana/dashboards
 
 ### 简介
 
-https://prometheus.wang/alert
-
 
 ### 安装
 
