@@ -304,7 +304,7 @@ https://grafana.com/grafana/dashboards
 `SpringBoot APM Dashboard（中文版本）`仪表板ID：21319
 
 
-### 告警邮件通知
+### 设置邮件报警
 
 - grafana-v11.0.0/conf/defaults.ini
 
@@ -329,6 +329,14 @@ from_name = your-email
 ehlo_identity =
 startTLS_policy =
 enable_tracing = false
+
+[smtp.static_headers]
+# Include custom static headers in all outgoing emails
+
+[emails]
+welcome_email_on_sign_up = false
+templates_pattern = emails/*.html, emails/*.txt
+content_types = text/html
 ```
 
 
