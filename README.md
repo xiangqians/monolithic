@@ -319,32 +319,6 @@ https://prometheus.io/download
 
 `alertmanager.exe`
 
-
-- alertmanager.yml
-
-```yml
-# 路由
-route:
-  group_by: ['alertname']
-  group_wait: 30s
-  group_interval: 5m
-  repeat_interval: 1h
-  receiver: 'web.hook'
-
-# 接收器
-receivers:
-  - name: 'web.hook'
-    webhook_configs:
-      - url: 'http://127.0.0.1:5001/'
-
-inhibit_rules:
-  - source_match:
-      severity: 'critical'
-    target_match:
-      severity: 'warning'
-    equal: ['alertname', 'dev', 'instance']
-```
-
 - Web
 
 [首页](http://localhost:9093)
@@ -374,32 +348,78 @@ alertmanager.yml
 ```yml
 global:
   # 邮件SMTP服务器地址和端口
-  smtp_smarthost: smtp.example.com:25
+  smtp_smarthost: 'smtp.example.com:25'
   # 发件人邮箱地址
-  smtp_from: your-email@example.com
+  smtp_from: 'your-email@example.com'
   # 用户名
-  smtp_auth_username: your-email@example.com
+  smtp_auth_username: 'your-email@example.com'
   # 密码或授权码
-  smtp_auth_password: your-email-password
+  smtp_auth_password: 'your-email-password'
   # 是否要求TLS加密
-  smtp_require_tls: true
+  #smtp_require_tls: true
 
+# 路由
 route:
+  # 定义警报事件的分组方式
+  # 可以使用警报标签（例如 job、severity）作为分组依据，将具有相同标签值的警报事件分为一组
+  # 这样可以更好地组织和聚合警报事件，避免过多的重复通知
   group_by: ['alertname']
+  # 指定在发送第一个通知后，等待其他警报事件加入相同组的时间
+  # 如果在此期间有新的警报事件加入到组中，则会在等待时间结束后发送一次聚合通知
+  group_wait: 30s
+  # 定义在发送聚合通知后，再次发送相同组警报事件的间隔时间
+  # 可以控制聚合通知的频率，避免频繁发送通知
+  #group_interval: 5m
+  group_interval: 30s
+  # 指定在发送聚合通知后，再次发送通知的间隔时间
+  # 与 group_interval 不同，repeat_interval 控制的是非聚合通知的重复发送间隔
+  repeat_interval: 1h
+  # 指定接收警报事件的通知接收器
+  # 可以配置多个接收器，并根据需要选择其中一个或多个接收器来处理警报事件
+  # 通常，接收器可以是电子邮件、PagerDuty、Slack 等通知渠道
   receiver: 'email-receiver'
 
+# 接收器
 receivers:
-  - name: email-receiver
+  - name: 'email-receiver'
     email_configs:
       # 收件人邮箱地址
-      - to: recipient@example.com
-        send_resolved: true
+      - to: 'recipient@example.com'
 ```
-
-
 
 ### 告警
 
 - SpringBoot 离线告警
 
+prometheus.yml
+
+```yml
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - alert.rules.yml
+```
+
+alert.rules.yml
+
+```yml
+groups:
+  - name: example
+    rules:
+      # 告警规则的名称
+      - alert: InstanceDown
+        # 基于PromQL表达式告警触发条件，用于计算是否有时间序列满足该条件
+        expr: up == 0
+        # 评估等待时间，可选参数
+        # 用于表示只有当触发条件持续一段时间后才发送告警，在等待期间新产生告警的状态为 pending
+        for: 1m
+        # 自定义标签，允许用户指定要附加到告警上的一组附加标签
+        labels:
+          severity: critical
+        # 用于指定一组附加信息，比如用于描述告警详细信息的文字等，annotations 的内容在告警产生时会一同作为参数发送到 Alertmanager
+        annotations:
+          summary: "Instance {{ $labels.instance }} down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."
+```
+
+[查看路由信息](http://localhost:9090/rules)
 
