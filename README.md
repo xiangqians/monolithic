@@ -232,7 +232,7 @@ https://grafana.com/grafana/download
 
 `bin/grafana-server.exe`
 
-- defaults.ini
+- grafana-v11.0.0/conf/defaults.ini
 
 功能模块分布
 
@@ -304,5 +304,31 @@ https://grafana.com/grafana/dashboards
 `SpringBoot APM Dashboard（中文版本）`仪表板ID：21319
 
 
+### 告警邮件通知
+
+- grafana-v11.0.0/conf/defaults.ini
+
+```ini
+#################################### SMTP / Emailing #####################
+[smtp]
+enabled = true
+# 邮件SMTP服务器地址和端口
+host = smtp.example.com:465
+# 用户名
+user = your-email@example.com
+# 密码或授权码
+# If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
+password = your-password
+cert_file =
+key_file =
+skip_verify = true
+# 发件人邮箱地址
+from_address = your-email@example.com
+# 发件人邮箱名称
+from_name = your-email
+ehlo_identity =
+startTLS_policy =
+enable_tracing = false
+```
 
 
