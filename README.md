@@ -369,8 +369,7 @@ route:
   group_wait: 30s
   # 定义在发送聚合通知后，再次发送相同组警报事件的间隔时间
   # 可以控制聚合通知的频率，避免频繁发送通知
-  #group_interval: 5m
-  group_interval: 30s
+  group_interval: 5m
   # 指定在发送聚合通知后，再次发送通知的间隔时间
   # 与 group_interval 不同，repeat_interval 控制的是非聚合通知的重复发送间隔
   repeat_interval: 1h
