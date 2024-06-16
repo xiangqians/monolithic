@@ -44,7 +44,7 @@ CREATE TABLE `tenant`
 (
     `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `name`     VARCHAR(64)       DEFAULT '' COMMENT '名称',
-    `rem`      VARCHAR(64)       DEFAULT '' COMMENT '备注',
+    `rem`      VARCHAR(128)      DEFAULT '' COMMENT '备注',
     `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
     `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
@@ -87,8 +87,8 @@ CREATE TABLE `role`
 (
     `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `name`     VARCHAR(64)       DEFAULT '' COMMENT '名称',
-    `code`     VARCHAR(16)       DEFAULT '' COMMENT '识别码',
-    `rem`      VARCHAR(64)       DEFAULT '' COMMENT '备注',
+    `code`     VARCHAR(64)       DEFAULT '' COMMENT '标识码',
+    `rem`      VARCHAR(128)      DEFAULT '' COMMENT '备注',
     `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
     `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
@@ -143,6 +143,42 @@ CREATE TABLE `role_authority`
     `add_time`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`role_id`, `authority_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色权限表';
+
+
+-- -----------------------------
+-- Table structure for dict_type
+-- -----------------------------
+DROP TABLE IF EXISTS `dict_type`;
+CREATE TABLE `dict_type`
+(
+    `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `name`     VARCHAR(64)       DEFAULT '' COMMENT '名称',
+    `code`     VARCHAR(64)       DEFAULT '' COMMENT '标识码',
+    `rem`      VARCHAR(128)      DEFAULT '' COMMENT '备注',
+    `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
+    `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典类型表';
+
+
+-- ------------------------------
+-- Table structure for dict_item
+-- ------------------------------
+DROP TABLE IF EXISTS `dict_item`;
+CREATE TABLE `dict_item`
+(
+    `id`       INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `type_id`  INT(8) UNSIGNED NOT NULL COMMENT '字典类型id',
+    `name`     VARCHAR(64)       DEFAULT '' COMMENT '名称',
+    `value`    VARCHAR(64)       DEFAULT '' COMMENT '值',
+    `sort`     SMALLINT          DEFAULT 0 COMMENT '排序',
+    `rem`      VARCHAR(128)      DEFAULT '' COMMENT '备注',
+    `del`      TINYINT           DEFAULT 0 COMMENT '是否已删除，0-未删除，1-已删除',
+    `add_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `upd_time` DATETIME          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典项表';
 
 
 -- -----------------------
