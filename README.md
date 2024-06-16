@@ -30,6 +30,8 @@ Prometheus + Grafana
 
 ## Prometheus
 
+`/prəˈmiː.θi.əs/`
+
 ### 简介
 
 [官网](https://prometheus.io)
@@ -112,6 +114,8 @@ scrape_configs:
 
 #### mysqld_exporter
 
+https://github.com/prometheus/mysqld_exporter
+
 监控 MySQL 关系型数据库
 
 - 安装 mysqld_exporter
@@ -162,6 +166,24 @@ https://springdoc.cn/spring-boot-prometheus
 
 首先，将 Spring Boot Actuator 和 Micrometer Prometheus Registry 添加到项目的依赖中。 Actuator 提供了一系列内置端点，用于显示运行应用的性能信息，如健康状况、指标等。 Micrometer Prometheus registry 会将这些指标格式化为 Prometheus 可读格式。
 
+pom.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <dependencies>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+```
+
 
 application.yml
 
@@ -186,11 +208,12 @@ prometheus.yml
 
 ```yml
 scrape_configs:
-  - job_name: 'web'
+  - job_name: 'Monolithic Web'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 15s
     static_configs:
       - targets: [ 'localhost:8080' ]
+    bearer_token: 'kiiI6IkphFra!NUB4iLCJpYXQN^LRXN~Xo@4a1hMWF%y1hNGYODLT0skjM1u2?nKzIiWunf!Z3FpInYkYNW1Y&U'
 ```
 
 ## Grafana
@@ -260,11 +283,11 @@ https://grafana.com/grafana/dashboards
 
 https://grafana.com/grafana/dashboards
 
-搜索：mysql
+搜索：MySQL
 
-`MySQL Overview`
+`MySQL Overview`仪表板ID：7362
 
-仪表板ID：7362
+`MySQL Monitor`仪表板ID：9342
 
 
 - 添加 Redis 仪表板
@@ -272,8 +295,13 @@ https://grafana.com/grafana/dashboards
 
 - 添加 SpringBoot 仪表板
 
+https://grafana.com/grafana/dashboards
 
+搜索：SpringBoot
 
+`SpringBoot APM Dashboard`仪表板ID：12900
+
+`SpringBoot APM Dashboard（中文版本）`仪表板ID：21319
 
 
 
