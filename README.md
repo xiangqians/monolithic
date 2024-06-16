@@ -339,4 +339,12 @@ templates_pattern = emails/*.html, emails/*.txt
 content_types = text/html
 ```
 
+- Contact points
+
+![Contact points](doc/image/contact_points.png)
+
+- Add Contact point
+
+![Add contact point](doc/image/add_contact_point.png)
+
 
