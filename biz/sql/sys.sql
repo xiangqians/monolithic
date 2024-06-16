@@ -162,9 +162,9 @@ CREATE TABLE `dict_type`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典类型表';
 
 
--- ------------------------------
+-- -----------------------------
 -- Table structure for dict_item
--- ------------------------------
+-- -----------------------------
 DROP TABLE IF EXISTS `dict_item`;
 CREATE TABLE `dict_item`
 (
