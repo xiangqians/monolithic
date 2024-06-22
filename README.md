@@ -7,6 +7,7 @@
 - MyBatis Plus
 - Redis
 - MinIO
+- Kafka
 
 # 项目结构
 
