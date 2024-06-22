@@ -14,13 +14,14 @@
     <description>公共模块</description>
 
     <modules>
-        <module>common-util</module>
         <module>common-db</module>
-        <module>common-redis</module>
-        <module>common-minio</module>
-        <module>common-mail</module>
         <module>common-kafka</module>
+        <module>common-mail</module>
+        <module>common-minio</module>
+        <module>common-prometheus</module>
+        <module>common-redis</module>
         <module>common-thread-pool</module>
+        <module>common-util</module>
     </modules>
 
 </project>
