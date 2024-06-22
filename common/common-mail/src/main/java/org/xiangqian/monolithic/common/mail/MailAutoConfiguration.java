@@ -12,7 +12,6 @@ import org.xiangqian.monolithic.util.Mail;
  * @date 15:10 2024/06/10
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "spring.mail.host")
 public class MailAutoConfiguration {
 
     @Bean

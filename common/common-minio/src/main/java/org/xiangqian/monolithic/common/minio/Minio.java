@@ -6,6 +6,7 @@ import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.xiangqian.monolithic.common.util.Md5Util;
 
 import java.io.File;
 import java.io.InputStream;
