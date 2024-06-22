@@ -17,6 +17,7 @@
         <module>web</module>
         <module>websocket</module>
         <module>scheduler</module>
+        <module>consumer</module>
     </modules>
 
     <properties>
