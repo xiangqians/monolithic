@@ -8,10 +8,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.sys.model.UserTokenEmailArg;
-import org.xiangqian.monolithic.biz.sys.model.UserTokenPhoneArg;
 import org.xiangqian.monolithic.biz.sys.model.UserTokenResult;
 import org.xiangqian.monolithic.web.Allow;
-import org.xiangqian.monolithic.web.Response;
+import org.xiangqian.monolithic.biz.Response;
 
 /**
  * @author xiangqian

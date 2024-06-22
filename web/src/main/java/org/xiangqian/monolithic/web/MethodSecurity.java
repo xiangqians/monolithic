@@ -111,7 +111,7 @@ public class MethodSecurity implements ApplicationRunner {
 
         int count = 3;
         while (count-- > 0) {
-            Set<String> keys = redis.keyWithPrefix("web_method_", 10000);
+            Set<String> keys = redis.keysWithPrefix("web_method_", 10000);
             if (CollectionUtils.isEmpty(keys)) {
                 break;
             }

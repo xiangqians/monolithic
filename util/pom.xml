@@ -12,6 +12,7 @@
     <description>工具模块</description>
 
     <dependencies>
+
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
@@ -27,15 +28,20 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
-        </dependency>
-
+        <!-- @Redis::start -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+        </dependency>
+        <!-- @Redis::end -->
 
         <dependency>
             <groupId>jakarta.servlet</groupId>

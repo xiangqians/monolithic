@@ -6,6 +6,7 @@
 - Filter（安全验证过滤器）
 - MyBatis Plus
 - Redis
+- MinIO
 
 # 项目结构
 
@@ -13,16 +14,16 @@
 ├ monolithic
 ├── util      （工具模块）
 ├── biz       （业务模块）
-├── schedule  （任务调度模块）
 ├── web       （Web模块）
-└── websocket （WebSocket模块）
+├── websocket （WebSocket模块）
+└── scheduler （任务调度模块）
 ```
 
 # 接口文档
 
-[Swagger](http://localhost:8080/swagger-ui/index.html)
+[Swagger](http://localhost:8000/swagger-ui/index.html)
 
-[Knife4j](http://localhost:8080/doc.html)
+[Knife4j](http://localhost:8000/doc.html)
 
 # 监控
 
@@ -212,7 +213,7 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 15s
     static_configs:
-      - targets: [ 'localhost:8080' ]
+      - targets: [ 'localhost:8000' ]
     bearer_token: 'kiiI6IkphFra!NUB4iLCJpYXQN^LRXN~Xo@4a1hMWF%y1hNGYODLT0skjM1u2?nKzIiWunf!Z3FpInYkYNW1Y&U'
 ```
 

@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.schedule;
+package org.xiangqian.monolithic.scheduler;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,10 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 19:37 2024/05/29
  */
 @SpringBootApplication
-public class ScheduleApplication {
+public class SchedulerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ScheduleApplication.class, args);
+        SpringApplication.run(SchedulerApplication.class, args);
     }
 
 }

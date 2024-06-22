@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket</title>
+</head>
+<body>
+</body>
+</html>
+<!-- WebSocket -->
+<script type="text/javascript">
+    ;
+
+    /**
+     * WebSocket构造函数
+     * @param url       websocket服务器地址
+     * @param onopen    成功建立连接时回调函数
+     * @param onmessage 接收到消息时回调函数
+     * @param onclose   关闭时回调函数
+     * @param onerror   发生错误时回调函数
+     * @constructor
+     */
+    function MyWebSocket(url, onopen, onmessage, onclose, onerror) {
+        this.webSocket = null
+        this.url = url
+        this.onopen = onopen
+        this.onmessage = onmessage
+        this.onclose = onclose
+        this.onerror = onerror
+    }
+
+    /**
+     * 连接
+     */
+    MyWebSocket.prototype.connect = function () {
+        if (this.webSocket != null) {
+            console.log("WebSocket connected")
+            return
+        }
+
+        if (!window.WebSocket) {
+            window.WebSocket = window.MozWebSocket
+        }
+
+        // 判断当前浏览器是否支持WebSocket
+        if (!(window.WebSocket)) { // or "WebSocket" in window
+            throw new Error("Your browser does not support Web Socket.")
+        }
+
+        // 创建websocket对象
+        this.webSocket = new WebSocket(this.url)
+
+        const self = this
+
+        // 设置成功建立连接时回调函数
+        this.webSocket.onopen = function (event) {
+            if (self.onopen) {
+                self.onopen(event)
+            } else {
+                console.log("[Opened]", self.url)
+            }
+        }
+
+        // 设置接收到消息时回调函数
+        this.webSocket.onmessage = function (event) {
+            if (self.onmessage) {
+                self.onmessage(event)
+            } else {
+                console.log("[Received message]", event.data)
+            }
+        }
+
+        // 设置关闭时回调函数
+        this.webSocket.onclose = function (event) {
+            self.close()
+            if (self.onclose) {
+                self.onclose(event)
+            } else {
+                console.log("[Close]", event.code, ",", event.reason)
+            }
+        }
+
+        // 设置发生错误时回调函数
+        this.webSocket.onerror = function (event) {
+            self.close()
+            if (self.onerror) {
+                self.onerror(event)
+            } else {
+                console.error("[Error]", event)
+            }
+        }
+    }
+
+    /**
+     * 发送数据
+     * @param data
+     */
+    MyWebSocket.prototype.send = function (data) {
+        if (this.webSocket == null) {
+            console.warn("WebSocket not connected")
+            return
+        }
+        this.webSocket.send(data)
+    }
+
+    /**
+     * 关闭连接
+     */
+    MyWebSocket.prototype.close = function () {
+        if (this.webSocket != null) {
+            this.webSocket.close()
+            this.webSocket = null
+        }
+    }
+    ;
+</script>
+
+<script>
+    const token = "1"
+    let url = "ws://localhost:8200?token=" + token
+    let myWebSocket = new MyWebSocket(url, null, function (event) {
+        console.log("[Received message]", JSON.parse(event.data))
+    }, null, null)
+    myWebSocket.connect()
+
+    window.subscribe = function (topic) {
+        myWebSocket.send(JSON.stringify({
+            "topic": "/subscribe/topic",
+            "data": [topic]
+        }))
+    }
+
+    window.unsubscribe = function (topic) {
+        myWebSocket.send(JSON.stringify({
+            "topic": "/unsubscribe/topic",
+            "data": [topic]
+        }))
+    }
+
+    window.send = function (data) {
+        myWebSocket.send(JSON.stringify({
+            "topic": "/test/get",
+            "data": data
+        }))
+    }
+
+    // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常
+    window.onbeforeunload = function () {
+        myWebSocket.close()
+    }
+</script>

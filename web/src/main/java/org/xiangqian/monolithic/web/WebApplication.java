@@ -13,7 +13,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @SpringBootApplication
 public class WebApplication {
 
-    @SneakyThrows
     public static void main(String[] args) {
         SpringApplication.run(WebApplication.class, args);
     }

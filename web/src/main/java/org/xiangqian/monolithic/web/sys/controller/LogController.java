@@ -14,7 +14,7 @@ import org.xiangqian.monolithic.biz.LazyList;
 import org.xiangqian.monolithic.biz.Page;
 import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
 import org.xiangqian.monolithic.biz.sys.service.LogService;
-import org.xiangqian.monolithic.web.Response;
+import org.xiangqian.monolithic.biz.Response;
 
 /**
  * @author xiangqian

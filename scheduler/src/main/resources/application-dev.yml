@@ -1,0 +1,6 @@
+server:
+  port: 8400
+  servlet:
+    context-path: /
+    session:
+      persistent: false

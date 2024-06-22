@@ -13,7 +13,7 @@
 
     <dependencies>
 
-        <!-- @Redis缓存::start -->
+        <!-- @Redis::start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
@@ -22,7 +22,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-        <!-- @Redis缓存::end -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- @Redis::end -->
 
         <!--
         <dependency>

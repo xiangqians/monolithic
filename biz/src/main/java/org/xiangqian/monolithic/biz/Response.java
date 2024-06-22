@@ -1,9 +1,8 @@
-package org.xiangqian.monolithic.web;
+package org.xiangqian.monolithic.biz;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.xiangqian.monolithic.biz.CodeDescription;
 
 /**
  * @author xiangqian

@@ -20,7 +20,7 @@ public class CodeDescription {
     static {
         try {
             map = new HashMap<>(64, 1f);
-            Set<Class<?>> classes = ResourceUtil.getClasses("org.xiangqian.monolithic.biz.**");
+            Set<Class<?>> classes = ResourceUtil.getClasses("org.xiangqian.monolithic.**");
             for (Class clazz : classes) {
                 if (clazz == Code.class || Code.class.isAssignableFrom(clazz)) {
                     Field[] fields = clazz.getDeclaredFields();

@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
     private UserTokenResult getTokenByUser(UserEntity user) {
         String token = null;
         String prefix = getTokenKeyPrefix(user.getId());
-        Set<String> keys = redis.keyWithPrefix(prefix, 1);
+        Set<String> keys = redis.keysWithPrefix(prefix, 1);
         if (CollectionUtils.isNotEmpty(keys)) {
             token = keys.iterator().next();
             token = token.substring(prefix.length());
