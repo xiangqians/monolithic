@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.common.util;
+package org.xiangqian.monolithic.common.mail;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

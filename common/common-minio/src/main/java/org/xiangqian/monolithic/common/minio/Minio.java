@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.common.util;
+package org.xiangqian.monolithic.common.minio;
 
 import io.minio.*;
 import io.minio.http.Method;

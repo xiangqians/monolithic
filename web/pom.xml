@@ -12,10 +12,6 @@
     <description>web模块</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.xiangqian.monolithic</groupId>
-            <artifactId>biz</artifactId>
-        </dependency>
 
         <!-- @prometheus::start -->
         <dependency>

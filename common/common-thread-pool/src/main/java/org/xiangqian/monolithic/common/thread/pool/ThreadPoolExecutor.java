@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.common.util;
+package org.xiangqian.monolithic.common.thread.pool;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

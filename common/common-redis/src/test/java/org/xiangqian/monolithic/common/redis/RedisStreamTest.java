@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.common.util.redis;
+package org.xiangqian.monolithic.common.redis;
 
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;

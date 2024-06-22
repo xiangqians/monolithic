@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.common.util;
+package org.xiangqian.monolithic.common.redis;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;

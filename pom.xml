@@ -80,17 +80,33 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- @common::start -->
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
-                <artifactId>util</artifactId>
+                <artifactId>common-util</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
-                <artifactId>biz</artifactId>
+                <artifactId>common-db</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-redis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-minio</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-mail</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- @common::end -->
 
             <dependency>
                 <groupId>io.minio</groupId>
@@ -111,6 +127,9 @@
             </dependency>
             <!-- @Redis::end -->
 
+            <!-- Rhino JavaScript 引擎
+             | Rhino 是由 Mozilla 开发的一个基于 Java 的开源 JavaScript 引擎，它允许在 Java 环境中执行 JavaScript 代码。
+             |-->
             <dependency>
                 <groupId>org.mozilla</groupId>
                 <artifactId>rhino</artifactId>

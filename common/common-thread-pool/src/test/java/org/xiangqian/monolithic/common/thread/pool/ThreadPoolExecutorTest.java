@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.common.util;
+package org.xiangqian.monolithic.common.thread.pool;
 
 import lombok.SneakyThrows;
 
