@@ -38,30 +38,16 @@ import java.util.concurrent.TimeUnit;
  * 9、社区支持：Redis 拥有一个活跃的开发者社区，提供了大量的文档、教程和第三方库，这为开发者提供了强大的支持和丰富的资源。
  * 10、跨平台兼容性：Redis 可以在多种操作系统上运行，包括 Linux、macOS 和 Windows，这使得它能够在不同的技术栈中灵活部署。
  * <p>
+ * Redis中文网
+ * https://redis.com.cn
+ * <p>
+ * Redis数据类型：
  * https://redis.io/docs/latest/develop/data-types
- * https://redis.com.cn/documentation.html
- * https://www.redis.net.cn/tutorial/3521.html
  *
  * @author xiangqian
  * @date 12:02 2024/06/01
  */
 public class Redis {
-
-    //Probabilistic
-    //    HyperLogLog
-    //    Bloom filter
-    //    Cuckoo filter
-    //    t-digest
-    //    Top-K
-    //    Count-min sketch
-    //    Configuration
-    //Time series
-    //  Quickstart
-    //  Configuration
-    //  Development
-    //  Clients
-    //  Reference
-    //  Use cases
 
     private RedisTemplate<java.lang.String, Object> redisTemplate;
     private RedissonClient redissonClient;
@@ -1303,7 +1289,11 @@ public class Redis {
         boolean onMessage(MapRecord<java.lang.String, java.lang.String, java.lang.String> message);
     }
 
-    // JSON
+    /**
+     * RedisJSON 是一个 Redis 模块，它允许你在 Redis 中以原生 JSON 格式存储、操作和查询数据。
+     */
+    public static class Json {
+    }
 
     public static interface Probabilistic {
     }
@@ -1523,25 +1513,63 @@ public class Redis {
         }
     }
 
+    /**
+     * Bloom filter
+     * Bloom filters are a probabilistic data structure that checks for presence of an element in a set.
+     * <p>
+     * Redis 提供了 Bloom filter 的实现作为其插件之一（通过 RedisBloom 模块），可以直接在 Redis 服务器上使用，因此不需要单独安装。你只需确保 Redis 服务器运行并加载了 RedisBloom 模块。
+     */
+    public static class BloomFilter implements Probabilistic {
+    }
 
-    //Bloom filter
-    //Bloom filters are a probabilistic data structure that checks for presence of an element in a set
-    //
-    //Cuckoo filter
-    //Cuckoo filters are a probabilistic data structure that checks for presence of an element in a set
-    //
-    //t-digest
-    //t-digest is a probabilistic data structure that allows you to estimate the percentile of a data stream.
-    //
-    //Top-K
-    //Top-K is a probabilistic data structure that allows you to find the most frequent items in a data stream.
-    //
-    //Count-min sketch
-    //Count-min sketch is a probabilistic data structure that estimates the frequency of an element in a data stream.
-    //
-    //Configuration Parameters
-    //RedisBloom supports multiple module configuration parameters. All of these parameters can only be set at load-time.
+    /**
+     * Cuckoo filter
+     * Cuckoo filters are a probabilistic data structure that checks for presence of an element in a set.
+     * <p>
+     * Cuckoo filter 通常作为数据结构库的一部分提供，例如在 C++、Java 或 Python 的库中。
+     * 你可以将这些库作为依赖添加到你的项目中，而不必安装到系统级环境中。
+     */
+    public static class CuckooFilter implements Probabilistic {
+    }
 
+    /**
+     * t-digest
+     * t-digest is a probabilistic data structure that allows you to estimate the percentile of a data stream.
+     * <p>
+     * t-digest 是一种用于近似数据分布的算法，它的实现通常作为软件库提供，例如 Java 中的 tdigest 库或 Python 中的 tdigest 库。
+     * 你可以通过包管理工具将其集成到你的项目中，而不必安装到系统级环境中。
+     */
+    public static class TDigest implements Probabilistic {
+    }
+
+    /**
+     * Top-K
+     * Top-K is a probabilistic data structure that allows you to find the most frequent items in a data stream.
+     * <p>
+     * Top-K 查询和算法通常是作为查询模式或算法实现的一部分，可以直接集成到你的应用程序中，无需额外安装。
+     * 例如，在数据库查询或数据处理过程中，你可以直接实现 Top-K 查询或算法，而不需要安装额外的软件。
+     */
+    public static class TopK implements Probabilistic {
+    }
+
+    /**
+     * Count-min sketch
+     * Count-min sketch is a probabilistic data structure that estimates the frequency of an element in a data stream.
+     * <p>
+     * Count-min sketch 是一种数据结构和算法，可以在多个编程语言中作为库使用，例如 Python 的 datasketch 库或 Java 的 java.util.sketch。
+     * 你可以通过依赖管理工具（如 pip 或 Maven）将这些库添加到你的项目中，而无需将其安装到系统环境中。
+     */
+    public static class CountMinSketch implements Probabilistic {
+    }
+
+    /**
+     * RedisTimeSeries 是一个 Redis 模块，专门用于处理时间序列数据，它提供了更高级别的操作和优化。首先，你需要安装 RedisTimeSeries 模块。
+     * <p>
+     * 安装 RedisTimeSeries 模块：
+     * 你可以使用 Redis 的 MODULE LOAD 命令来加载 RedisTimeSeries 模块，或者在 Redis 启动时通过配置文件加载模块。
+     */
+    public static class TimeSeries {
+    }
 
     // 发布/订阅（Pub/Sub）：一种消息通信模式，允许客户端订阅消息通道，并接收发布到该通道的消息。
 
