@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
+import org.xiangqian.monolithic.web.sys.entity.LogEntity;
 import org.xiangqian.monolithic.util.NamingUtil;
 
 import java.lang.reflect.Field;

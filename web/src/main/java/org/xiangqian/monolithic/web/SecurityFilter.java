@@ -15,8 +15,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
-import org.xiangqian.monolithic.biz.sys.service.UserService;
+import org.xiangqian.monolithic.web.sys.entity.UserEntity;
+import org.xiangqian.monolithic.web.sys.service.UserService;
 import org.xiangqian.monolithic.util.JsonUtil;
 import org.xiangqian.monolithic.biz.Response;
 

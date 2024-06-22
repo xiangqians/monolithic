@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.sys.model.UserTokenEmailArg;
-import org.xiangqian.monolithic.biz.sys.model.UserTokenPhoneArg;
-import org.xiangqian.monolithic.biz.sys.model.UserTokenResult;
-import org.xiangqian.monolithic.biz.sys.service.UserService;
+import org.xiangqian.monolithic.web.sys.model.UserTokenEmailArg;
+import org.xiangqian.monolithic.web.sys.model.UserTokenPhoneArg;
+import org.xiangqian.monolithic.web.sys.model.UserTokenResult;
+import org.xiangqian.monolithic.web.sys.service.UserService;
 import org.xiangqian.monolithic.web.Allow;
 import org.xiangqian.monolithic.biz.Response;
 

@@ -30,11 +30,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.CodeException;
-import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
-import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
-import org.xiangqian.monolithic.biz.sys.entity.UserEntity;
-import org.xiangqian.monolithic.biz.sys.service.LogService;
-import org.xiangqian.monolithic.biz.sys.service.UserService;
+import org.xiangqian.monolithic.web.sys.entity.AuthorityEntity;
+import org.xiangqian.monolithic.web.sys.entity.LogEntity;
+import org.xiangqian.monolithic.web.sys.entity.UserEntity;
+import org.xiangqian.monolithic.web.sys.service.LogService;
+import org.xiangqian.monolithic.web.sys.service.UserService;
 import org.xiangqian.monolithic.util.JsonUtil;
 import org.xiangqian.monolithic.biz.Response;
 

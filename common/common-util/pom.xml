@@ -13,6 +13,11 @@
     <description>工具模块</description>
 
     <dependencies>
+        <!-- swagger3 -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-core-jakarta</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>io.minio</groupId>

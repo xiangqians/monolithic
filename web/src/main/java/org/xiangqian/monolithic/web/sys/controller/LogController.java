@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.xiangqian.monolithic.biz.Code;
 import org.xiangqian.monolithic.biz.LazyList;
 import org.xiangqian.monolithic.biz.Page;
-import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
-import org.xiangqian.monolithic.biz.sys.service.LogService;
+import org.xiangqian.monolithic.web.sys.entity.LogEntity;
+import org.xiangqian.monolithic.web.sys.service.LogService;
 import org.xiangqian.monolithic.biz.Response;
 
 /**

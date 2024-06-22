@@ -7,8 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.sys.model.UserTokenEmailArg;
-import org.xiangqian.monolithic.biz.sys.model.UserTokenResult;
+import org.xiangqian.monolithic.web.sys.model.UserTokenEmailArg;
+import org.xiangqian.monolithic.web.sys.model.UserTokenResult;
 import org.xiangqian.monolithic.web.Allow;
 import org.xiangqian.monolithic.biz.Response;
 

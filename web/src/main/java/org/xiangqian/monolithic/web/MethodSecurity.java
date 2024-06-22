@@ -19,11 +19,11 @@ import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondit
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPattern;
-import org.xiangqian.monolithic.biz.sys.entity.AuthorityEntity;
-import org.xiangqian.monolithic.biz.sys.entity.AuthorityGroupEntity;
-import org.xiangqian.monolithic.biz.sys.mapper.AuthorityGroupMapper;
-import org.xiangqian.monolithic.biz.sys.mapper.AuthorityMapper;
-import org.xiangqian.monolithic.biz.sys.service.UserService;
+import org.xiangqian.monolithic.web.sys.entity.AuthorityEntity;
+import org.xiangqian.monolithic.web.sys.entity.AuthorityGroupEntity;
+import org.xiangqian.monolithic.web.sys.mapper.AuthorityGroupMapper;
+import org.xiangqian.monolithic.web.sys.mapper.AuthorityMapper;
+import org.xiangqian.monolithic.web.sys.service.UserService;
 import org.xiangqian.monolithic.util.JsonUtil;
 import org.xiangqian.monolithic.util.Md5Util;
 import org.xiangqian.monolithic.util.Redis;

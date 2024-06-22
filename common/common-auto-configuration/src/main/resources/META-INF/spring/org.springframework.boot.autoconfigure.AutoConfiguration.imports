@@ -1,0 +1,4 @@
+org.xiangqian.monolithic.common.auto.configuration.MailAutoConfiguration
+org.xiangqian.monolithic.common.auto.configuration.MinioAutoConfiguration
+org.xiangqian.monolithic.common.auto.configuration.MyBatisAutoConfiguration
+org.xiangqian.monolithic.common.auto.configuration.RedisAutoConfiguration

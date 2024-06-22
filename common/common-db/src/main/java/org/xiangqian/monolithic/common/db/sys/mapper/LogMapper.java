@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.xiangqian.monolithic.biz.LazyList;
 import org.xiangqian.monolithic.biz.Page;
-import org.xiangqian.monolithic.biz.sys.entity.LogEntity;
+import org.xiangqian.monolithic.web.sys.entity.LogEntity;
 
 /**
  * 日志表Mapper
