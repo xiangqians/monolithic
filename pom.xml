@@ -12,6 +12,7 @@
     <description>单体式应用</description>
 
     <modules>
+        <module>common</module>
         <module>util</module>
         <module>biz</module>
         <module>web</module>

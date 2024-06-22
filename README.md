@@ -12,12 +12,13 @@
 
 ```text
 ├ monolithic
-├── util      （工具模块）
-├── biz       （业务模块）
-├── web       （Web模块）
-├── websocket （WebSocket模块）
-├── scheduler （任务调度模块）
-└── consumer  （消费者模块）
+├── common           （公共模块）
+├    ├── common-util （工具模块）
+├    └── common-db   （数据库模块）
+├── web              （Web模块）
+├── websocket        （WebSocket模块）
+├── scheduler        （任务调度模块）
+└── consumer         （消费者模块）
 ```
 
 # 接口文档
