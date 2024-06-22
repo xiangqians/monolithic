@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.biz.sys.entity;
+package org.xiangqian.monolithic.common.db.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 

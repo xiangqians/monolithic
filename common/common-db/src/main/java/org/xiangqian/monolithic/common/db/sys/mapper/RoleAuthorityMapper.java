@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.biz.sys.mapper;
+package org.xiangqian.monolithic.common.db.sys.mapper;
 
 import org.xiangqian.monolithic.biz.sys.entity.RoleAuthorityEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

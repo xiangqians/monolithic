@@ -5,19 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.xiangqian.monolithic</groupId>
-        <artifactId>monolithic</artifactId>
+        <artifactId>common</artifactId>
         <version>2022.09</version>
     </parent>
-    <packaging>pom</packaging>
-    <artifactId>common</artifactId>
+    <artifactId>common-auto-configuration</artifactId>
     <name>${artifactId}</name>
-    <description>公共模块</description>
-
-    <modules>
-        <module>common-util</module>
-        <module>common-db</module>
-        <module>common-db</module>
-        <module>common-auto-configuration</module>
-    </modules>
+    <description>配置模块</description>
 
 </project>
