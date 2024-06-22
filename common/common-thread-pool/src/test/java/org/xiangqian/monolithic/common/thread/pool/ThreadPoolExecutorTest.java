@@ -13,7 +13,7 @@ public class ThreadPoolExecutorTest {
 
     @SneakyThrows
     public static void main(String[] args) {
-        ThreadPoolExecutor threadPoolExecutor = ThreadPoolExecutor.create();
+        DefaultThreadPoolExecutor threadPoolExecutor = DefaultThreadPoolExecutor.create();
         new Thread(() -> {
             while (!threadPoolExecutor.isTerminated()) {
                 try {
