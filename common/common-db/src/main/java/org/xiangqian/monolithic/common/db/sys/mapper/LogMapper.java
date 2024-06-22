@@ -3,9 +3,9 @@ package org.xiangqian.monolithic.common.db.sys.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.xiangqian.monolithic.biz.LazyList;
-import org.xiangqian.monolithic.biz.Page;
-import org.xiangqian.monolithic.web.sys.entity.LogEntity;
+import org.xiangqian.monolithic.common.db.LazyList;
+import org.xiangqian.monolithic.common.db.Page;
+import org.xiangqian.monolithic.common.db.sys.entity.LogEntity;
 
 /**
  * 日志表Mapper

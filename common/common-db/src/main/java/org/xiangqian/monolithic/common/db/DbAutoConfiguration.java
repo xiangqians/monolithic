@@ -12,10 +12,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.sql.SQLException;
@@ -28,8 +25,7 @@ import java.util.Map;
  */
 @EnableTransactionManagement
 @Configuration(proxyBeanMethods = false)
-@MapperScan("org.xiangqian.monolithic.biz.*.mapper") // 指定要扫描的mapper包路径
-@ComponentScan("org.xiangqian.monolithic.biz.*.service.impl") // 扫描组件
+@MapperScan("org.xiangqian.monolithic.common.db.**.mapper") // 指定要扫描的mapper包路径
 public class DbAutoConfiguration {
 
     /**
@@ -132,11 +128,6 @@ public class DbAutoConfiguration {
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
         mybatisPlusInterceptor.setInterceptors(List.of(paginationInnerInterceptor));
         return mybatisPlusInterceptor;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
 }

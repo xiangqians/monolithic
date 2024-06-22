@@ -2,7 +2,7 @@ package org.xiangqian.monolithic.common.db.sys.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.xiangqian.monolithic.web.sys.entity.UserEntity;
+import org.xiangqian.monolithic.common.db.sys.entity.UserEntity;
 
 /**
  * 用户表Mapper

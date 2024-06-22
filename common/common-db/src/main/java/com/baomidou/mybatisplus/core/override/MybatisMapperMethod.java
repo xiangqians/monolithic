@@ -26,7 +26,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
-import org.xiangqian.monolithic.biz.LazyList;
+import org.xiangqian.monolithic.common.db.LazyList;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;

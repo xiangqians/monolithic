@@ -1,7 +1,7 @@
 package org.xiangqian.monolithic.common.db.sys;
 
-import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.Description;
+import org.xiangqian.monolithic.common.util.Code;
+import org.xiangqian.monolithic.common.util.Description;
 
 /**
  * @author xiangqian

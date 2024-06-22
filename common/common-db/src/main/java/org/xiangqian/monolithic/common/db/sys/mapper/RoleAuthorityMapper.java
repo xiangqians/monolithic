@@ -1,8 +1,8 @@
 package org.xiangqian.monolithic.common.db.sys.mapper;
 
-import org.xiangqian.monolithic.web.sys.entity.RoleAuthorityEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.xiangqian.monolithic.common.db.sys.entity.RoleAuthorityEntity;
 
 /**
  * 角色权限表Mapper

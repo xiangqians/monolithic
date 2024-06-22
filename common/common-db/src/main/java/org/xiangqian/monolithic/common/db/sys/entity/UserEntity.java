@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.xiangqian.monolithic.util.DateTimeUtil;
+import org.xiangqian.monolithic.common.util.DateTimeUtil;
 
 import java.io.Serializable;
 import java.time.Duration;
