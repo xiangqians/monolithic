@@ -13,7 +13,6 @@
 
     <modules>
         <module>common</module>
-        <module>util</module>
         <module>biz</module>
         <module>web</module>
         <module>websocket</module>
