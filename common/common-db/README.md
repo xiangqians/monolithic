@@ -1,7 +1,7 @@
 application.yml
 
 ```yaml
-# mybatis-plus配置
+# MyBatis配置
 mybatis-plus:
   configuration:
     # 开启驼峰配置
