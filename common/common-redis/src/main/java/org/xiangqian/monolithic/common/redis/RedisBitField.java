@@ -1,5 +1,6 @@
 package org.xiangqian.monolithic.common.redis;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -35,28 +36,72 @@ public class RedisBitField {
     /**
      * 设置字段
      *
+     * @param bitFieldType 位字段类型，{@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_8}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_16}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_32}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_64}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_8}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_16}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_32}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_64}
      * @param offset
      * @param value
      * @return
      */
-    public List<Long> set(long offset, int value) {
-        return redisTemplate.execute((connection) -> connection.bitField(key.getBytes(), BitFieldSubCommands.create().set(BitFieldSubCommands.BitFieldType.unsigned(3)).valueAt(offset).to(value)), true);
+    public Long set(BitFieldSubCommands.BitFieldType bitFieldType, long offset, int value) {
+        List<Long> oldValues = redisTemplate.execute((connection) -> connection.bitField(key.getBytes(), BitFieldSubCommands.create().set(bitFieldType).valueAt(offset).to(value)), true);
+        if (CollectionUtils.isNotEmpty(oldValues)) {
+            return oldValues.get(0);
+        }
+        return null;
     }
 
-    // 获取字段
-    public List<Long> get(long offset) {
-        return redisTemplate.execute((connection) -> connection.bitField(key.getBytes(), BitFieldSubCommands.create().get(BitFieldSubCommands.BitFieldType.unsigned(3)).valueAt(offset)), true);
+    /**
+     * 获取字段
+     *
+     * @param bitFieldType 位字段类型，{@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_8}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_16}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_32}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_64}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_8}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_16}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_32}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_64}
+     * @param offset
+     * @return
+     */
+    public Long get(BitFieldSubCommands.BitFieldType bitFieldType, long offset) {
+        List<Long> values = redisTemplate.execute((connection) -> connection.bitField(key.getBytes(), BitFieldSubCommands.create().get(bitFieldType).valueAt(offset)), true);
+        if (CollectionUtils.isNotEmpty(values)) {
+            return values.get(0);
+        }
+        return null;
     }
 
     /**
      * 字段递增
      *
+     * @param bitFieldType 位字段类型，{@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_8}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_16}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_32}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#INT_64}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_8}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_16}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_32}
+     *                     {@link org.springframework.data.redis.connection.BitFieldSubCommands.BitFieldType#UINT_64}
      * @param offset
-     * @param increment
+     * @param delta
      * @return
      */
-    public List<Long> increment(long offset, int increment) {
-        return redisTemplate.execute((connection) -> connection.bitField(key.getBytes(), BitFieldSubCommands.create().incr(BitFieldSubCommands.BitFieldType.unsigned(3)).valueAt(offset).by(increment)), true);
+    public Long increment(BitFieldSubCommands.BitFieldType bitFieldType, long offset, int delta) {
+        List<Long> oldValues = redisTemplate.execute((connection) -> connection.bitField(key.getBytes(), BitFieldSubCommands.create().incr(bitFieldType).valueAt(offset).by(delta)), true);
+        if (CollectionUtils.isNotEmpty(oldValues)) {
+            return oldValues.get(0);
+        }
+        return null;
     }
 
 }

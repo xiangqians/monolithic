@@ -29,6 +29,16 @@ public class RedisString {
     /**
      * 设置键值
      *
+     * @param key   键
+     * @param value 值
+     */
+    public void set(String key, Object value) {
+        valueOperations.set(key, value);
+    }
+
+    /**
+     * 设置键值
+     *
      * @param key     键
      * @param value   值
      * @param timeout 过期时间
@@ -37,8 +47,25 @@ public class RedisString {
         valueOperations.set(key, value, timeout.toSeconds(), TimeUnit.SECONDS);
     }
 
-    public void set(String key, Object value) {
-        valueOperations.set(key, value);
+    /**
+     * 设置键值子字符串
+     *
+     * @param key
+     * @param offset
+     * @param value
+     */
+    public void set(String key, long offset, String value) {
+        valueOperations.set(key, value, offset);
+    }
+
+    /**
+     * 设置键值，如果该键已存在，则不进行任何操作
+     *
+     * @param key   键
+     * @param value 值
+     */
+    public Boolean setIfAbsent(String key, Object value) {
+        return valueOperations.setIfAbsent(key, value);
     }
 
     /**
@@ -50,10 +77,6 @@ public class RedisString {
      */
     public Boolean setIfAbsent(String key, Object value, Duration timeout) {
         return valueOperations.setIfAbsent(key, value, timeout.toSeconds(), TimeUnit.SECONDS);
-    }
-
-    public Boolean setIfAbsent(String key, Object value) {
-        return valueOperations.setIfAbsent(key, value);
     }
 
     /**
@@ -70,8 +93,19 @@ public class RedisString {
      *
      * @param kvMap
      */
-    public void multiSetIfAbsent(Map<String, Object> kvMap) {
-        valueOperations.multiSetIfAbsent(kvMap);
+    public Boolean multiSetIfAbsent(Map<String, Object> kvMap) {
+        return valueOperations.multiSetIfAbsent(kvMap);
+    }
+
+    /**
+     * 追加值
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Integer append(String key, String value) {
+        return valueOperations.append(key, value);
     }
 
     /**
@@ -85,13 +119,25 @@ public class RedisString {
     }
 
     /**
+     * 获取键值
+     *
+     * @param key   键
+     * @param start
+     * @param end
+     * @return
+     */
+    public String get(String key, long start, long end) {
+        return valueOperations.get(key, start, end);
+    }
+
+    /**
      * 获取键旧值并设置新值
      *
      * @param key      键
      * @param newValue 新值
      * @return 旧值
      */
-    public Object getAndSet(String key, String newValue) {
+    public Object getAndSet(String key, Object newValue) {
         Object oldValue = valueOperations.getAndSet(key, newValue);
         return oldValue;
     }
@@ -157,6 +203,16 @@ public class RedisString {
      */
     public Long decrement(String key, long delta) {
         return valueOperations.decrement(key, delta);
+    }
+
+    /**
+     * 获取值长度
+     *
+     * @param key
+     * @return
+     */
+    public Long size(String key) {
+        return valueOperations.size(key);
     }
 
     private static RedisString redisString;

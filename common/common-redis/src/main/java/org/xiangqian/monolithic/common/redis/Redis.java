@@ -54,13 +54,13 @@ public class Redis {
     }
 
     /**
-     * 是否存在某个前缀的键
+     * 指定的键是否存在
      *
-     * @param prefix
+     * @param key
      * @return
      */
-    public boolean hasKeyWithPrefix(String prefix) {
-        return CollectionUtils.isNotEmpty(getKeysWithPrefix(prefix, 1));
+    public boolean hasKey(String key) {
+        return BooleanUtils.toBoolean(redisTemplate.hasKey(key));
     }
 
     /**
@@ -87,13 +87,13 @@ public class Redis {
     }
 
     /**
-     * 指定的键是否存在
+     * 是否存在某个前缀的键
      *
-     * @param key
+     * @param prefix
      * @return
      */
-    public boolean hasKey(String key) {
-        return BooleanUtils.toBoolean(redisTemplate.hasKey(key));
+    public boolean hasKeyWithPrefix(String prefix) {
+        return CollectionUtils.isNotEmpty(getKeysWithPrefix(prefix, 1));
     }
 
     /**
@@ -124,74 +124,6 @@ public class Redis {
      */
     public Long delete(Set<String> keys) {
         return redisTemplate.delete(keys);
-    }
-
-    public RedisString String() {
-        return RedisString.get(redisTemplate);
-    }
-
-    public RedisList List(String key) {
-        return new RedisList(redisTemplate, key);
-    }
-
-    public RedisSet Set(String key) {
-        return new RedisSet(redisTemplate, key);
-    }
-
-    public RedisSortedSet SortedSet(String key) {
-        return new RedisSortedSet(redisTemplate, key);
-    }
-
-    public RedisHash Hash(String key) {
-        return new RedisHash(redisTemplate, key);
-    }
-
-    public RedisBitmap Bitmap(String key) {
-        return new RedisBitmap(redisTemplate, key);
-    }
-
-    public RedisBitField BitField(String key) {
-        return new RedisBitField(redisTemplate, key);
-    }
-
-    public RedisGeospatial Geospatial(String key) {
-        return new RedisGeospatial(redisTemplate, key);
-    }
-
-    public RedisStream Stream(String key) {
-        return new RedisStream(redisTemplate, key);
-    }
-
-    public RedisJson json() {
-        throw new UnsupportedOperationException();
-    }
-
-    public RedisHyperLogLog HyperLogLog(String key) {
-        return new RedisHyperLogLog(redisTemplate, key);
-    }
-
-    public RedisBloomFilter BloomFilter() {
-        throw new UnsupportedOperationException();
-    }
-
-    public RedisCuckooFilter CuckooFilter() {
-        throw new UnsupportedOperationException();
-    }
-
-    public RedisTDigest TDigest() {
-        throw new UnsupportedOperationException();
-    }
-
-    public RedisTopK TopK() {
-        throw new UnsupportedOperationException();
-    }
-
-    public RedisCountMinSketch CountMinSketch() {
-        throw new UnsupportedOperationException();
-    }
-
-    public RedisTimeSeries TimeSeries() {
-        throw new UnsupportedOperationException();
     }
 
     // 发布/订阅（Pub/Sub）：一种消息通信模式，允许客户端订阅消息通道，并接收发布到该通道的消息。
@@ -232,6 +164,74 @@ public class Redis {
         RedisConnectionFactory redisConnectionFactory = redisTemplate.getConnectionFactory();
         RedisConnection connection = redisConnectionFactory.getConnection();
         connection.pSubscribe(messageListener, Arrays.stream(patterns).map(String::getBytes).toArray(byte[][]::new));
+    }
+
+    public RedisString String() {
+        return RedisString.get(redisTemplate);
+    }
+
+    public RedisList List(String key) {
+        return new RedisList(redisTemplate, key);
+    }
+
+    public RedisSet Set(String key) {
+        return new RedisSet(redisTemplate, key);
+    }
+
+    public RedisSortedSet SortedSet(String key) {
+        return new RedisSortedSet(redisTemplate, key);
+    }
+
+    public RedisHash Hash(String key) {
+        return new RedisHash(redisTemplate, key);
+    }
+
+    public RedisBitmap Bitmap(String key) {
+        return new RedisBitmap(redisTemplate, key);
+    }
+
+    public RedisBitField BitField(String key) {
+        return new RedisBitField(redisTemplate, key);
+    }
+
+    public RedisGeospatial Geospatial(String key) {
+        return new RedisGeospatial(redisTemplate, key);
+    }
+
+    public RedisStream Stream(String key) {
+        return new RedisStream(redisTemplate, key);
+    }
+
+    public RedisJson Json() {
+        throw new UnsupportedOperationException();
+    }
+
+    public RedisHyperLogLog HyperLogLog(String key) {
+        return new RedisHyperLogLog(redisTemplate, key);
+    }
+
+    public RedisBloomFilter BloomFilter() {
+        throw new UnsupportedOperationException();
+    }
+
+    public RedisCuckooFilter CuckooFilter() {
+        throw new UnsupportedOperationException();
+    }
+
+    public RedisTDigest TDigest() {
+        throw new UnsupportedOperationException();
+    }
+
+    public RedisTopK TopK() {
+        throw new UnsupportedOperationException();
+    }
+
+    public RedisCountMinSketch CountMinSketch() {
+        throw new UnsupportedOperationException();
+    }
+
+    public RedisTimeSeries TimeSeries() {
+        throw new UnsupportedOperationException();
     }
 
     public RedisLock Lock(String key) {

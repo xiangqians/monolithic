@@ -33,9 +33,12 @@ public class RedisBitmap {
     private ValueOperations<String, Object> valueOperations;
     private String key;
 
-    // bit_count_sum.lua
+    // 使用 Lua 脚本进行位图统计操作
+    private static final RedisScript<Long> countScript = new DefaultRedisScript<>("return redis.call('bitcount', KEYS[1])", Long.class);
+
+    // count_sum.lua
     // 计算多个位图中所有位的总和 Lua 脚本
-    private static final DefaultRedisScript<Long> bitCountSumScript = new DefaultRedisScript<>("""
+    private static final RedisScript<Long> countSumScript = new DefaultRedisScript<>("""
             local sum = 0
             for i, key in ipairs(KEYS) do
                 sum = sum + redis.call('BITCOUNT', key)
@@ -44,9 +47,9 @@ public class RedisBitmap {
             """,
             Long.class);
 
-    // bit_count_sum.lua
+    // count_sum.lua
     // 计算多个位图中所有位的总和 Lua 脚本
-    private static final DefaultRedisScript<Long> bitUnionCountSumScript = new DefaultRedisScript<>("""
+    private static final RedisScript<Long> unionCountSumScript = new DefaultRedisScript<>("""
             local sum = 0
             for i, key in ipairs(KEYS) do
                 sum = sum + redis.call('BITCOUNT', key)
@@ -67,10 +70,11 @@ public class RedisBitmap {
      *
      * @param offset
      * @param value
-     * @return
+     * @return 旧值
      */
-    public Boolean setBit(long offset, boolean value) {
-        return valueOperations.setBit(key, offset, value);
+    public Boolean set(long offset, boolean value) {
+        Boolean oldValue = valueOperations.setBit(key, offset, value);
+        return oldValue;
     }
 
     /**
@@ -80,7 +84,7 @@ public class RedisBitmap {
      * @param offset
      * @return
      */
-    public Boolean getBit(long offset) {
+    public Boolean get(long offset) {
         return valueOperations.getBit(key, offset);
     }
 
@@ -88,10 +92,11 @@ public class RedisBitmap {
      * 查找位图中第一个设置为 1（或者 0）的位的位置
      *
      * @param bit
-     * @return
+     * @return 如果没有，则返回 -1
      */
-    public Long bitPos(boolean bit) {
-        return redisTemplate.execute((RedisCallback<Long>) connection -> connection.bitPos(key.getBytes(), bit));
+    public Long pos(boolean bit) {
+        Long offset = redisTemplate.execute((RedisCallback<Long>) connection -> connection.bitPos(key.getBytes(), bit));
+        return offset;
     }
 
     /**
@@ -99,19 +104,31 @@ public class RedisBitmap {
      *
      * @return
      */
-    public Long bitCount() {
-        return bitCountV2();
+    public Long count() {
+        return countV2();
     }
 
-    private Long bitCountV1() {
+    /**
+     * 统计位值为 1 的数量
+     *
+     * @param start 字节偏移量，不是比特偏移量
+     * @param end   字节偏移量，不是比特偏移量
+     * @return
+     */
+    public Long count(long start, long end) {
+        return countV1(start, end);
+    }
+
+    private Long countV1() {
         return redisTemplate.execute(connection -> connection.bitCount(key.getBytes()), true);
     }
 
-    private Long bitCountV2() {
-        // 使用 Lua 脚本进行位图统计操作
-        String script = "return redis.call('bitcount', KEYS[1])";
-        RedisScript<Long> redisScript = new DefaultRedisScript<>(script, Long.class);
-        return redisTemplate.execute(redisScript, List.of(key));
+    private Long countV1(long start, long end) {
+        return redisTemplate.execute(connection -> connection.bitCount(key.getBytes(), start, end), true);
+    }
+
+    private Long countV2() {
+        return redisTemplate.execute(countScript, List.of(key));
     }
 
     /**
@@ -120,11 +137,8 @@ public class RedisBitmap {
      * @param keys
      * @return
      */
-    public Long bitCountSum(String... keys) {
-        return redisTemplate.execute(bitCountSumScript, Arrays.asList(keys));
+    public Long countSum(String... keys) {
+        return redisTemplate.execute(countSumScript, Arrays.asList(keys));
     }
-
-    //BITCOUNT key [start end]：统计位为1的数量
-    //BITOP operation destkey key [key ...]：位运算
 
 }
