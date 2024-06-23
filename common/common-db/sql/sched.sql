@@ -24,9 +24,9 @@ CREATE TABLE `sched_task_record`
 (
     `id`         INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `task_id`    INT(8) UNSIGNED DEFAULT 0 COMMENT '任务id',
-    `start_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '开始时间',
-    `end_time`   DATETIME          DEFAULT NULL COMMENT '结束时间',
-    `status`     TINYINT           DEFAULT 0 COMMENT '状态，0-成功，1-失败，2-取消',
-    `msg`        TEXT              DEFAULT NULL COMMENT '信息',
+    `start_time` DATETIME DEFAULT NULL COMMENT '开始时间',
+    `end_time`   DATETIME DEFAULT NULL COMMENT '结束时间',
+    `status`     TINYINT  DEFAULT 0 COMMENT '状态，0-执行中，1-成功，2-失败',
+    `msg`        TEXT     DEFAULT NULL COMMENT '信息',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务调度记录表';

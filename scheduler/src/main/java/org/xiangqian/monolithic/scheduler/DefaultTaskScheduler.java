@@ -1,5 +1,6 @@
 package org.xiangqian.monolithic.scheduler;
 
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 
 import java.time.Duration;
@@ -12,13 +13,13 @@ import java.util.concurrent.ScheduledFuture;
  * @author xiangqian
  * @date 21:25 2024/06/20
  */
-public class TaskScheduler {
+public class DefaultTaskScheduler {
 
-    private org.springframework.scheduling.TaskScheduler taskScheduler;
+    private TaskScheduler taskScheduler;
 
     private Map<Long, ScheduledFuture<?>> scheduledFutureMap;
 
-    public TaskScheduler(org.springframework.scheduling.TaskScheduler taskScheduler) {
+    public DefaultTaskScheduler(TaskScheduler taskScheduler) {
         this.taskScheduler = taskScheduler;
         this.scheduledFutureMap = new ConcurrentHashMap<>(8, 1f);
     }

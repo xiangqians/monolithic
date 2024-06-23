@@ -1,5 +1,6 @@
 package org.xiangqian.monolithic.scheduler;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -9,10 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
+import org.xiangqian.monolithic.common.db.sched.entity.TaskEntity;
+import org.xiangqian.monolithic.common.db.sched.mapper.TaskMapper;
 
-import java.util.concurrent.ScheduledFuture;
+import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiangqian
@@ -25,10 +27,8 @@ public class SchedulerConfiguration implements ApplicationRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private TaskScheduler taskScheduler;
-
     @Bean
-    public TaskScheduler taskScheduler() {
+    public DefaultTaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
 
         // 设置线程池大小
@@ -52,44 +52,19 @@ public class SchedulerConfiguration implements ApplicationRunner {
 
         threadPoolTaskScheduler.initialize();
 
-        return new TaskScheduler(threadPoolTaskScheduler);
-    }
-
-    private void test() {
-        ScheduledFuture scheduledFuture = taskScheduler.schedule(new Task() {
-            @Override
-            protected void execute() throws Throwable {
-                log.debug("-----【TaskScheduler-1】每隔2秒执行一次--------");
-//                TimeUnit.SECONDS.sleep(10);
-            }
-        }, new CronTrigger("0 19 * * * ?"));
-
-        new Thread(() -> {
-            while (true) {
-                try {
-                    log.debug("任务状态" +
-                                    "\n\t任务是否已经完成：{}" +
-                                    "\n\t任务是否已被取消：{}" +
-                                    "\n\t任务是否正在运行中：{}" +
-                                    "\n\t任务是否已经停止：{}",
-                            taskScheduler.isDone(scheduledFuture),
-                            taskScheduler.isCancelled(scheduledFuture),
-                            taskScheduler.isRunning(scheduledFuture),
-                            taskScheduler.isStopped(scheduledFuture));
-
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });//.start();
+        return new DefaultTaskScheduler(threadPoolTaskScheduler);
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        taskScheduler = applicationContext.getBean(TaskScheduler.class);
-        log.debug("taskScheduler===={}", taskScheduler);
-        test();
+        DefaultTaskScheduler taskScheduler = applicationContext.getBean(DefaultTaskScheduler.class);
+        TaskMapper taskMapper = applicationContext.getBean(TaskMapper.class);
+        List<TaskEntity> taskEntities = taskMapper.selectList(new LambdaQueryWrapper<TaskEntity>());
+        for (TaskEntity taskEntity : taskEntities) {
+            Task task = (Task) applicationContext.getBean(taskEntity.getBean());
+            task.setTaskEntity(taskEntity);
+            taskScheduler.schedule(task, new CronTrigger(taskEntity.getCron()));
+        }
     }
 
 }

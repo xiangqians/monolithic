@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -33,7 +35,7 @@ public class TaskRecordEntity implements Serializable {
     @Schema(description = "结束时间")
     private LocalDateTime endTime;
 
-    @Schema(description = "状态，0-成功，1-失败，2-取消")
+    @Schema(description = "状态，0-执行中，1-成功，2-失败")
     @TableField("`status`")
     private Byte status;
 

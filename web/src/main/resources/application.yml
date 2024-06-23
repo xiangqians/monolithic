@@ -15,7 +15,8 @@ spring:
   profiles:
     active: '@spring.profiles.active@'
 
-# mybatis-plus配置
+
+# MyBatis配置
 mybatis-plus:
   configuration:
     # 开启驼峰配置
@@ -37,6 +38,7 @@ mybatis-plus:
   # 指定sql映射文件位置
   mapper-locations: classpath:mybatis/mapper/**/*Mapper.xml
 
+  # 全局配置
   global-config:
     # 逻辑删除配置
     db-config:
