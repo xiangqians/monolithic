@@ -4,3 +4,23 @@ server:
     context-path: /
     session:
       persistent: false
+
+spring:
+  # 数据源配置
+  datasource:
+    # 驱动
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # url
+    url: jdbc:mysql://localhost:3306/monolithic?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    # 用户名
+    username: root
+    # 密码
+    password: root
+    # 指定使用的数据源
+    type: com.zaxxer.hikari.HikariDataSource
+    # hikari连接池
+    hikari:
+      # 池中最大连接数（包括空闲和正在使用的连接）
+      maximum-pool-size: 5
+      # 池中最小空闲连接数量
+      minimum-idle: 1

@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.xiangqian.monolithic</groupId>
-            <artifactId>util</artifactId>
+            <artifactId>common-db</artifactId>
         </dependency>
 
         <dependency>

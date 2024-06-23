@@ -23,6 +23,7 @@ mybatis-plus:
   # 指定sql映射文件位置
   mapper-locations: classpath:mybatis/mapper/**/*Mapper.xml
 
+  # 全局配置
   global-config:
     # 逻辑删除配置
     db-config:
