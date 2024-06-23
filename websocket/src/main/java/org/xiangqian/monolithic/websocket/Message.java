@@ -1,14 +1,14 @@
 package org.xiangqian.monolithic.websocket;
 
 import lombok.Data;
-import org.xiangqian.monolithic.biz.Response;
+import org.xiangqian.monolithic.common.util.Response;
 
 /**
  * @author xiangqian
  * @date 21:39 2024/06/17
  */
 @Data
-public class Message extends Response {
+public class Message extends Response<Object> {
     // 主题
     private String topic;
 
@@ -26,4 +26,5 @@ public class Message extends Response {
         super(code, msg, data);
         this.topic = topic;
     }
+
 }

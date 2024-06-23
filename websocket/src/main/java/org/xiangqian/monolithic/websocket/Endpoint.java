@@ -12,9 +12,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-import org.xiangqian.monolithic.biz.Code;
-import org.xiangqian.monolithic.biz.CodeException;
-import org.xiangqian.monolithic.util.*;
+import org.xiangqian.monolithic.common.util.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -38,7 +36,7 @@ public class Endpoint implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     /**
-     * Map<{@link org.xiangqian.monolithic.websocket.Receiver#value()}, {@link java.lang.reflect.Method}>
+     * Map<{@link Receiver#value()}, {@link java.lang.reflect.Method}>
      */
     private static Map<String, Method> methodMap;
 

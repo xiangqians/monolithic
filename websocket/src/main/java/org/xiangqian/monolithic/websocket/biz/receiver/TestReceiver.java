@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.websocket.sys.receiver;
+package org.xiangqian.monolithic.websocket.biz.receiver;
 
 import org.xiangqian.monolithic.websocket.Endpoint;
 import org.xiangqian.monolithic.websocket.Receiver;

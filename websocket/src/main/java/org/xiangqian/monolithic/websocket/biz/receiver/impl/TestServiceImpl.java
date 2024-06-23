@@ -1,8 +1,8 @@
-package org.xiangqian.monolithic.websocket.sys.receiver.impl;
+package org.xiangqian.monolithic.websocket.biz.receiver.impl;
 
 import org.springframework.stereotype.Service;
 import org.xiangqian.monolithic.websocket.Endpoint;
-import org.xiangqian.monolithic.websocket.sys.receiver.TestReceiver;
+import org.xiangqian.monolithic.websocket.biz.receiver.TestReceiver;
 
 import java.time.LocalDateTime;
 import java.util.List;
