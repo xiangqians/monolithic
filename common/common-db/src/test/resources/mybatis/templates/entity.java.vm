@@ -4,7 +4,6 @@ package ${package.Entity};
 import ${pkg};
 #end
 #if(${swagger})
-import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 #end
 #if(${entityLombokModel})

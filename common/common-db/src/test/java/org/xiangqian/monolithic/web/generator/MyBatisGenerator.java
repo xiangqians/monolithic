@@ -42,9 +42,9 @@ public class MyBatisGenerator {
                         "\n\tpassword\t\t: %s",
                 driverClassName, url, username, password).println();
         execute(driverClassName, url, username, password,
-                "sys",
+                "sched",
                 "xiangqian",
-                new String[]{"authority_group"},
+                new String[]{"sched_task", "sched_task_record"},
                 false);
     }
 
@@ -203,6 +203,7 @@ public class MyBatisGenerator {
 
         // 策略配置
         generator.strategy(new StrategyConfig.Builder()
+                .addTablePrefix(moduleName)
                 .addInclude(tables)
 
                 // entity构建

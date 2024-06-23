@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @EnableTransactionManagement
 @Configuration(proxyBeanMethods = false)
-@MapperScan("org.xiangqian.monolithic.common.db.**.mapper") // 指定要扫描的mapper包路径
+@MapperScan("org.xiangqian.monolithic.common.db.*.mapper") // 指定要扫描的mapper包路径
 public class DbAutoConfiguration {
 
     /**
