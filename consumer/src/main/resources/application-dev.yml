@@ -1,0 +1,57 @@
+server:
+  port: 8300
+  servlet:
+    context-path: /
+    session:
+      persistent: false
+
+spring:
+  kafka:
+    # Kafka服务器地址和端口
+    bootstrap-servers: localhost:9092
+
+    # Kafka消费者配置
+    consumer:
+      # 消费者组 ID
+      # 确保每个消费者都属于同一个消费者组，以便实现消息的分发和负载均衡
+      group-id: my-group-id
+      # 消费者从哪里开始消费
+      # Kafka 主题中的每个分区都有一个偏移量，用于跟踪消费者已经处理到的消息位置。
+      # 当消费者启动或者发生了一些异常情况（例如消费者组没有偏移量或偏移量无效），就需要根据 AUTO_OFFSET_RESET_CONFIG 来决定从何处开始消费消息。
+      # 可选值：earliest/latest/none
+      # 1. earliest: 如果消费者组之前没有消费过该分区或偏移量无效，则从该分区的最早消息开始消费。换句话说，从最早的可用消息开始消费，即从分区的起始位置开始。
+      # 2. latest  : 如果消费者组之前没有消费过该分区或偏移量无效，则从该分区的最新消息开始消费。也就是说，只消费从当前时间点之后生产的消息。（默认值）
+      # 3. none    : 如果消费者组之前没有消费过该分区或偏移量无效，则抛出异常。一般情况下不建议使用此选项，因为它会导致消费者在启动时发生错误。
+      auto-offset-reset: earliest
+      # 是否开启自动提交偏移量
+      enable-auto-commit: false
+      # key反序列化器
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # value反序列化器
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    listener:
+      # 配置消费者监听器的消息确认模式（Acknowledgment Mode）。
+      # 这个配置项主要影响消费者在处理完消息后如何确认消息的偏移量，从而告知 Kafka 服务器可以提交该偏移量。
+      # 1. record: 在处理每条记录（消息）后立即确认偏移量。这意味着每当消费者处理一条消息后，它会立即提交偏移量。适合于低吞吐量和需要最小确认延迟的场景。（默认值）
+      # 2. batch : 批量确认偏移量，即在处理完一批消息后一次性确认这批消息的偏移量。如果在指定的时间内未确认偏移量，则会自动提交偏移量。适合于高吞吐量的场景，可以减少与 Kafka 服务器的交互次数。
+      # 3. manual: 手动确认偏移量，消费者完全控制何时确认消息的偏移量。应用程序需要显式调用 Acknowledgment.acknowledge() 方法来确认偏移量。这种模式最灵活，可以确保每条消息只被处理一次，适用于需要精确一次处理语义的场景。
+      ack-mode: BATCH
+
+    # ${spring.kafka.consumer.enable-auto-commit}（自动提交偏移量） 和 ${spring.kafka.listener.ack-mode}（消息确认模式） 区别：
+    # ${spring.kafka.consumer.enable-auto-commit} 是控制消费者是否自动将偏移量提交到 Kafka 服务器的开关，直接影响消息的重复处理和丢失风险。
+    # ${spring.kafka.listener.ack-mode} 则决定了消费者如何在处理完消息后通知 Kafka 服务器确认偏移量，可以通过配置选择记录级别、批量级别或手动级别的确认模式。
+    #
+    # 配置示例：
+    # 情况1：使用自动提交偏移量（${spring.kafka.consumer.enable-auto-commit}=true）：
+    #    如果配置了 ${spring.kafka.consumer.enable-auto-commit}=true，则消费者会根据 ${spring.kafka.listener.ack-mode} 的设置来决定何时提交偏移量。
+    #    默认情况：如果未明确设置 ${spring.kafka.listener.ack-mode}，则消费者将使用默认的 record 模式，即在每条记录处理完成后立即提交偏移量。
+    #    如果 ${spring.kafka.listener.ack-mode} 设置为 batch，则消费者将在处理完一批消息后一次性提交这批消息的偏移量。
+    # 情况2：禁用自动提交偏移量（${spring.kafka.consumer.enable-auto-commit}=false）：
+    #    如果显式设置了 ${spring.kafka.consumer.enable-auto-commit}=false，则消费者不会自动提交偏移量。
+    #    手动确认模式：通常配合 ${spring.kafka.listener.ack-mode}=manual 使用，消费者需要在处理完消息后显式调用 Acknowledgment.acknowledge() 方法来确认偏移量。
+    #    批量确认模式：也可以配合 ${spring.kafka.listener.ack-mode}=batch，此时消费者会在处理完一批消息后自动提交这批消息的偏移量。
+    # 建议的最佳实践：
+    #    对于需要精确一次处理语义的应用程序，推荐禁用自动提交偏移量 (enable.auto.commit=false)，并选择合适的 ack-mode（通常是 manual 或 batch）。
+    #    这样可以确保每条消息只在处理成功后确认一次偏移量，避免因自动提交而导致的消息重复处理问题。
+

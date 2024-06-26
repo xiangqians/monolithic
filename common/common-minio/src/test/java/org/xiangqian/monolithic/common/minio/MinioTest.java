@@ -114,7 +114,7 @@ public class MinioTest {
 
     @Before
     public void before() {
-        minio = new Minio("http://localhost:9002", "m0dWHllxoipmIczh", "Kr2Uq0tCHr0HjLLBHBiYzDs5tznle4jv") {
+        minio = new Minio("http://localhost:9000", "m0dWHllxoipmIczh", "Kr2Uq0tCHr0HjLLBHBiYzDs5tznle4jv") {
             private final String prefix = "tmp/";
 
             @Override
