@@ -32,8 +32,8 @@
 ├    ├── common-redis       （缓存模块）
 ├    ├── common-thread-pool （线程池模块）
 ├    └── common-util        （工具模块）
-├── consumer                （消费者应用程序）    【监听端口：8300】
-├── scheduler               （任务调度应用程序）  【监听端口：8200】
-├── web                     （Web应用程序）      【监听端口：8000】
-└── websocket               （WebSocket应用程序）【监听端口：8100】
+├── consumer                （消费者模块）    【监听端口：8300】
+├── scheduler               （任务调度模块）  【监听端口：8200】
+├── web                     （Web模块）      【监听端口：8000】
+└── websocket               （WebSocket模块）【监听端口：8100】
 ```
