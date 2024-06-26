@@ -1,6 +1,7 @@
 package org.xiangqian.monolithic.consumer.listener;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -9,6 +10,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import org.xiangqian.monolithic.common.util.RegexUtil;
 import org.xiangqian.monolithic.consumer.Consumer;
 import org.xiangqian.monolithic.consumer.sys.service.RoleService;
 import org.xiangqian.monolithic.consumer.sys.service.UserService;
@@ -22,8 +24,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class SysListener {
-
-    private final String TOPIC_USER = "^/sys/user/([^/]+)$";
 
     @Autowired
     private UserService userService;
@@ -50,8 +50,11 @@ public class SysListener {
      *                       {@link org.springframework.kafka.listener.KafkaMessageListenerContainer.ListenerConsumer#commitSync(java.util.Map)} / {@link org.springframework.kafka.listener.KafkaMessageListenerContainer.ListenerConsumer#commitAsync(java.util.Map)}
      *                       {@link org.apache.kafka.clients.consumer.Consumer#commitSync(java.util.Map, java.time.Duration)} /  {@link org.apache.kafka.clients.consumer.Consumer#commitAsync(java.util.Map, org.apache.kafka.clients.consumer.OffsetCommitCallback)}
      */
-    @KafkaListener(topicPattern = TOPIC_USER)
+    @KafkaListener(topicPattern = "^/sys/user/([^/]+)$")
     public void user(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
+        String topic = record.topic();
+        String[] values = RegexUtil.extractValues("^/sys/user/([^/]+)$", topic);
+        String id = values[0];
         log.debug("【sys接收到消息】{}", Consumer.toString(record));
         acknowledgment.acknowledge();
     }
