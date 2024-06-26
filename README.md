@@ -20,14 +20,14 @@
 ```text
 ├ monolithic
 ├── common                  （公共模块）
-├    ├── common-clickhouse  （ClickHouse数据库模块）
-├    ├── common-influxdb    （InfluxDB时序数据库模块）
-├    ├── common-kafka       （Kafka模块）
+├    ├── common-clickhouse  （列式数据库模块）
+├    ├── common-influxdb    （时序数据库模块）
 ├    ├── common-mail        （邮件模块）
 ├    ├── common-minio       （对象存储模块）
-├    ├── common-mongodb     （MongoDB文档数据库模块）
-├    ├── common-mysql       （MySQL数据库模块）
-├    ├── common-neo4j       （Neo4j图数据库模块）
+├    ├── common-mongodb     （文档数据库模块）
+├    ├── common-mysql       （行式数据库模块）
+├    ├── common-neo4j       （图数据库模块）
+├    ├── common-producer    （生产者模块）
 ├    ├── common-prometheus  （监控模块）
 ├    ├── common-redis       （缓存模块）
 ├    ├── common-thread-pool （线程池模块）
