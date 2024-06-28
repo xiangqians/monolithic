@@ -81,7 +81,7 @@ public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
 
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-        log.debug("接收到 {} 消息：{}", topic, new String(mqttMessage.getPayload(), StandardCharsets.UTF_8));
+        log.debug("接收到主题 {} 消息 {}", topic, toString(mqttMessage));
     }
 
     @Override
@@ -94,6 +94,23 @@ public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
     public void connectionLost(Throwable throwable) {
         log.warn("MQTT客户端连接已失去", throwable);
         // 连接丢失后处理逻辑，例如重新连接
+    }
+
+    public static String toString(MqttMessage mqttMessage) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("\n\t").append("Message ID: ").append(mqttMessage.getId());
+
+        // 检查消息是否为重复消息
+        builder.append("\n\t").append("Duplicate : ").append(mqttMessage.isDuplicate());
+
+        // 检查消息是否为保留消息
+        builder.append("\n\t").append("Retained  : ").append(mqttMessage.isRetained());
+
+        builder.append("\n\t").append("QoS\t\t  : ").append(mqttMessage.getQos());
+        builder.append("\n\t").append("Payload   : ").append(new String(mqttMessage.getPayload(), StandardCharsets.UTF_8));
+
+        return builder.toString();
     }
 
     public void publish(String topic, MqttMessage message) throws MqttException {

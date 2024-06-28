@@ -3,9 +3,8 @@ package org.xiangqian.monolithic.emqx.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.stereotype.Service;
+import org.xiangqian.monolithic.common.emqx.Emqx;
 import org.xiangqian.monolithic.emqx.service.SysService;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author xiangqian
@@ -17,7 +16,7 @@ public class SysServiceImpl implements SysService {
 
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-        log.debug("接收到 {} 消息：{}", topic, new String(mqttMessage.getPayload(), StandardCharsets.UTF_8));
+        log.debug("接收到主题 {} 消息 {}", topic, Emqx.toString(mqttMessage));
     }
 
 }
