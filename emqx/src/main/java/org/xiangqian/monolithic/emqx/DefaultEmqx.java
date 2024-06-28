@@ -74,8 +74,8 @@ public class DefaultEmqx extends Emqx {
 
     /**
      * 当设置 {@link MqttConnectOptions#setCleanSession(boolean)} 为 false 时，
-     * 客户端断开、重连期间，如果有消息时，会将此期间的消息传递到客户端，
-     * 所以，重写此方法便是处理此类数据
+     * 客户端断开，如果有消息时，在客户端上线后会将消息传递给客户端，
+     * 所以，重写此方法便是处理此类消息，分发给订阅者
      *
      * @param topic
      * @param mqttMessage
