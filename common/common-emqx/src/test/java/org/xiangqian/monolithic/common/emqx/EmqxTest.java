@@ -36,7 +36,7 @@ public class EmqxTest {
     @Test
     @SneakyThrows
     public void publisher() {
-        emqx.publish("/sys", LocalDateTime.now().toString(), 0);
+        emqx.publish("sys", LocalDateTime.now().toString(), 0);
         TimeUnit.SECONDS.sleep(2);
     }
 

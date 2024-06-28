@@ -6,6 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.xiangqian.monolithic.common.emqx.Emqx;
@@ -50,7 +51,7 @@ public class DefaultEmqx extends Emqx {
                     && IMqttMessageListener.class.isAssignableFrom(clazz)
                     && (subscribe = clazz.getAnnotation(Subscribe.class)) != null) {
                 try {
-                    IMqttMessageListener mqttMessageListener = (IMqttMessageListener) applicationContext.getBean(clazz, false);
+                    IMqttMessageListener mqttMessageListener = (IMqttMessageListener) applicationContext.getBean(clazz);
 
                     String topicFilter = subscribe.topicFilter();
                     topicFilters.add(topicFilter);
@@ -67,6 +68,11 @@ public class DefaultEmqx extends Emqx {
         if (CollectionUtils.isNotEmpty(topicFilters)) {
             mqttClient.subscribe(topicFilters.toArray(String[]::new), qoss.stream().mapToInt(Integer::intValue).toArray(), mqttMessageListeners.toArray(IMqttMessageListener[]::new));
         }
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+        super.messageArrived(topic, mqttMessage);
     }
 
 }
