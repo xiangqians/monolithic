@@ -252,5 +252,12 @@ MQTT 协议规定主题的长度为两个字节，因此主题最多可包含 65
 
 # Spring Boot 配置
 
+application-{profile}.yml
 
-
+```yaml
+emqx:
+  broker: tcp://localhost:1883
+  client-id: publisher
+  user: user
+  passwd: passwd
+```
