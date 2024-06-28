@@ -61,13 +61,14 @@ public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
     }
 
     @Override
-    public final void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) throws Exception {
+        // 创建MQTT客户端
         mqttClient = new MqttClient(emqxProperties.getBroker(),
                 emqxProperties.getClientId(),
                 // 设置持久化方式
                 new MemoryPersistence());
 
-        // mqtt配置
+        // MQTT配置
         MqttConnectOptions mqttConnectOptions = mqttConnectOptions();
 
         // 消息回调
@@ -75,6 +76,7 @@ public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
 
         // 连接
         connect(mqttConnectOptions);
+        log.debug("MQTT已连接！");
     }
 
     @Override
@@ -94,7 +96,7 @@ public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
         // 连接丢失后处理逻辑，例如重新连接
     }
 
-    public final void publish(String topic, MqttMessage message) throws MqttException {
+    public void publish(String topic, MqttMessage message) throws MqttException {
         mqttClient.publish(topic, message);
     }
 
@@ -104,19 +106,19 @@ public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
      * @param qos     消息质量
      * @throws MqttException
      */
-    public final void publish(String topic, byte[] payload, int qos) throws MqttException {
+    public void publish(String topic, byte[] payload, int qos) throws MqttException {
         MqttMessage mqttMessage = new MqttMessage(payload);
         mqttMessage.setQos(qos);
         publish(topic, mqttMessage);
     }
 
-    public final void publish(String topic, String payload, int qos) throws MqttException {
+    public void publish(String topic, String payload, int qos) throws MqttException {
         publish(topic, payload.getBytes(StandardCharsets.UTF_8), qos);
     }
 
     // Spring 容器销毁（即关闭）时，释放资源
     @Override
-    public final void destroy() throws Exception {
+    public void destroy() throws Exception {
         if (mqttClient != null) {
             mqttClient.disconnect();
             mqttClient = null;

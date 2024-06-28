@@ -6,9 +6,8 @@ import org.xiangqian.monolithic.emqx.Subscriber;
 
 /**
  * @author xiangqian
- * @date 21:20 2024/06/28
+ * @date 22:28 2024/06/28
  */
-@Subscriber(topicFilter = "sys/#", qos = Qos.AT_LEAST_ONCE)
-public interface SysService extends IMqttMessageListener {
-
+@Subscriber(topicFilter = "pay/#", qos = Qos.AT_LEAST_ONCE)
+public interface PayService extends IMqttMessageListener {
 }

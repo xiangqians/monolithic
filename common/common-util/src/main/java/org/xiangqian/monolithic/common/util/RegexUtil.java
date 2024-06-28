@@ -2,9 +2,7 @@ package org.xiangqian.monolithic.common.util;
 
 import org.apache.commons.collections4.map.LRUMap;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +26,19 @@ public class RegexUtil {
             }
         }
         return pattern;
+    }
+
+    /**
+     * 判断字符串是否匹配指定的正则表达式
+     *
+     * @param regex 匹配的正则表达式
+     * @param input 待匹配的字符串
+     * @return
+     */
+    public static boolean isMatch(String regex, String input) {
+        Pattern pattern = getPattern(regex);
+        Matcher matcher = pattern.matcher(input);
+        return matcher.matches();
     }
 
     /**
