@@ -8,19 +8,35 @@
         <artifactId>monolithic</artifactId>
         <version>2022.09</version>
     </parent>
-    <artifactId>websocket</artifactId>
+    <artifactId>mysql-binlog</artifactId>
     <name>${artifactId}</name>
-    <description>websocket模块</description>
+    <description>MySQL二进制日志模块</description>
 
     <dependencies>
         <dependency>
+            <groupId>com.zendesk</groupId>
+            <artifactId>mysql-binlog-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.xiangqian.monolithic</groupId>
-            <artifactId>common-redis</artifactId>
+            <artifactId>common-util</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

@@ -14,6 +14,8 @@
     <modules>
         <module>common</module>
         <module>consumer</module>
+        <module>emqx</module>
+        <module>mysql-binlog</module>
         <module>scheduler</module>
         <module>web</module>
         <module>websocket</module>
@@ -79,6 +81,10 @@
         <clickhouse-jdbc.version>0.6.1</clickhouse-jdbc.version>
 
         <influxdb-client.version>6.11.0</influxdb-client.version>
+
+        <mysql-binlog-connector.version>0.29.2</mysql-binlog-connector.version>
+
+        <paho.version>1.2.5</paho.version>
     </properties>
 
     <dependencyManagement>
@@ -87,12 +93,12 @@
             <!-- @common::start -->
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
-                <artifactId>common-util</artifactId>
+                <artifactId>common-clickhouse</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
-                <artifactId>common-clickhouse</artifactId>
+                <artifactId>common-emqx</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -115,7 +121,29 @@
                 <artifactId>common-mail</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- @common::end -->
+
+            <!--  Eclipse Paho MQTT 客户端库 -->
+            <dependency>
+                <groupId>org.eclipse.paho</groupId>
+                <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                <version>${paho.version}</version>
+            </dependency>
+
+            <!-- 处理 MySQL binlog（二进制日志）库
+             | https://github.com/shyiko/mysql-binlog-connector-java
+             | https://github.com/osheroff/mysql-binlog-connector-java
+             |-->
+            <dependency>
+                <groupId>com.zendesk</groupId>
+                <artifactId>mysql-binlog-connector-java</artifactId>
+                <version>${mysql-binlog-connector.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.influxdb</groupId>

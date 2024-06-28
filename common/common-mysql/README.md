@@ -50,7 +50,7 @@ spring:
   datasource:
     # JDBC驱动类名
     driver-class-name: com.mysql.cj.jdbc.Driver
-    # 数据库连接URL，指定了数据库类型、地址、端口和数据库名称
+    # 数据库连接URL，指定了数据库类型、地址、端口和数据库名
     url: jdbc:mysql://localhost:3306/monolithic?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
     # 数据库用户名
     username: root

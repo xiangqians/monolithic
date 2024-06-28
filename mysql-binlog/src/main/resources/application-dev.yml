@@ -1,0 +1,31 @@
+server:
+  port: 8400
+  servlet:
+    context-path: /
+    session:
+      persistent: false
+
+# MySQL配置
+mysqls:
+  # 名称（唯一）
+  - name: example
+    # MySQL 服务器的唯一标识符，每个服务器应具有唯一的 ID
+    server-id: ${MYSQL_LOCALHOST_SERVER_ID:100}
+    # 主机
+    host: localhost
+    # 端口
+    port: 3306
+    # 用户
+    user: root
+    # 密码
+    passwd: root
+    # 数据库
+    databases:
+      # 数据库名
+      - name: sys
+        # 指定数据表
+        tables: [ user, role ]
+      # 数据库名
+      - name: pay
+        # 所有数据表
+        tables: '*'

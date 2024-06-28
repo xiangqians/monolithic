@@ -8,19 +8,25 @@
         <artifactId>monolithic</artifactId>
         <version>2022.09</version>
     </parent>
-    <artifactId>websocket</artifactId>
+    <artifactId>emqx</artifactId>
     <name>${artifactId}</name>
-    <description>websocket模块</description>
+    <description>MQTT模块</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <groupId>org.xiangqian.monolithic</groupId>
+            <artifactId>common-emqx</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.xiangqian.monolithic</groupId>
-            <artifactId>common-redis</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

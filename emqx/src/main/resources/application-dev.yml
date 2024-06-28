@@ -1,0 +1,13 @@
+server:
+  port: 8500
+  servlet:
+    context-path: /
+    session:
+      persistent: false
+
+emqx:
+  broker: tcp://localhost:1883
+  client-id: subscriber
+  user: user
+  passwd: passwd
+
