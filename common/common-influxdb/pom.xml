@@ -10,7 +10,7 @@
     </parent>
     <artifactId>common-influxdb</artifactId>
     <name>${artifactId}</name>
-    <description>InfluxDB时序数据库模块</description>
+    <description>时序数据库模块</description>
 
     <dependencies>
         <dependency>

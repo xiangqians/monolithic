@@ -10,7 +10,7 @@
     </parent>
     <artifactId>common-clickhouse</artifactId>
     <name>${artifactId}</name>
-    <description>ClickHouse数据库模块</description>
+    <description>列式数据库模块</description>
 
     <dependencies>
         <dependency>

@@ -10,6 +10,6 @@
     </parent>
     <artifactId>common-neo4j</artifactId>
     <name>${artifactId}</name>
-    <description>Neo4j图数据库模块</description>
+    <description>图数据库模块</description>
 
 </project>

@@ -13,8 +13,8 @@
 
     <modules>
         <module>common</module>
-        <module>consumer</module>
         <module>emqx</module>
+        <module>kafka</module>
         <module>mysql-binlog</module>
         <module>scheduler</module>
         <module>web</module>

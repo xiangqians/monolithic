@@ -10,7 +10,7 @@
     </parent>
     <artifactId>common-prometheus</artifactId>
     <name>${artifactId}</name>
-    <description>Prometheus时序数据库模块（用于系统监控）</description>
+    <description>监控模块</description>
 
     <dependencies>
         <dependency>
