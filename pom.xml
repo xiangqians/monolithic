@@ -103,6 +103,11 @@
             </dependency>
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
                 <artifactId>common-mysql</artifactId>
                 <version>${project.version}</version>
             </dependency>

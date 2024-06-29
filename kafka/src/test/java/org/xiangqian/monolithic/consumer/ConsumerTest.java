@@ -16,15 +16,15 @@ import java.util.concurrent.CountDownLatch;
 public class ConsumerTest {
 
     private void pint(ConsumerRecord<String, String> record) {
-        System.out.printf("%s\n\n", Consumer.toString(record));
+        System.out.printf("%s\n\n", DefaultKafka.toString(record));
     }
 
-    private void poll(Consumer consumer) {
+    private void poll(DefaultKafka kafka) {
         System.out.printf("【%s, %s】poll\n", Thread.currentThread().getName(), Thread.currentThread().getId());
 
         // 循环拉取消息
         while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            ConsumerRecords<String, String> records = kafka.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, String> record : records) {
                 pint(record);
             }
@@ -33,18 +33,19 @@ public class ConsumerTest {
 
     // 拉取消息（自动提交偏移量）
     @Test
+    @SneakyThrows
     public void testPoll() {
-        Consumer consumer = null;
+        DefaultKafka kafka = null;
         try {
             String groupId = "my-group-id";
-            consumer = Consumer.create("localhost:9092", groupId, Offset.LATEST, true);
+            kafka = DefaultKafka.create("localhost:9092", groupId, Offset.LATEST, true);
 
             String topic = "my-topic";
-            consumer.subscribe(topic);
+            kafka.subscribe(topic);
 
-            poll(consumer);
+            poll(kafka);
         } finally {
-            IOUtils.closeQuietly(consumer);
+            kafka.destroy();
         }
     }
 
@@ -60,16 +61,16 @@ public class ConsumerTest {
         CountDownLatch countDownLatch = new CountDownLatch(groupIds.length);
         for (String groupId : groupIds) {
             new Thread(() -> {
-                Consumer consumer = null;
+                DefaultKafka kafka = null;
                 try {
-                    consumer = Consumer.create("localhost:9092", groupId, Offset.LATEST, true);
+                    kafka = DefaultKafka.create("localhost:9092", groupId, Offset.LATEST, true);
 
                     String topic = "my-topic";
-                    consumer.subscribe(topic);
+                    kafka.subscribe(topic);
 
-                    poll(consumer);
+                    poll(kafka);
                 } finally {
-                    IOUtils.closeQuietly(consumer);
+                    kafka.destroy();
                     countDownLatch.countDown();
                 }
             }, groupId).start();
@@ -79,27 +80,28 @@ public class ConsumerTest {
 
     // 拉取消息（手动提交偏移量）
     @Test
+    @SneakyThrows
     public void testPollManualCommit() {
-        Consumer consumer = null;
+        DefaultKafka kafka = null;
         try {
             String groupId = "my-group-id";
-            consumer = Consumer.create("localhost:9092", groupId, Offset.EARLIEST, false);
+            kafka = DefaultKafka.create("localhost:9092", groupId, Offset.EARLIEST, false);
 
             String topic = "my-topic";
-            consumer.subscribe(topic);
+            kafka.subscribe(topic);
 
             // 循环拉取消息
             while (true) {
-                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+                ConsumerRecords<String, String> records = kafka.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : records) {
                     pint(record);
 
                     // 手动同步提交当前消费者组的指定分区的偏移量
-                    consumer.commitSync(record);
+                    kafka.commitSync(record);
                 }
             }
         } finally {
-            IOUtils.closeQuietly(consumer);
+            kafka.destroy();
         }
     }
 

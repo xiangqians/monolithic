@@ -19,16 +19,17 @@ import java.util.concurrent.CountDownLatch;
  */
 public class KafkaTest {
 
-    private Kafka producer;
+    private Kafka kafka;
 
     @Before
     public void before() {
-        producer = Kafka.create();
+        kafka = Kafka.create();
     }
 
     @After
+    @SneakyThrows
     public void after() {
-        IOUtils.closeQuietly(producer);
+        kafka.destroy();
     }
 
     @Test
@@ -39,7 +40,7 @@ public class KafkaTest {
             String topic = "my-topic";
             String key = "my-key";
             String value = "Hello, Kafka! " + DateTimeUtil.format(LocalDateTime.now()) + " " + UUID.randomUUID().toString().replace("-", "");
-            CompletableFuture<SendResult<String, String>> future = producer.send(topic, key, value);
+            CompletableFuture<SendResult<String, String>> future = kafka.send(topic, key, value);
             SendResult<String, String> sendResult = future.get();
             System.out.println(sendResult);
         }

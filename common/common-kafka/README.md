@@ -1,6 +1,7 @@
 # 前言
 
-Message Queue
+消息队列（Message Queue）是一种基于消息传递的中间件，用于在应用程序和系统之间异步地传输数据。
+
 
 生产者（Producer）和消费者（Consumer）是计算机科学中常见的概念，通常用于描述在消息传递系统中的角色和行为。 在消息队列系统（如Kafka、RabbitMQ等）或者并发编程中，生产者和消费者模式是一种重要的设计模式，用于解耦消息的发送和接收，以实现系统的可扩展性和灵活性。
 
@@ -35,7 +36,7 @@ https://kafka.apache.org/downloads
 
 `kafka_2.13-3.7.0.tgz`
 
-- Zookeeper 配置
+- Zookeeper
 
 config/zookeeper.properties
 
@@ -43,7 +44,13 @@ config/zookeeper.properties
 dataDir=/tmp/kafka/zookeeper
 ```
 
-- Kafka Broker 配置
+启动 Zookeeper
+
+```shell
+./bin/zookeeper-server-start.sh ./config/zookeeper.properties
+```
+
+- Kafka
 
 config/server.properties
 
@@ -51,13 +58,7 @@ config/server.properties
 log.dirs=/tmp/kafka/log
 ```
 
-- 启动 Zookeeper
-
-```shell
-./bin/zookeeper-server-start.sh ./config/zookeeper.properties
-```
-
-- 启动 Kafka 服务器
+启动 Kafka 服务器
 
 ```shell
 ./bin/kafka-server-start.sh ./config/server.properties
@@ -100,6 +101,8 @@ set "APP_CLASSPATH=%APP_CLASSPATH%;%APP_LIB_DIR%\*;"
 - Web
 
 http://localhost:9000
+
+`localhost:2181`
 
 ![Add Cluster](doc/image/add_cluster.png)
 

@@ -8,10 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 12:04 2024/06/22
  */
 @SpringBootApplication
-public class ConsumerApplication {
+public class KafkaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ConsumerApplication.class, args);
+        SpringApplication.run(KafkaApplication.class, args);
     }
 
 }

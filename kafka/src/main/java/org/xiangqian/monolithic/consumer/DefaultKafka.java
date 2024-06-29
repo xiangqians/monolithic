@@ -1,16 +1,14 @@
 package org.xiangqian.monolithic.consumer;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.xiangqian.monolithic.common.kafka.Kafka;
 
-import java.io.Closeable;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Map;
@@ -18,30 +16,47 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * 消费者（Consumer）
+ * 消费者是消息的接收者，它从消息队列中订阅消息并进行处理。消费者可以订阅一个或多个主题或队列，并根据需要处理接收到的消息。
+ * <p>
+ * 消费者组（Consumer Group）
+ * 消费者组是一组逻辑上相关联的消费者实例的集合。每个消费者组都有一个唯一的组ID，并且每个消费者组内的消费者实例共同消费订阅主题或队列中的消息。
+ * <p>
+ * 确认机制（Acknowledgment）
+ * 确认机制是指消费者接收并处理消息后向消息队列发送确认的过程。这个过程确保了消息在处理时的可靠性和一致性。
+ * <p>
+ * 注意事项：
+ * 1、确保处理完消息后再做消息commit，避免业务消息处理失败，无法重新拉取处理失败的消息。
+ * 2、Kafka不能保证消费重复的消息，业务侧需保证消息处理的幂等性。
+ * 3、auto.commit.enable需设置为false，避免在消息消费失败但因commit而使offset更新而导致消息丢失。
+ * 4、consumer不能频繁加入和退出group，频繁加入和退出，会导致consumer频繁做重平衡（Rebalance），阻塞消费。
+ * 5、consumer数量不能超过topic分区数，否则会有consumer拉取不到消息。
+ *
  * @author xiangqian
  * @date 19:43 2024/06/26
  */
-public class Consumer implements Closeable {
+public class DefaultKafka extends Kafka {
 
-    private org.apache.kafka.clients.consumer.Consumer<String, String> consumer;
+    private Consumer<String, String> consumer;
 
-    private Consumer(org.apache.kafka.clients.consumer.Consumer<String, String> consumer) {
+    public DefaultKafka(KafkaTemplate<String, String> kafkaTemplate, Consumer<String, String> consumer) {
+        super(kafkaTemplate);
         this.consumer = consumer;
     }
 
     /**
-     * 订阅主题集合
+     * 订阅主题
      *
-     * @param topics
+     * @param topics 主题，Kafka 主题名的官方命名规范建议使用小写字母、数字和减号（-）来命名主题。
      */
     public void subscribe(Set<String> topics) {
         consumer.subscribe(topics);
     }
 
     /**
-     * 订阅主题集合
+     * 订阅主题
      *
-     * @param topics
+     * @param topics 主题，Kafka 主题名的官方命名规范建议使用小写字母、数字和减号（-）来命名主题。
      */
     public void subscribe(String... topics) {
         subscribe(Arrays.stream(topics).collect(Collectors.toSet()));
@@ -74,24 +89,26 @@ public class Consumer implements Closeable {
         consumer.commitAsync();
     }
 
-
     @Override
-    public void close() throws IOException {
-        consumer.close();
+    public void destroy() throws Exception {
+        try {
+            super.destroy();
+        } finally {
+            if (consumer != null) {
+                consumer.close();
+                consumer = null;
+            }
+        }
     }
 
     public static String toString(ConsumerRecord<String, String> record) {
-        return String.format("Received Message" +
-                        "\n\tTopic\t\t: %s" +
-                        "\n\tPartition\t: %s" +
-                        "\n\tOffset\t\t: %s" +
-                        "\n\tKey\t\t\t: %s" +
-                        "\n\tValue\t\t: %s",
-                record.topic(),
-                record.partition(),
-                record.offset(),
-                record.key(),
-                record.value());
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n\t").append("Topic\t: ").append(record.topic());
+        builder.append("\n\t").append("Partition: ").append(record.partition());
+        builder.append("\n\t").append("Offset\t: ").append(record.offset());
+        builder.append("\n\t").append("Key\t\t: ").append(record.key());
+        builder.append("\n\t").append("Message\t: ").append(record.value());
+        return builder.toString();
     }
 
     /**
@@ -106,14 +123,14 @@ public class Consumer implements Closeable {
      *                         当 false 时，消费者不会自动提交偏移量，需要应用程序手动调用确认偏移量的方法来提交偏移量。
      * @return
      */
-    public static Consumer create(String bootstrapServers, String groupId, Offset offset, boolean autoCommit) {
+    public static DefaultKafka create(String bootstrapServers, String groupId, Offset offset, boolean autoCommit) {
         ConsumerFactory<String, String> consumerFactory = new DefaultKafkaConsumerFactory<>(Map.of(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
                 ConsumerConfig.GROUP_ID_CONFIG, groupId,
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offset.getValue(),
                 ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, autoCommit));
-        return new Consumer(consumerFactory.createConsumer());
+        return new DefaultKafka(null, consumerFactory.createConsumer());
     }
 
 }
