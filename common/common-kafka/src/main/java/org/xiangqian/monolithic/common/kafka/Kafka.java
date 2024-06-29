@@ -1,6 +1,7 @@
-package org.xiangqian.monolithic.common.producer;
+package org.xiangqian.monolithic.common.kafka;
 
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -18,11 +19,11 @@ import java.util.concurrent.CompletableFuture;
  * @author xiangqian
  * @date 12:02 2024/06/22
  */
-public class Producer implements Closeable {
+public class Kafka implements DisposableBean {
 
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public Producer(KafkaTemplate<String, String> kafkaTemplate) {
+    public Kafka(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -42,16 +43,17 @@ public class Producer implements Closeable {
         return kafkaTemplate.send(topic, value);
     }
 
+    // Spring 容器销毁（即关闭）时，释放资源
     @Override
-    public void close() throws IOException {
+    public void destroy() throws Exception {
         kafkaTemplate.destroy();
     }
 
-    public static Producer create() {
+    public static Kafka create() {
         return create("localhost:9092");
     }
 
-    public static Producer create(String bootstrapServers) {
+    public static Kafka create(String bootstrapServers) {
         // Kafka 生产者工厂配置
         Map<String, Object> configs = new HashMap<>();
         configs.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -62,7 +64,8 @@ public class Producer implements Closeable {
         // KafkaTemplate 实例
         KafkaTemplate<String, String> kafkaTemplate = new KafkaTemplate<>(producerFactory);
 
-        return new Producer(kafkaTemplate);
+        return new Kafka(kafkaTemplate);
     }
+
 
 }

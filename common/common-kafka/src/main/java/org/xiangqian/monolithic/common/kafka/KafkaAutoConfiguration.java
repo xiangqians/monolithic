@@ -1,5 +1,6 @@
-package org.xiangqian.monolithic.common.producer;
+package org.xiangqian.monolithic.common.kafka;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,11 +12,12 @@ import org.springframework.kafka.core.KafkaTemplate;
  * @date 23:40 2024/06/25
  */
 @Configuration(proxyBeanMethods = false)
-public class ProducerAutoConfiguration {
+public class KafkaAutoConfiguration {
 
     @Bean
-    public Producer kafka(KafkaTemplate<String, String> kafkaTemplate) {
-        return new Producer(kafkaTemplate);
+    @ConditionalOnMissingBean(Kafka.class)
+    public Kafka kafka(KafkaTemplate<String, String> kafkaTemplate) {
+        return new Kafka(kafkaTemplate);
     }
 
 }

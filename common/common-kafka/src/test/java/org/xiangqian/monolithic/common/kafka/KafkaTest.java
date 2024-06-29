@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.common.producer;
+package org.xiangqian.monolithic.common.kafka;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
@@ -12,20 +12,18 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author xiangqian
  * @date 21:49 2024/06/25
  */
-public class ProducerTest {
+public class KafkaTest {
 
-    private Producer producer;
+    private Kafka producer;
 
     @Before
     public void before() {
-        producer = Producer.create();
+        producer = Kafka.create();
     }
 
     @After

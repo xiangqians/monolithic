@@ -4,6 +4,8 @@ MQTT（Message Queuing Telemetry Transport）是一种轻量级的消息传输�
 
 https://github.com/emqx/emqx
 
+https://github.com/eclipse/paho.mqtt.java
+
 # 安装
 
 - 下载

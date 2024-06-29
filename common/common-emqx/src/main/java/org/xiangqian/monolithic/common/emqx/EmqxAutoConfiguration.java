@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * https://github.com/eclipse/paho.mqtt.java
- *
  * @author xiangqian
  * @date 21:54 2024/06/28
  */
