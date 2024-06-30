@@ -17,7 +17,7 @@ public class MailTest {
         mail.send("test@example.com", "测试", "测试内容");
         mail.send("test@example.com", "Hello", "Hello <strong> World</strong>！", true);
         mail.send("test@example.com", "测试附件", "<strong>请查看附件</strong>", true,
-                List.of(new Mail.Attachment("test.txt", () -> Files.newInputStream(Paths.get("E:\\tmp\\test.txt")))));
+                List.of(new Attachment("test.txt", () -> Files.newInputStream(Paths.get("E:\\tmp\\test.txt")))));
     }
 
 }

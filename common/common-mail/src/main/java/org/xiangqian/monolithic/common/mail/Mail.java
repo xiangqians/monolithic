@@ -2,9 +2,7 @@ package org.xiangqian.monolithic.common.mail;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -95,37 +93,6 @@ public class Mail {
             }
         }
         javaMailSender.send(mimeMessage);
-    }
-
-    /**
-     * 邮件附件
-     */
-    @Data
-    public static class Attachment {
-        /**
-         * 附件名称
-         */
-        private String name;
-
-        /**
-         * 附件输入流
-         */
-        private InputStreamSource inputStreamSource;
-
-        /**
-         * 附件内容类型
-         */
-        private String contentType;
-
-        public Attachment(String name, InputStreamSource inputStreamSource) {
-            this(name, inputStreamSource, "application/octet-stream");
-        }
-
-        public Attachment(String name, InputStreamSource inputStreamSource, String contentType) {
-            this.name = name;
-            this.inputStreamSource = inputStreamSource;
-            this.contentType = contentType;
-        }
     }
 
 }

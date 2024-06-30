@@ -19,6 +19,9 @@
 
 # 简介
 
+https://docs.spring.io/spring-boot/reference/messaging/kafka.html
+
+
 生产者（Producer）是消息队列中负责产生消息并发送到队列的组件或者角色。其主要功能包括：
 
 - 生成消息: 根据业务逻辑生成需要传输的消息。
