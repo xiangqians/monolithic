@@ -16,7 +16,6 @@
         <module>emqx</module>
         <module>kafka</module>
         <module>mysql-binlog</module>
-        <module>rsocket</module>
         <module>scheduler</module>
         <module>sse</module>
         <module>web</module>

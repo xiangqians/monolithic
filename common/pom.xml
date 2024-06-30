@@ -25,7 +25,6 @@
         <module>common-neo4j</module>
         <module>common-prometheus</module>
         <module>common-redis</module>
-        <module>common-rsocket</module>
         <module>common-threadpool</module>
         <module>common-util</module>
     </modules>
