@@ -17,6 +17,7 @@
         <module>kafka</module>
         <module>mysql-binlog</module>
         <module>scheduler</module>
+        <module>sse</module>
         <module>web</module>
         <module>webrtc</module>
         <module>websocket</module>
