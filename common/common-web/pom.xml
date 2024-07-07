@@ -31,7 +31,7 @@
 
         <dependency>
             <groupId>org.xiangqian.monolithic</groupId>
-            <artifactId>common-model</artifactId>
+            <artifactId>common-biz</artifactId>
         </dependency>
 
         <dependency>

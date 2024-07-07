@@ -30,11 +30,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.xiangqian.monolithic</groupId>
-            <artifactId>common-biz</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenEmailArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenPhoneArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenResult;
+import org.xiangqian.monolithic.common.biz.sys.service.ThreadLocalUserService;
 import org.xiangqian.monolithic.common.biz.sys.service.UserService;
 import org.xiangqian.monolithic.common.model.Assert;
 import org.xiangqian.monolithic.common.model.CodeException;
@@ -52,13 +53,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private ThreadLocal<UserEntity> threadLocal;
+    @Autowired
+    private ThreadLocalUserService threadLocalUserService;
 
     public UserServiceImpl(@Value("${jwt.key}") String jwtKey, @Value("${jwt.exp}") Duration jwtExp) {
         this.jwtKey = Keys.hmacShaKeyFor(jwtKey.getBytes());
         this.jwtExp = jwtExp;
-
-        this.threadLocal = new ThreadLocal<>();
     }
 
     @Override
@@ -149,18 +149,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity get() {
-        return threadLocal.get();
-    }
-
-    @Override
-    public void setUser(UserEntity user) {
-        threadLocal.set(user);
-    }
-
-    @Override
     public Boolean revokeToken() {
-        UserEntity user = get();
+        UserEntity user = threadLocalUserService.get();
         String token = user.getToken();
         return redis.delete(getTokenKey(user.getId(), token));
     }

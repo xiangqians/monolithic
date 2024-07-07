@@ -1,9 +1,9 @@
 package org.xiangqian.monolithic.common.biz.sys.service;
 
-import org.xiangqian.monolithic.common.mysql.sys.entity.UserEntity;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenEmailArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenPhoneArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenResult;
+import org.xiangqian.monolithic.common.mysql.sys.entity.UserEntity;
 
 /**
  * 用户服务
@@ -36,20 +36,6 @@ public interface UserService {
      * @return
      */
     UserEntity getByToken(String token);
-
-    /**
-     * 获取当前登录用户信息
-     *
-     * @return
-     */
-    UserEntity get();
-
-    /**
-     * 设置当前登录用户信息
-     *
-     * @param user
-     */
-    void setUser(UserEntity user);
 
     /**
      * 撤销令牌

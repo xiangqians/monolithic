@@ -69,7 +69,6 @@ public class MethodHandler implements
     public void reset(HttpServletRequest request) {
         request.setAttribute(START_TIME, null);
         request.setAttribute(AUTHORITY, null);
-        userService.setUser(null);
     }
 
     /**
