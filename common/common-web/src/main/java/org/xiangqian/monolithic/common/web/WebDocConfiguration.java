@@ -18,13 +18,17 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.xiangqian.monolithic.common.util.ResourceUtil;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -35,24 +39,27 @@ import java.util.Set;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = {"springdoc.api-docs.enabled"}, matchIfMissing = true) // 开启openapi文档条件判断
-public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
+public class WebDocConfiguration implements ApplicationContextAware, BeanDefinitionRegistryPostProcessor {
+
+    private String pkg;
 
     @Bean
-    public GroupedOpenApi sysGroupedOpenApi() {
-        return buildGroupedOpenApi("sys", "org.xiangqian.monolithic.web.sys.controller");
+    public GroupedOpenApi defaultGroupedOpenApi() {
+        return buildGroupedOpenApi("sys", pkg + ".sys.controller");
     }
 
     /**
-     * 创建多个 {@link GroupedOpenApi}
+     * 创建多个 {@link org.springdoc.core.models.GroupedOpenApi}
      *
      * @param registry
      * @throws BeansException
      */
     @Override
+    @SneakyThrows
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        Set<String> pkgs = getPkgs();
+        Set<String> pkgs = ResourceUtil.getPkgs(pkg + ".*.controller");
         for (String pkg : pkgs) {
-            String name = pkg.substring("org.xiangqian.monolithic.web.".length(), pkg.length() - ".controller".length());
+            String name = pkg.substring(this.pkg.length() + 1, pkg.length() - ".controller".length());
             if ("sys".equals(name)) {
                 continue;
             }
@@ -72,6 +79,13 @@ public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        Map<String, Object> beanMap = applicationContext.getBeansWithAnnotation(SpringBootApplication.class);
+        Object bean = beanMap.values().iterator().next();
+        pkg = bean.getClass().getPackageName();
     }
 
     /**
@@ -121,7 +135,7 @@ public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
     }
 
     /**
-     * {@link GroupedOpenApi} 工厂bean
+     * {@link org.springdoc.core.models.GroupedOpenApi} 工厂bean
      */
     @AllArgsConstructor
     public static class GroupedOpenApiFactoryBean implements FactoryBean<GroupedOpenApi> {
@@ -140,7 +154,7 @@ public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
     }
 
     /**
-     * 构建 {@link GroupedOpenApi}
+     * 构建 {@link org.springdoc.core.models.GroupedOpenApi}
      *
      * @param group 组名称
      * @param pkgs  指定扫描包路径
@@ -153,11 +167,6 @@ public class DocConfiguration implements BeanDefinitionRegistryPostProcessor {
                 .pathsToMatch("/**") // 基于接口路由扫描
                 .packagesToScan(pkgs) // 指定扫描包路径
                 .build();
-    }
-
-    @SneakyThrows
-    private static Set<String> getPkgs() {
-        return ResourceUtil.getPkgs("org.xiangqian.monolithic.web.*.controller");
     }
 
 }
