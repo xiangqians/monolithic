@@ -1,1 +1,1 @@
-org.xiangqian.monolithic.common.db.DbAutoConfiguration
+ org.xiangqian.monolithic.common.mysql.MysqlAutoConfiguration

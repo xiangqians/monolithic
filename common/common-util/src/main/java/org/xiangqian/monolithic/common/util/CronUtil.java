@@ -2,6 +2,8 @@ package org.xiangqian.monolithic.common.util;
 
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.scheduling.support.SimpleTriggerContext;
+import org.xiangqian.monolithic.common.util.time.DateTimeUtil;
+import org.xiangqian.monolithic.common.util.time.ZoneIdUtil;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -87,6 +89,18 @@ public class CronUtil {
             builder.append(toString(nextExecutionTime));
         }
         return builder.toString();
+    }
+
+    /**
+     * 打印接下来N次执行时间集合
+     *
+     * @param expression
+     * @param n
+     */
+    public static void printNextNExecutionTimes(String expression, int n) {
+        List<LocalDateTime> nextNExecutionTimes = getNextNExecutionTimes(expression, n);
+        System.out.println(expression);
+        System.out.println(toString(nextNExecutionTimes));
     }
 
 }

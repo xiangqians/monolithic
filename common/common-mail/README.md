@@ -1,3 +1,5 @@
+# Spring Boot 配置
+
 application-{profile}.yml
 
 ```yaml

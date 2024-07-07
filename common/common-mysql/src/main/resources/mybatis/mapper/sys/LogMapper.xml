@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.xiangqian.monolithic.common.db.sys.mapper.LogMapper">
+<mapper namespace="org.xiangqian.monolithic.common.mysql.sys.mapper.LogMapper">
 
     <sql id="query">
-        SELECT
-        l.id, l.user_id, l.authority_id, l.address, l.url, l.body, l.`code`, l.`time`, l.add_time
-        FROM log l
+        SELECT l.id, l.user_id, l.authority_id, l.`code`, l.remote_address, l.req_url, l.req_body, l.duration, l.add_time
+        FROM sys_log l
         <where>
-            <if test="log.id != null">AND l.id = #{log.id}</if>
-            <if test="log.userId != null">AND l.user_id = #{log.userId}</if>
-            <if test="log.authorityId != null">AND l.authority_id = #{log.authorityId}</if>
-            <if test="log.address != null">AND l.address = #{log.address}</if>
-            <if test="log.url != null">AND l.url = #{log.url}</if>
-            <if test="log.body != null">AND l.body = #{log.body}</if>
-            <if test="log.code != null">AND l.`code` = #{log.code}</if>
-            <if test="log.time != null">AND l.`time` = #{log.time}</if>
-            <if test="log.addTime != null">AND l.add_time = #{log.addTime}</if>
+            <if test="logEntity.id != null">AND l.id = #{logEntity.id}</if>
+            <if test="logEntity.userId != null">AND l.user_id = #{logEntity.userId}</if>
+            <if test="logEntity.authorityId != null">AND l.authority_id = #{logEntity.authorityId}</if>
+            <if test="logEntity.code != null">AND l.`code` = #{logEntity.code}</if>
+            <if test="logEntity.remoteAddress != null">AND l.remote_address = #{logEntity.remoteAddress}</if>
+            <if test="logEntity.reqUrl != null">AND l.req_url = #{logEntity.reqUrl}</if>
+            <if test="logEntity.reqBody != null">AND l.req_body = #{logEntity.reqBody}</if>
+            <if test="logEntity.duration != null">AND l.duration = #{logEntity.duration}</if>
+            <if test="logEntity.addTime != null">AND l.add_time = #{logEntity.addTime}</if>
         </where>
     </sql>
 
-    <select id="list" resultType="org.xiangqian.monolithic.common.db.sys.entity.LogEntity">
+    <select id="page" resultType="org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity">
         <include refid="query"></include>
     </select>
 
-    <select id="page" resultType="org.xiangqian.monolithic.common.db.sys.entity.LogEntity">
+    <select id="lazyList" resultType="org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity">
         <include refid="query"></include>
     </select>
 

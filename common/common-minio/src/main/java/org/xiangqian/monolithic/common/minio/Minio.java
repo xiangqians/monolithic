@@ -5,6 +5,7 @@ import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.web.multipart.MultipartFile;
 import org.xiangqian.monolithic.common.util.Md5Util;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * @author xiangqian
  * @date 18:59 2024/06/14
  */
-public class Minio {
+public class Minio implements DisposableBean {
 
     private MinioClient minioClient;
 
@@ -120,7 +121,7 @@ public class Minio {
     }
 
     public void putObject(String bucket, Path path) throws Exception {
-        String name = Md5Util.encryptHex(path.getFileName().toString());
+        String name = Md5Util.encryptToHexString(path.getFileName().toString());
         String contentType = Files.probeContentType(path);
         InputStream stream = null;
         try {
@@ -136,7 +137,7 @@ public class Minio {
     }
 
     public void putObject(String bucket, MultipartFile multipartFile) throws Exception {
-        String name = Md5Util.encryptHex(multipartFile.getOriginalFilename());
+        String name = Md5Util.encryptToHexString(multipartFile.getOriginalFilename());
         String contentType = multipartFile.getContentType();
         InputStream stream = null;
         try {
@@ -207,6 +208,15 @@ public class Minio {
                 .bucket(bucket)
                 .object(name)
                 .build());
+    }
+
+    // Spring 容器销毁（即关闭）时，释放资源
+    @Override
+    public void destroy() throws Exception {
+        if (minioClient != null) {
+            minioClient.close();
+            minioClient = null;
+        }
     }
 
 }

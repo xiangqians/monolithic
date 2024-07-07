@@ -1,0 +1,5 @@
+# openapi文档配置
+springdoc:
+  api-docs:
+    # 关闭文档
+    enabled: false

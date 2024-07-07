@@ -3,7 +3,7 @@ package org.xiangqian.monolithic.common.redis;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
-import org.xiangqian.monolithic.common.util.DateTimeUtil;
+import org.xiangqian.monolithic.common.util.time.DateTimeUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

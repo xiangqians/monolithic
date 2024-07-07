@@ -26,7 +26,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
-import org.xiangqian.monolithic.common.db.LazyList;
+import org.xiangqian.monolithic.common.mysql.LazyList;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -86,7 +86,7 @@ public class MybatisMapperMethod {
                      * @date 23:40 2024/03/06
                      */
                     if (LazyList.class.isAssignableFrom(method.getReturnType())) {
-                        result = executeForList(sqlSession, args);
+                        result = executeForLazyList(sqlSession, args);
                     }
                     // TODO 这里下面改了
                     else if (IPage.class.isAssignableFrom(method.getReturnType())) {
@@ -119,7 +119,7 @@ public class MybatisMapperMethod {
      * @author xiangqian
      * @date 23:43 2024/03/06
      */
-    private <T> Object executeForList(SqlSession sqlSession, Object[] args) {
+    private <T> Object executeForLazyList(SqlSession sqlSession, Object[] args) {
         LazyList<T> list = null;
         for (Object arg : args) {
             if (arg instanceof LazyList) {
@@ -129,7 +129,7 @@ public class MybatisMapperMethod {
         }
 
         int size = 0;
-        if (list == null || (size = list.getSize().intValue()) <= 0) {
+        if (list == null || list.getCurrent().longValue() <= 0 || (size = list.getSize().intValue()) <= 0) {
             return list;
         }
 

@@ -1,22 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.xiangqian.monolithic.common.db.sched.mapper.TaskMapper">
-
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.xiangqian.monolithic.common.db.sched.entity.TaskEntity">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="bean" property="bean" />
-        <result column="cron" property="cron" />
-        <result column="rem" property="rem" />
-        <result column="del" property="del" />
-        <result column="add_time" property="addTime" />
-        <result column="upd_time" property="updTime" />
-    </resultMap>
-
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, `name`, bean, cron, rem, del, add_time, upd_time
-    </sql>
-
+<mapper namespace="org.xiangqian.monolithic.common.mysql.sched.mapper.TaskMapper">
 </mapper>

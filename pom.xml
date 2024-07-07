@@ -16,9 +16,10 @@
         <module>emqx</module>
         <module>kafka</module>
         <module>mysql-binlog</module>
-        <module>scheduler</module>
         <module>sse</module>
-        <module>web</module>
+        <module>task-scheduler</module>
+        <module>webflux</module>
+        <module>webmvc</module>
         <module>webrtc</module>
         <module>websocket</module>
     </modules>
@@ -89,12 +90,19 @@
         <paho.version>1.2.5</paho.version>
 
         <javacv.version>1.5.10</javacv.version>
+
+        <curator.version>5.1.0</curator.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
 
             <!-- @common::start -->
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-biz</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
                 <artifactId>common-clickhouse</artifactId>
@@ -117,12 +125,7 @@
             </dependency>
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
-                <artifactId>common-redis</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.xiangqian.monolithic</groupId>
-                <artifactId>common-rsocket</artifactId>
+                <artifactId>common-mail</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -132,7 +135,12 @@
             </dependency>
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
-                <artifactId>common-mail</artifactId>
+                <artifactId>common-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -140,7 +148,35 @@
                 <artifactId>common-util</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- @common::end -->
+
+            <!-- @curator::start -->
+            <!-- Curator是一个Apache的开源项目，提供了一套易用的API来简化ZooKeeper客户端的操作，提供了一系列的高级特性和工具类，如分布式锁、选举、缓存等。 -->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+
+            <!-- curator-recipes
+             | 锁：包括共享锁、共享可重入锁、读写锁等。
+             | 选举：Leader选举算法。
+             | Barrier：阻止分布式计算直至某个条件被满足的“栅栏”，可以看做JDK Concurrent包中Barrier的分布式实现。
+             | 缓存：三种Cache及监听机制。
+             | 持久化结点：连接或Session终止后仍然在ZooKeeper中存在的结点。
+             | 队列：分布式队列、分布式优先级队列等。
+             |-->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <!-- @curator::end -->
 
             <dependency>
                 <groupId>org.bytedeco</groupId>
@@ -245,21 +281,33 @@
                 <version>${mysql-connector.version}</version>
             </dependency>
 
-            <!-- @springdoc::start -->
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
+            <!-- @springdoc::start
+             | https://springdoc.org/index.html#getting-started
+             |-->
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-core-jakarta</artifactId>
+                <artifactId>swagger-annotations-jakarta</artifactId>
                 <version>${swagger-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-common</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
             </dependency>
             <!-- @springdoc::end -->
 

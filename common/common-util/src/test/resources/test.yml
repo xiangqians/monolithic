@@ -1,0 +1,12 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  cloud:
+    consul:
+      host: ${REGISTER_HOST:register}
+      port: ${REGISTER_PORT:8500}
+    inetutils:
+      ignored-interfaces: [ 'VMware.*', '192.168.1.*' ]
