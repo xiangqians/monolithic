@@ -15,9 +15,9 @@
         <module>common</module>
         <module>emqx</module>
         <module>kafka</module>
-        <module>mysql-binlog</module>
+        <module>mysqlbinlog</module>
         <module>sse</module>
-        <module>task-scheduler</module>
+        <module>scheduler</module>
         <module>webflux</module>
         <module>webmvc</module>
         <module>websocket</module>

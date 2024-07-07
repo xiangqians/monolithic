@@ -14,7 +14,7 @@ import java.util.concurrent.*;
  * @date 21:00 2024/06/20
  */
 @Slf4j
-public class DefaultThreadPoolExecutor extends ThreadPoolExecutor {
+public class Threadpool extends ThreadPoolExecutor {
 
     /**
      * 创建线程池执行器
@@ -27,7 +27,7 @@ public class DefaultThreadPoolExecutor extends ThreadPoolExecutor {
      * @param handler         拒绝策略，用于处理达到最大线程数且任务队列已满时的情况
      * @return
      */
-    public DefaultThreadPoolExecutor(int corePoolSize, int maximumPoolSize, Duration keepAliveTime, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
+    public Threadpool(int corePoolSize, int maximumPoolSize, Duration keepAliveTime, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime.getSeconds(), TimeUnit.SECONDS, workQueue, threadFactory, handler);
     }
 
@@ -147,7 +147,7 @@ public class DefaultThreadPoolExecutor extends ThreadPoolExecutor {
         return builder.toString();
     }
 
-    public static DefaultThreadPoolExecutor create() {
+    public static Threadpool create() {
         // 获取了CPU核心数
         int availableProcessors = Runtime.getRuntime().availableProcessors();
         // 设置【核心线程数】为：可用处理器数
@@ -159,7 +159,7 @@ public class DefaultThreadPoolExecutor extends ThreadPoolExecutor {
 //        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(1024);
         BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue(1024);
 
-        return new DefaultThreadPoolExecutor(corePoolSize, maximumPoolSize, Duration.ofMinutes(5), workQueue, Executors.defaultThreadFactory(), new java.util.concurrent.ThreadPoolExecutor.AbortPolicy());
+        return new Threadpool(corePoolSize, maximumPoolSize, Duration.ofMinutes(5), workQueue, Executors.defaultThreadFactory(), new java.util.concurrent.ThreadPoolExecutor.AbortPolicy());
     }
 
 }

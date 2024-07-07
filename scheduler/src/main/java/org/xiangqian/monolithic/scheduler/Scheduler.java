@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.task.scheduler;
+package org.xiangqian.monolithic.scheduler;
 
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.scheduling.TaskScheduler;
@@ -13,11 +13,11 @@ import java.util.concurrent.ScheduledFuture;
  * @author xiangqian
  * @date 21:25 2024/06/20
  */
-public class DefaultTaskScheduler implements TaskScheduler, DisposableBean {
+public class Scheduler implements TaskScheduler, DisposableBean {
 
     private TaskScheduler taskScheduler;
 
-    DefaultTaskScheduler(TaskScheduler taskScheduler) {
+    Scheduler(TaskScheduler taskScheduler) {
         this.taskScheduler = taskScheduler;
     }
 

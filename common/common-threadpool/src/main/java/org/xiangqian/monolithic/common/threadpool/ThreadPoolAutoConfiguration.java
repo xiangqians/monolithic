@@ -10,11 +10,11 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 16:47 2024/06/22
  */
 @Configuration(proxyBeanMethods = false)
-public class ThreadPoolAutoConfiguration {
+public class ThreadpoolAutoConfiguration {
 
     @Bean
     public ThreadPoolExecutor threadPoolExecutor() {
-        return DefaultThreadPoolExecutor.create();
+        return Threadpool.create();
     }
 
 }

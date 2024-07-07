@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.task.scheduler.service;
+package org.xiangqian.monolithic.scheduler.service;
 
 /**
  * @author xiangqian

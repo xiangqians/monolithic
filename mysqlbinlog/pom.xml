@@ -8,7 +8,7 @@
         <artifactId>monolithic</artifactId>
         <version>2022.09</version>
     </parent>
-    <artifactId>mysql-binlog</artifactId>
+    <artifactId>mysqlbinlog</artifactId>
     <name>${artifactId}</name>
     <description>MySQL二进制日志模块</description>
 

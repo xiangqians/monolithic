@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.task.scheduler;
+package org.xiangqian.monolithic.scheduler;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +24,13 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 21:12 2024/06/20
  */
 @Configuration(proxyBeanMethods = false)
-public class TaskSchedulerConfiguration implements ApplicationRunner {
+public class SchedulerConfiguration implements ApplicationRunner {
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Bean
-    public DefaultTaskScheduler taskScheduler() {
+    public Scheduler taskScheduler() {
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
 
         // 设置线程池大小
@@ -54,12 +54,12 @@ public class TaskSchedulerConfiguration implements ApplicationRunner {
 
         threadPoolTaskScheduler.initialize();
 
-        return new DefaultTaskScheduler(threadPoolTaskScheduler);
+        return new Scheduler(threadPoolTaskScheduler);
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        DefaultTaskScheduler taskScheduler = applicationContext.getBean(DefaultTaskScheduler.class);
+        Scheduler taskScheduler = applicationContext.getBean(Scheduler.class);
         TaskMapper taskMapper = applicationContext.getBean(TaskMapper.class);
         TaskRecordMapper taskRecordMapper = applicationContext.getBean(TaskRecordMapper.class);
         List<TaskEntity> taskEntities = taskMapper.selectList(new LambdaQueryWrapper<TaskEntity>());

@@ -1,4 +1,4 @@
-package org.xiangqian.monolithic.task.scheduler;
+package org.xiangqian.monolithic.scheduler;
 
 import org.junit.Test;
 import org.springframework.beans.factory.DisposableBean;
