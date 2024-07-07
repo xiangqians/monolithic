@@ -10,7 +10,7 @@
     </parent>
     <artifactId>webflux</artifactId>
     <name>${artifactId}</name>
-    <description>webflux模块</description>
+    <description>WebFlux模块</description>
 
     <dependencies>
         <!-- springdoc-webflux -->

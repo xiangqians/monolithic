@@ -10,7 +10,7 @@
     </parent>
     <artifactId>websocket</artifactId>
     <name>${artifactId}</name>
-    <description>websocket模块</description>
+    <description>WebSocket模块</description>
 
     <dependencies>
         <dependency>

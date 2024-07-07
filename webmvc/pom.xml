@@ -9,7 +9,7 @@
     </parent>
     <artifactId>webmvc</artifactId>
     <name>${artifactId}</name>
-    <description>webmvc模块</description>
+    <description>WebMvc模块</description>
 
     <dependencies>
         <!-- springdoc-webmvc -->

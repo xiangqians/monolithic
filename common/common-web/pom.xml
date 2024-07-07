@@ -10,7 +10,7 @@
     </parent>
     <artifactId>common-web</artifactId>
     <name>${artifactId}</name>
-    <description>web模块</description>
+    <description>Web模块</description>
 
     <dependencies>
         <!-- @springdoc::start -->

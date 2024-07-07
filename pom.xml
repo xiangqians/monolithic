@@ -20,7 +20,6 @@
         <module>task-scheduler</module>
         <module>webflux</module>
         <module>webmvc</module>
-        <module>webrtc</module>
         <module>websocket</module>
     </modules>
 

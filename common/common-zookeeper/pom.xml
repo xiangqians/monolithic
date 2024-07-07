@@ -10,7 +10,7 @@
     </parent>
     <artifactId>common-zookeeper</artifactId>
     <name>${artifactId}</name>
-    <description>zookeeper模块</description>
+    <description>ZooKeeper模块</description>
 
     <dependencies>
         <dependency>
