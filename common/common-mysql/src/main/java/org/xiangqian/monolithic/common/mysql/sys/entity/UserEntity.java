@@ -2,6 +2,7 @@ package org.xiangqian.monolithic.common.mysql.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.xiangqian.monolithic.common.util.time.DateTimeUtil;
@@ -65,10 +66,19 @@ public class UserEntity implements Serializable {
     @Schema(description = "修改时间")
     private LocalDateTime updTime;
 
-    @JsonIgnore
     @Schema(hidden = true)
     @TableField(exist = false)
     private String token;
+
+    @JsonIgnore // 序列化时忽略该属性
+    public String getToken() {
+        return token;
+    }
+
+    @JsonProperty // 反序列化时包含该属性
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     /**
      * 是否是系统管理员角色

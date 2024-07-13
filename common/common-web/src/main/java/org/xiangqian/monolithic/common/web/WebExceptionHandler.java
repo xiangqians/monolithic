@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.xiangqian.monolithic.common.model.Code;
 import org.xiangqian.monolithic.common.model.CodeException;
 import org.xiangqian.monolithic.common.model.Result;
@@ -23,6 +22,16 @@ public abstract class WebExceptionHandler {
     protected Result<?> handle(Throwable throwable) {
         log.error("", throwable);
 
+        if (throwable instanceof BindingResult) {
+            BindingResult bindingResult = (BindingResult) throwable;
+            FieldError fieldError = bindingResult.getFieldError();
+            return new Result<>(fieldError.getDefaultMessage());
+        }
+
+        if (throwable instanceof CodeException) {
+            return new Result<>(throwable.getMessage());
+        }
+
         if (throwable instanceof ErrorResponse) {
             ErrorResponse errorResponse = (ErrorResponse) throwable;
             HttpStatusCode httpStatusCode = errorResponse.getStatusCode();
@@ -35,17 +44,6 @@ public abstract class WebExceptionHandler {
             }
 
             return new Result<>(Code.ERROR);
-        }
-
-        if (throwable instanceof CodeException) {
-            return new Result<>(throwable.getMessage());
-        }
-
-        if (throwable instanceof MethodArgumentNotValidException) {
-            MethodArgumentNotValidException methodArgumentNotValidException = (MethodArgumentNotValidException) throwable;
-            BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
-            FieldError fieldError = bindingResult.getFieldError();
-            return new Result<>(fieldError.getDefaultMessage());
         }
 
         return new Result(Code.ERROR);

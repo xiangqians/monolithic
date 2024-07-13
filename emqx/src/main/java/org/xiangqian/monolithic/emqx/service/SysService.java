@@ -1,7 +1,7 @@
 package org.xiangqian.monolithic.emqx.service;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.xiangqian.monolithic.emqx.Qos;
+import org.xiangqian.monolithic.common.emqx.Qos;
 import org.xiangqian.monolithic.emqx.Subscriber;
 
 /**

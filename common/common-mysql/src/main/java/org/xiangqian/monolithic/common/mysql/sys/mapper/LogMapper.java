@@ -3,8 +3,8 @@ package org.xiangqian.monolithic.common.mysql.sys.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.xiangqian.monolithic.common.mysql.LazyList;
-import org.xiangqian.monolithic.common.mysql.Page;
+import org.xiangqian.monolithic.common.mybatis.LazyList;
+import org.xiangqian.monolithic.common.mybatis.Page;
 import org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity;
 
 /**
@@ -16,8 +16,8 @@ import org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity;
 @Mapper
 public interface LogMapper extends BaseMapper<LogEntity> {
 
-    Page<LogEntity> page(Page<LogEntity> page, @Param("logEntity") LogEntity logEntity);
+    Page<LogEntity> page(Page<LogEntity> page, @Param("entity") LogEntity entity);
 
-    LazyList<LogEntity> lazyList(LazyList<LogEntity> lazyList, @Param("logEntity") LogEntity logEntity);
+    LazyList<LogEntity> lazyList(LazyList<LogEntity> lazyList, @Param("entity") LogEntity entity);
 
 }

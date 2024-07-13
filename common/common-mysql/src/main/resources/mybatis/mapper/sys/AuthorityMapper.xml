@@ -2,11 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.xiangqian.monolithic.common.mysql.sys.mapper.AuthorityMapper">
 
-    <select id="list" resultType="org.xiangqian.monolithic.common.mysql.sys.entity.AuthorityEntity">
-        SELECT
+    <sql id="columns">
         a.id,
         a.group_id,
-        GROUP_CONCAT(ra.role_id) AS 'role_ids_str',
         a.method,
         a.`path`,
         a.allow,
@@ -14,6 +12,12 @@
         a.del,
         a.add_time,
         a.upd_time
+    </sql>
+
+    <select id="list" resultType="org.xiangqian.monolithic.common.mysql.sys.entity.AuthorityEntity">
+        SELECT
+        <include refid="columns"></include>,
+        GROUP_CONCAT(ra.role_id) AS 'role_ids_str'
         FROM sys_authority a
         LEFT JOIN sys_role_authority ra ON ra.authority_id = a.id
         WHERE a.del = 0
@@ -21,7 +25,8 @@
     </select>
 
     <select id="getOne" resultType="org.xiangqian.monolithic.common.mysql.sys.entity.AuthorityEntity">
-        SELECT a.id, a.group_id, a.method, a.`path`, a.allow, a.rem, a.del, a.add_time, a.upd_time
+        SELECT
+        <include refid="columns"></include>
         FROM sys_authority a
         <where>
             <if test="id != null">AND a.id = #{id}</if>

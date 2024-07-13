@@ -14,32 +14,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.xiangqian.monolithic</groupId>
-            <artifactId>common-model</artifactId>
+            <artifactId>common-mybatis</artifactId>
         </dependency>
 
-        <!-- @MyBatis代码生成器::start -->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-generator</artifactId>
+            <groupId>org.xiangqian.monolithic</groupId>
+            <artifactId>common-generator</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity-engine-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- @MyBatis代码生成器::end -->
 
         <dependency>
             <groupId>junit</groupId>

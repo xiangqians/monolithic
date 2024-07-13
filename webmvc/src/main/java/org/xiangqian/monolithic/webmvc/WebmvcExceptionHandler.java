@@ -22,8 +22,8 @@ import org.xiangqian.monolithic.common.web.WebExceptionHandler;
 public class WebmvcExceptionHandler extends WebExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Result<?>> handle1(Exception exception) {
-        return new ResponseEntity<>(handle(exception), HttpStatus.OK);
+    public ResponseEntity<Result<?>> handle(Exception exception) {
+        return new ResponseEntity<>(handle((Throwable) exception), HttpStatus.OK);
     }
 
 }

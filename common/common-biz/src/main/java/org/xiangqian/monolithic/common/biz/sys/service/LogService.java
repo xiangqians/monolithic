@@ -1,7 +1,7 @@
 package org.xiangqian.monolithic.common.biz.sys.service;
 
-import org.xiangqian.monolithic.common.mysql.LazyList;
-import org.xiangqian.monolithic.common.mysql.Page;
+import org.xiangqian.monolithic.common.mybatis.LazyList;
+import org.xiangqian.monolithic.common.mybatis.Page;
 import org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity;
 
 /**
@@ -12,10 +12,10 @@ import org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity;
  */
 public interface LogService {
 
-    Page<LogEntity> page(Page<LogEntity> page, LogEntity logEntity);
+    Page<LogEntity> page(Page<LogEntity> page, LogEntity entity);
 
-    LazyList<LogEntity> lazyList(LazyList<LogEntity> lazyList, LogEntity logEntity);
+    LazyList<LogEntity> lazyList(LazyList<LogEntity> lazyList, LogEntity entity);
 
-    void asyncSave(LogEntity logEntity);
+    void asyncSave(LogEntity entity);
 
 }

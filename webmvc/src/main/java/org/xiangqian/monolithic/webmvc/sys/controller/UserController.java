@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenEmailArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenPhoneArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenResult;
@@ -58,7 +55,7 @@ public class UserController extends WebmvcController {
         return result(service.getTokenByPhone(arg));
     }
 
-    @RequestMapping("/token/revoke")
+    @DeleteMapping("/token/revoke")
     @Operation(summary = "撤销令牌")
     @SecurityRequirement(name = HttpHeaders.AUTHORIZATION)
     public Result<Boolean> revokeToken() {

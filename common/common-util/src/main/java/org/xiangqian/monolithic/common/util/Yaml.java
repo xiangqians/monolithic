@@ -2,8 +2,19 @@ package org.xiangqian.monolithic.common.util;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.xiangqian.monolithic.common.util.naming.NamingLowerHyphenUtil;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.TypeDescription;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.introspector.MissingProperty;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
+import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.ScalarNode;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.*;
 
 /**
@@ -103,6 +114,39 @@ public class Yaml {
         }
 
         return null;
+    }
+
+    public static <T> T loadAs(InputStream inputStream, Class<T> type) throws IOException {
+        if (List.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
+            return new org.yaml.snakeyaml.Yaml().loadAs(inputStream, type);
+        }
+
+        Constructor constructor = new Constructor(new LoaderOptions());
+        constructor.setPropertyUtils(new PropertyUtils() {
+            @Override
+            public Property getProperty(Class<? extends Object> type, String name) {
+                // 忽略 yaml 中无法在类中找到属性的字段
+                setSkipMissingProperties(true);
+
+                Property property = super.getProperty(type, name);
+                if (property instanceof MissingProperty) {
+                    property = super.getProperty(type, NamingLowerHyphenUtil.convToLowerCamel(name));
+                }
+                return property;
+            }
+        });
+
+        // 字符串转为 Duration
+        constructor.addTypeDescription(new TypeDescription(Duration.class) {
+            @Override
+            public Object newInstance(Node node) {
+                ScalarNode scalarNode = (ScalarNode) node;
+                String value = scalarNode.getValue();
+                return DurationUtil.parse(value);
+            }
+        });
+
+        return new org.yaml.snakeyaml.Yaml(constructor).loadAs(inputStream, type);
     }
 
 }

@@ -2,6 +2,8 @@ package org.xiangqian.monolithic.common.util;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.io.InputStream;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
  * @date 20:42 2023/07/31
  */
 public class YamlTest {
+
 
     @Test
     public void load() {

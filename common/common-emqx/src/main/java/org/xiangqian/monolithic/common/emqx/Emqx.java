@@ -16,14 +16,23 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
 
-    protected EmqxProperties emqxProperties;
-    protected MqttClient mqttClient;
+    private EmqxProperties emqxProperties;
+    private MqttClient mqttClient;
 
     public Emqx(EmqxProperties emqxProperties) {
         this.emqxProperties = emqxProperties;
     }
 
-    protected MqttConnectOptions mqttConnectOptions() {
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        // 创建 MQTT 客户端
+        mqttClient = new MqttClient(emqxProperties.getUrl(),
+                // 客户端 ID
+                emqxProperties.getClientId(),
+                // 设置持久化方式
+                new MemoryPersistence());
+
+        // MQTT 配置
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
 
         // 配置 MQTT 客户端连接到代理时的会话状态
@@ -37,46 +46,51 @@ public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
         // 2、持久化会话 (cleanSession(false)) 的使用场景：
         //   长期运行的客户端，需要保持订阅状态，确保不会错过消息。
         //   对消息传递的可靠性要求较高，即使客户端断开连接，也能确保消息能够传递到客户端。
-        mqttConnectOptions.setCleanSession(false);
-
-        // 设置心跳间隔
-//        mqttConnectOptions.setKeepAliveInterval();
-
-        // 设置连接超时时间，单位：s
-        mqttConnectOptions.setConnectionTimeout(30);
+        mqttConnectOptions.setCleanSession(emqxProperties.getCleanSession());
 
         // 认证用户
-        mqttConnectOptions.setUserName(emqxProperties.getUser());
+        mqttConnectOptions.setUserName(emqxProperties.getUsername());
         // 认证密码
-        mqttConnectOptions.setPassword(emqxProperties.getPasswd().toCharArray());
+        mqttConnectOptions.setPassword(emqxProperties.getPassword().toCharArray());
+
+        // 设置连接超时时间，单位：s
+        mqttConnectOptions.setConnectionTimeout((int) emqxProperties.getConnectionTimeout().toSeconds());
+
+        // 设置心跳间隔，单位：s
+        mqttConnectOptions.setKeepAliveInterval((int) emqxProperties.getKeepAliveInterval().toSeconds());
 
         // 设置是否自动重连
         mqttConnectOptions.setAutomaticReconnect(true);
 
-        return mqttConnectOptions;
-    }
-
-    protected void connect(MqttConnectOptions mqttConnectOptions) throws MqttException {
-        mqttClient.connect(mqttConnectOptions);
-    }
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        // 创建MQTT客户端
-        mqttClient = new MqttClient(emqxProperties.getBroker(),
-                emqxProperties.getClientId(),
-                // 设置持久化方式
-                new MemoryPersistence());
-
-        // MQTT配置
-        MqttConnectOptions mqttConnectOptions = mqttConnectOptions();
-
         // 消息回调
         mqttClient.setCallback(this);
 
+        // 连接之前
+        connectBefore(mqttClient, mqttConnectOptions);
+
         // 连接
-        connect(mqttConnectOptions);
+        mqttClient.connect(mqttConnectOptions);
         log.debug("MQTT已连接！");
+
+        // 连接之后
+        connectAfter(mqttClient);
+    }
+
+    /**
+     * 连接之前
+     *
+     * @param mqttClient
+     * @param mqttConnectOptions
+     */
+    protected void connectBefore(MqttClient mqttClient, MqttConnectOptions mqttConnectOptions) {
+    }
+
+    /**
+     * 连接之后
+     *
+     * @param mqttClient
+     */
+    protected void connectAfter(MqttClient mqttClient) {
     }
 
     @Override
@@ -113,22 +127,28 @@ public class Emqx implements MqttCallback, ApplicationRunner, DisposableBean {
         return builder.toString();
     }
 
-    public void publish(String topic, MqttMessage message) throws MqttException {
-        mqttClient.publish(topic, message);
-    }
-
     /**
-     * @param topic
-     * @param payload
-     * @param qos     消息质量
+     * 发布消息
+     *
+     * @param topic   主题
+     * @param payload 消息内容
+     * @param qos     消息质量服务等级
      * @throws MqttException
      */
     public void publish(String topic, byte[] payload, int qos) throws MqttException {
         MqttMessage mqttMessage = new MqttMessage(payload);
         mqttMessage.setQos(qos);
-        publish(topic, mqttMessage);
+        mqttClient.publish(topic, mqttMessage);
     }
 
+    /**
+     * 发布消息
+     *
+     * @param topic   主题
+     * @param payload 消息内容
+     * @param qos     消息质量服务等级
+     * @throws MqttException
+     */
     public void publish(String topic, String payload, int qos) throws MqttException {
         publish(topic, payload.getBytes(StandardCharsets.UTF_8), qos);
     }

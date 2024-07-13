@@ -6,7 +6,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.security.Keys;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenEmailArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenPhoneArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenResult;
-import org.xiangqian.monolithic.common.biz.sys.service.ThreadLocalUserService;
+import org.xiangqian.monolithic.common.biz.sys.service.SecurityService;
 import org.xiangqian.monolithic.common.biz.sys.service.UserService;
 import org.xiangqian.monolithic.common.model.Assert;
 import org.xiangqian.monolithic.common.model.CodeException;
@@ -31,7 +30,6 @@ import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author xiangqian
@@ -41,8 +39,8 @@ import java.util.Set;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private SecretKey jwtKey;
-    private Duration jwtExp;
+    private final SecretKey jwtKey;
+    private final Duration jwtExp;
 
     @Autowired
     private Redis redis;
@@ -54,7 +52,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private ThreadLocalUserService threadLocalUserService;
+    private SecurityService securityService;
 
     public UserServiceImpl(@Value("${jwt.key}") String jwtKey, @Value("${jwt.exp}") Duration jwtExp) {
         this.jwtKey = Keys.hmacShaKeyFor(jwtKey.getBytes());
@@ -136,11 +134,9 @@ public class UserServiceImpl implements UserService {
         try {
             Jws<Claims> jws = JwtUtil.parseClaims(token, jwtKey);
             Object id = jws.getPayload().get("id");
-            Object value = redis.String().get(getTokenKey(id, token));
+            Object value = redis.String().get(getTokenKey(id));
             if (value != null) {
-                UserEntity user = JsonUtil.deserialize(value.toString(), UserEntity.class);
-                user.setToken(token);
-                return user;
+                return JsonUtil.deserialize(value.toString(), UserEntity.class);
             }
         } catch (Exception e) {
             log.warn("", e);
@@ -150,19 +146,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean revokeToken() {
-        UserEntity user = threadLocalUserService.get();
-        String token = user.getToken();
-        return redis.delete(getTokenKey(user.getId(), token));
+        UserEntity user = securityService.getUser();
+        return redis.delete(getTokenKey(user.getId()));
     }
 
     @SneakyThrows
     private UserTokenResult getTokenByUser(UserEntity user) {
         String token = null;
-        String prefix = getTokenKeyPrefix(user.getId());
-        Set<String> keys = redis.getKeysWithPrefix(prefix, 1);
-        if (CollectionUtils.isNotEmpty(keys)) {
-            token = keys.iterator().next();
-            token = token.substring(prefix.length());
+
+        Object value = redis.String().get(getTokenKey(user.getId()));
+        if (value != null) {
+            user = JsonUtil.deserialize(value.toString(), UserEntity.class);
+            token = user.getToken();
 
             Jws<Claims> jws = JwtUtil.parseClaims(token, jwtKey);
             Claims claims = jws.getPayload();
@@ -171,23 +166,20 @@ public class UserServiceImpl implements UserService {
         }
 
         token = JwtUtil.generate(Map.of("id", user.getId()), jwtExp, jwtKey);
-        redis.String().set(getTokenKey(user.getId(), token),
+        redis.String().set(getTokenKey(user.getId()),
                 JsonUtil.serializeAsString(Map.of("id", user.getId(),
                         "tenantId", user.getTenantId(),
                         "roleId", user.getRoleId(),
                         "name", user.getName(),
                         "email", user.getEmail(),
-                        "phone", user.getPhone())),
+                        "phone", user.getPhone(),
+                        "token", token)),
                 jwtExp.minus(Duration.ofSeconds(30)));
         return new UserTokenResult(token, LocalDateTime.now().plusSeconds(jwtExp.toSeconds()));
     }
 
-    private String getTokenKey(Object userId, Object token) {
-        return getTokenKeyPrefix(userId) + token;
-    }
-
-    private String getTokenKeyPrefix(Object userId) {
-        return "biz_sys_user_" + userId + "_";
+    private String getTokenKey(Object userId) {
+        return "biz_sys_user_" + userId;
     }
 
 }

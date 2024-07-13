@@ -8,4 +8,13 @@ package org.xiangqian.monolithic.common.biz.sys.service;
  */
 public interface AuthorityService {
 
+    /**
+     * 是否允许未经授权访问
+     *
+     * @param method 请求方法
+     * @param path   请求路径
+     * @return
+     */
+    boolean isAllow(String method, String path);
+
 }

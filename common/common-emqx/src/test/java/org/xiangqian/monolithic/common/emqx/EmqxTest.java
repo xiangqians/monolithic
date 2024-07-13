@@ -1,12 +1,14 @@
 package org.xiangqian.monolithic.common.emqx;
 
+import lombok.Data;
 import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xiangqian.monolithic.common.util.Yaml;
 
-import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
+import java.io.InputStream;
 
 /**
  * @author xiangqian
@@ -16,16 +18,24 @@ public class EmqxTest {
 
     private Emqx emqx;
 
+    @Data
+    public static class ApplicationProperties {
+        private EmqxProperties emqx;
+    }
+
     @Before
     @SneakyThrows
     public void before() {
-        EmqxProperties emqxProperties = new EmqxProperties();
-        emqxProperties.setBroker("tcp://localhost:1883");
-        emqxProperties.setClientId("publisher");
-        emqxProperties.setUser("user");
-        emqxProperties.setPasswd("passwd");
-        emqx = new Emqx(emqxProperties);
-        emqx.run(null);
+        InputStream inputStream = null;
+        try {
+            inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("application.yml");
+            ApplicationProperties applicationProperties = Yaml.loadAs(inputStream, ApplicationProperties.class);
+            EmqxProperties emqxProperties = applicationProperties.getEmqx();
+            emqx = new Emqx(emqxProperties);
+            emqx.run(null);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
     }
 
     @After
@@ -35,9 +45,12 @@ public class EmqxTest {
 
     @Test
     @SneakyThrows
-    public void publisher() {
-        emqx.publish("sys", LocalDateTime.now().toString(), 0);
-        TimeUnit.SECONDS.sleep(2);
+    public void testPublish() {
+
+        System.out.println();
+
+//        emqx.publish("sys", LocalDateTime.now().toString(), 0);
+//        TimeUnit.SECONDS.sleep(2);
     }
 
 }

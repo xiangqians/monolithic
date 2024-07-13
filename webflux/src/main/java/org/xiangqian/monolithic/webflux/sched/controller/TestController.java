@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ServerWebExchange;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenEmailArg;
 import org.xiangqian.monolithic.common.biz.sys.model.UserTokenResult;
 import org.xiangqian.monolithic.common.model.Result;
@@ -26,47 +27,47 @@ public class TestController extends WebfluxController {
 
     //    @GetMapping("/c")
 //    @Operation(summary = "c")
-    public Mono<ResponseEntity<Result<Boolean>>> c(@PathVariable Long id) {
-        return result(() -> null);
+    public Mono<ResponseEntity<Result<Boolean>>> c(ServerWebExchange exchange, @PathVariable Long id) {
+        return result(exchange, () -> null);
     }
 
     @Allow
     @GetMapping("/c/{id}")
     @Operation(summary = "cid")
-    public Mono<ResponseEntity<Result<Long>>> cid(@PathVariable Long id) {
-        return result(() -> 1 / id);
+    public Mono<ResponseEntity<Result<Long>>> cid(ServerWebExchange exchange, @PathVariable Long id) {
+        return result(exchange, () -> 1 / id);
     }
 
     @PostMapping("/token")
     @Operation(summary = "获取令牌1")
-    public Mono<ResponseEntity<Result<UserTokenResult>>> token(@Valid @RequestBody UserTokenEmailArg authTokenReq) {
-        return result(() -> null);
+    public Mono<ResponseEntity<Result<UserTokenResult>>> token(ServerWebExchange exchange, @Valid @RequestBody UserTokenEmailArg authTokenReq) {
+        return result(exchange, () -> null);
     }
 
     @Allow
     @GetMapping("/a")
     @Operation(summary = "a")
-    public Mono<ResponseEntity<Result<Boolean>>> a() {
-        return result(() -> null);
+    public Mono<ResponseEntity<Result<Boolean>>> a(ServerWebExchange exchange) {
+        return result(exchange, () -> null);
     }
 
     @Allow
     @GetMapping("/revoke")
     @Operation(summary = "撤销令牌")
-    public Mono<ResponseEntity<Result<Boolean>>> revoke() {
-        return result(() -> null);
+    public Mono<ResponseEntity<Result<Boolean>>> revoke(ServerWebExchange exchange) {
+        return result(exchange, () -> null);
     }
 
     @GetMapping("/e")
     @Operation(summary = "e")
-    public Mono<ResponseEntity<Result<Boolean>>> e() {
-        return result(() -> null);
+    public Mono<ResponseEntity<Result<Boolean>>> e(ServerWebExchange exchange) {
+        return result(exchange, () -> null);
     }
 
     @GetMapping("/b")
     @Operation(summary = "b")
-    public Mono<ResponseEntity<Result<Boolean>>> b() {
-        return result(() -> null);
+    public Mono<ResponseEntity<Result<Boolean>>> b(ServerWebExchange exchange) {
+        return result(exchange, () -> null);
     }
 
 }

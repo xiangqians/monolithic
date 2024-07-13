@@ -17,8 +17,8 @@ public interface AuthorityMapper extends BaseMapper<AuthorityEntity> {
 
     List<AuthorityEntity> list();
 
-    AuthorityEntity getOne(AuthorityEntity authority);
+    AuthorityEntity getOne(AuthorityEntity entity);
 
-    Long updById(AuthorityEntity authority);
+    Long updById(AuthorityEntity entity);
 
 }

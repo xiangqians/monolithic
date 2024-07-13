@@ -3,8 +3,8 @@ package org.xiangqian.monolithic.common.mysql.sched.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.xiangqian.monolithic.common.mysql.LazyList;
-import org.xiangqian.monolithic.common.mysql.Page;
+import org.xiangqian.monolithic.common.mybatis.LazyList;
+import org.xiangqian.monolithic.common.mybatis.Page;
 import org.xiangqian.monolithic.common.mysql.sched.entity.TaskRecordEntity;
 
 /**

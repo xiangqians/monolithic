@@ -30,10 +30,6 @@ public class AuthorityEntity implements Serializable {
     @Schema(description = "权限组id")
     private Long groupId;
 
-    @Schema(description = "角色id")
-    @TableField(exist = false)
-    private Set<Long> roleIds;
-
     @Schema(description = "方法")
     private String method;
 
@@ -63,6 +59,10 @@ public class AuthorityEntity implements Serializable {
     @Schema(hidden = true)
     @TableField(exist = false)
     private Method handleMethod;
+
+    @Schema(description = "所属角色id集合")
+    @TableField(exist = false)
+    private Set<Long> roleIds;
 
     public void setRoleIdsStr(String roleIdsStr) {
         if (StringUtils.isNotEmpty(roleIdsStr)) {

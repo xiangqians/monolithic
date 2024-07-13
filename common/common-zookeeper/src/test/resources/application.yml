@@ -1,0 +1,18 @@
+# zookeeper 配置
+zookeeper:
+  # 设置实例命名空间，所有操作都会在该命名空间下进行
+  namespace: my-namespace
+  # 服务器连接地址，集群模式则使用逗号分隔，如：host1:port1,host2:port2
+  connect-string: localhost:2181
+  # 会话超时时间
+  session-timeout: 10s
+  # 连接超时时间
+  connection-timeout: 10s
+  # 重试策略
+  retry-policy:
+    # 初始化间隔时间
+    base-sleep-time: 1s
+    # 最大重试次数
+    max-retries: 3
+    # 最大重试间隔时间
+    max-sleep: 30s

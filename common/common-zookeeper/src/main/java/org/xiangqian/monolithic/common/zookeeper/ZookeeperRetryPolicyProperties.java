@@ -14,7 +14,7 @@ import java.time.Duration;
 public class ZookeeperRetryPolicyProperties {
 
     /**
-     * 初始化间隔时间，时间格式：{n}h{n}m{n}s
+     * 初始化间隔时间
      */
     private Duration baseSleepTime;
 
@@ -24,7 +24,7 @@ public class ZookeeperRetryPolicyProperties {
     private Integer maxRetries;
 
     /**
-     * 最大重试间隔时间，时间格式：{n}h{n}m{n}s
+     * 最大重试间隔时间
      */
     private Duration maxSleep;
 

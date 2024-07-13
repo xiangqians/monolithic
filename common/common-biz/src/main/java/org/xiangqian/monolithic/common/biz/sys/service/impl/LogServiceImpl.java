@@ -5,11 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
-import org.xiangqian.monolithic.common.mysql.LazyList;
-import org.xiangqian.monolithic.common.mysql.Page;
+import org.xiangqian.monolithic.common.biz.sys.service.LogService;
+import org.xiangqian.monolithic.common.biz.sys.service.SecurityService;
+import org.xiangqian.monolithic.common.mybatis.LazyList;
+import org.xiangqian.monolithic.common.mybatis.Page;
 import org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity;
 import org.xiangqian.monolithic.common.mysql.sys.mapper.LogMapper;
-import org.xiangqian.monolithic.common.biz.sys.service.LogService;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -25,6 +26,9 @@ public class LogServiceImpl implements LogService, Runnable, ApplicationRunner {
     @Autowired
     private LogMapper logMapper;
 
+    @Autowired
+    private SecurityService securityService;
+
     // 阻塞式队列
     private BlockingQueue<LogEntity> blockingQueue;
 
@@ -34,33 +38,37 @@ public class LogServiceImpl implements LogService, Runnable, ApplicationRunner {
     }
 
     @Override
-    public Page<LogEntity> page(Page<LogEntity> page, LogEntity logEntity) {
-        return logMapper.page(page, logEntity);
+    public Page<LogEntity> page(Page<LogEntity> page, LogEntity entity) {
+        log.debug("-----------------{}", securityService.getUser());
+
+//        int i = 1/0;
+
+        return logMapper.page(page, entity);
     }
 
     @Override
-    public LazyList<LogEntity> lazyList(LazyList<LogEntity> lazyList, LogEntity logEntity) {
-        return logMapper.lazyList(lazyList, logEntity);
+    public LazyList<LogEntity> lazyList(LazyList<LogEntity> lazyList, LogEntity entity) {
+        return logMapper.lazyList(lazyList, entity);
     }
 
     @Override
-    public void asyncSave(LogEntity logEntity) {
+    public void asyncSave(LogEntity entity) {
         // 尝试将指定的元素插入此队列
         // 如果插入成功则返回 true，如果队列已满则抛出 IllegalStateException
-//        blockingQueue.add(logEntity);
+//        blockingQueue.add(entity);
 
         // 尝试将指定的元素插入此队列
         // 如果插入成功则返回 true，如果队列已满则返回 false
-        if (!blockingQueue.offer(logEntity)) {
-            log.warn("日志阻塞式队列已满，无法添加日志信息：{}", logEntity);
+        if (!blockingQueue.offer(entity)) {
+            log.warn("日志阻塞式队列已满，无法添加日志信息：{}", entity);
         }
 
         // 尝试在指定的时间内将指定的元素插入此队列
         // 如果插入成功则返回 true，如果在超时时间内仍无法插入则返回 false
-//        blockingQueue.offer(logEntity, 30L, TimeUnit.SECONDS);
+//        blockingQueue.offer(entity, 30L, TimeUnit.SECONDS);
 
         // 将指定的元素插入此队列，如果队列已满则等待直到有空间为止
-//        blockingQueue.put(logEntity);
+//        blockingQueue.put(entity);
     }
 
     @Override
@@ -69,30 +77,30 @@ public class LogServiceImpl implements LogService, Runnable, ApplicationRunner {
             try {
                 // 获取但不移除此队列的头部元素
                 // 如果队列为空则抛出 NoSuchElementException
-//                LogEntity logEntity = blockingQueue.element();
+//                LogEntity entity = blockingQueue.element();
 
                 // 获取但不移除此队列的头部元素
                 // 如果队列为空则返回 null
-//                LogEntity logEntity = blockingQueue.peek();
+//                LogEntity entity = blockingQueue.peek();
 
                 // --------------
 
                 // 获取并移除此队列的头部元素
                 // 如果队列为空则抛出 NoSuchElementException。
-//                LogEntity logEntity = blockingQueue.remove();
+//                LogEntity entity = blockingQueue.remove();
 
                 // 尝试获取并移除此队列的头部元素
                 // 如果队列为空则返回 null
-//                LogEntity logEntity = blockingQueue.poll();
+//                LogEntity entity = blockingQueue.poll();
 
                 // 获取并移除此队列的头部元素，在指定的时间内等待可用的元素
                 // 如果在超时时间内仍无元素可用则返回 null
-//                LogEntity logEntity = blockingQueue.poll(30, TimeUnit.SECONDS);
+//                LogEntity entity = blockingQueue.poll(30, TimeUnit.SECONDS);
 
                 // 获取并移除此队列的头部元素，如果队列为空则等待直到有元素为止
-                LogEntity logEntity = blockingQueue.take();
+                LogEntity entity = blockingQueue.take();
 
-//                logMapper.insert(logEntity);
+//                logMapper.insert(entity);
             } catch (Exception e) {
                 log.error("日志记录异常！", e);
             }

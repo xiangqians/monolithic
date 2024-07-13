@@ -6,7 +6,12 @@ https://github.com/emqx/emqx
 
 https://github.com/eclipse/paho.mqtt.java
 
-# 安装
+# 安装 EMQX
+
+
+
+## 在 Debian 上安装 EMQX
+
 
 - 下载
 
@@ -20,6 +25,41 @@ etc/emqx.conf
 
 ```conf
 ```
+
+
+- ~/emqx/etc/emqx.conf
+
+```conf
+## NOTE:
+## This config file overrides data/configs/cluster.hocon,
+## and is merged with environment variables which start with 'EMQX_' prefix.
+##
+## Config changes made from EMQX dashboard UI, management HTTP API, or CLI
+## are stored in data/configs/cluster.hocon.
+## To avoid confusion, please do not store the same configs in both files.
+##
+## See https://www.emqx.io/docs/en/v5.0/configuration/configuration.html for more details.
+## Configuration full example can be found in etc/examples
+
+node {
+  name = "emqx@127.0.0.1"
+  cookie = "emqxsecretcookie"
+  data_dir = "data"
+}
+
+cluster {
+  name = emqxcl
+  discovery_strategy = manual
+}
+
+dashboard {
+    listeners.http {
+        bind = 18083
+    }
+}
+```
+
+
 
 - 启动/停止/重启服务和 Erlang 节点
 
@@ -43,6 +83,47 @@ http://localhost:18083
 账号：admin
 密码：public
 ```
+
+## 在 Docker 上安装 EMQX
+
+Docker运行单个EMQX节点
+
+
+```shell
+$ docker pull emqx/emqx:5.5.1
+
+$ docker run \
+-id \
+--name emqx \
+-p 1883:1883 \
+-p 8083:8083 \
+-p 8084:8084 \
+-p 8883:8883 \
+-p 18083:18083 \
+-v ~/emqx/etc:/opt/emqx/etc \
+-v ~/emqx/data:/opt/emqx/data \
+-v ~/emqx/log:/opt/emqx/log \
+emqx/emqx:5.5.1
+
+# 说明：
+# -p <host-port>:<container-port>
+# -v <host-path>:<container-path>
+```
+
+- EMQX Dashboard
+
+http://localhost:18083
+
+默认情况下，用户名为 admin，密码为 public
+
+```
+Ew#nAGbuDFL3s@sokla2oFQpkbM+
+```
+
+- 参考：
+    - [GitHub](https://github.com/emqx/emqx)
+    - [官方文档](https://www.emqx.io/docs/zh/latest/deploy/install-docker.html)
+
 
 # MQTT 主题与通配符
 
@@ -254,12 +335,4 @@ MQTT 协议规定主题的长度为两个字节，因此主题最多可包含 65
 
 # Spring Boot 配置
 
-application-{profile}.yml
-
-```yaml
-emqx:
-  broker: tcp://localhost:1883
-  client-id: publisher
-  user: user
-  passwd: passwd
-```
+[application.yml](src/test/resources/application.yml)

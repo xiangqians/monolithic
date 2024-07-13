@@ -109,12 +109,22 @@
             </dependency>
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-generator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
                 <artifactId>common-emqx</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.xiangqian.monolithic</groupId>
                 <artifactId>common-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xiangqian.monolithic</groupId>
+                <artifactId>common-mybatis</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -155,26 +165,35 @@
             <!-- @common::end -->
 
             <!-- @curator::start -->
-            <!-- Curator是一个Apache的开源项目，提供了一套易用的API来简化ZooKeeper客户端的操作，提供了一系列的高级特性和工具类，如分布式锁、选举、缓存等。 -->
+
+            <!-- Apache Curator 是一个 Apache ZooKeeper 客户端库，简化了与 ZooKeeper 的交互和操作，提供了更高级别和易用的接口。 -->
+
+            <!--
+             | curator-framework 是 Apache Curator 框架的核心依赖项。
+             | curator-framework 模块包含了核心的框架功能，如连接管理、节点创建、数据操作等。
+             |-->
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
                 <version>${curator.version}</version>
             </dependency>
 
-            <!-- curator-recipes
-             | 锁：包括共享锁、共享可重入锁、读写锁等。
-             | 选举：Leader选举算法。
-             | Barrier：阻止分布式计算直至某个条件被满足的“栅栏”，可以看做JDK Concurrent包中Barrier的分布式实现。
-             | 缓存：三种Cache及监听机制。
-             | 持久化结点：连接或Session终止后仍然在ZooKeeper中存在的结点。
-             | 队列：分布式队列、分布式优先级队列等。
+            <!--
+             | curator-recipes 是 Curator 提供的一个子模块，包含了一些常见的分布式系统模式和算法的实现，例如分布式锁、选举、队列等。
+             | 这些模式被称为 "Recipes"，它们构建在 Curator 的核心框架之上，使得开发者可以更方便地实现复杂的分布式应用。
+             | 1、锁：包括共享锁、共享可重入锁、读写锁等。
+             | 2、选举：Leader选举算法。
+             | 3、Barrier：阻止分布式计算直至某个条件被满足的“栅栏”，可以看做JDK Concurrent包中Barrier的分布式实现。
+             | 4、缓存：三种Cache及监听机制。
+             | 5、持久化结点：连接或Session终止后仍然在ZooKeeper中存在的结点。
+             | 6、队列：分布式队列、分布式优先级队列等。
              |-->
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-recipes</artifactId>
                 <version>${curator.version}</version>
             </dependency>
+
             <!-- @curator::end -->
 
             <dependency>
@@ -209,6 +228,12 @@
             <dependency>
                 <groupId>com.clickhouse</groupId>
                 <artifactId>clickhouse-jdbc</artifactId>
+                <version>${clickhouse-jdbc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.clickhouse</groupId>
+                <artifactId>clickhouse-http-client</artifactId>
                 <version>${clickhouse-jdbc.version}</version>
             </dependency>
 
@@ -256,6 +281,13 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- mybatis核心 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-core</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
 

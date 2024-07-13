@@ -6,17 +6,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
-import org.xiangqian.monolithic.common.util.JsonUtil;
 import reactor.core.publisher.Mono;
-import reactor.netty.ByteBufMono;
 
 import java.util.Set;
 
@@ -32,7 +26,7 @@ import java.util.Set;
 @Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class WebFluxExceptionHandler extends org.xiangqian.monolithic.common.web.WebExceptionHandler implements WebExceptionHandler {
+public class WebfluxExceptionHandler extends org.xiangqian.monolithic.common.web.WebExceptionHandler implements WebExceptionHandler {
 
     /**
      * 参考：{@link org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler#handle(org.springframework.web.server.ServerWebExchange, java.lang.Throwable)}
@@ -52,12 +46,7 @@ public class WebFluxExceptionHandler extends org.xiangqian.monolithic.common.web
             return Mono.error(throwable);
         }
 
-        HttpHeaders headers = response.getHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        response.setStatusCode(HttpStatus.OK);
-        byte[] bytes = JsonUtil.serializeAsBytes(handle(throwable));
-        DataBuffer dataBuffer = response.bufferFactory().allocateBuffer(bytes.length).write(bytes);
-        return response.writeAndFlushWith(Mono.just(ByteBufMono.just(dataBuffer)));
+        return WebfluxSecurityFilter.writeAndFlush(exchange, handle(throwable));
     }
 
     private final Set<String> disconnectedClientExceptions = Set.of("AbortedException", "ClientAbortException", "EOFException", "EofException");

@@ -1,5 +1,7 @@
 # 前言
 
+https://developer.aliyun.com/article/859792
+
 ## 行式数据库
 
 在传统的行式数据库系统中，数据按如下顺序存储：

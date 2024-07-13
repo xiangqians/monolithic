@@ -179,22 +179,3 @@ CREATE TABLE `sys_dict_item`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典项表';
 
-
--- ---------------------------
--- Table structure for sys_log
--- ---------------------------
-DROP TABLE IF EXISTS `sys_log`;
-CREATE TABLE `sys_log`
-(
-    `id`           INT(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `user_id`      INT(8) UNSIGNED DEFAULT 0 COMMENT '用户id',
-    `authority_id` INT(8) UNSIGNED DEFAULT 0 COMMENT '权限id',
-    `code`         VARCHAR(64)       DEFAULT '' COMMENT '状态码',
-    `address`      VARCHAR(64)       DEFAULT '' COMMENT '远程地址',
-    `url`          VARCHAR(512)      DEFAULT '' COMMENT '请求地址',
-    `body`         TEXT              DEFAULT NULL COMMENT '请求报文',
-    `duration`     MEDIUMINT UNSIGNED DEFAULT 0 COMMENT '耗时，单位ms',
-    `add_time`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '请求时间',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='日志表';
-

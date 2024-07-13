@@ -5,8 +5,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -36,9 +36,9 @@ public class DefaultEmqx extends Emqx {
         super(emqxProperties);
     }
 
-    @Override
     @SneakyThrows
-    protected void connect(MqttConnectOptions mqttConnectOptions) throws MqttException {
+    @Override
+    protected void connectBefore(MqttClient mqttClient, MqttConnectOptions mqttConnectOptions) {
         // 获取MQTT订阅者
         String basePkg = this.getClass().getPackageName() + ".**";
         Set<Class<?>> classes = ResourceUtil.getClasses(basePkg);
@@ -60,10 +60,11 @@ public class DefaultEmqx extends Emqx {
                 }
             }
         }
+    }
 
-        // 连接
-        super.connect(mqttConnectOptions);
-
+    @SneakyThrows
+    @Override
+    protected void connectAfter(MqttClient mqttClient) {
         // 订阅主题
         if (CollectionUtils.isNotEmpty(subscriberWrappers)) {
             mqttClient.subscribe(subscriberWrappers.stream().map(SubscriberWrapper::getTopicFilter).toArray(String[]::new),
@@ -91,7 +92,7 @@ public class DefaultEmqx extends Emqx {
     }
 
     @Data
-    public static class SubscriberWrapper {
+    private static class SubscriberWrapper {
         private String topicFilter;
         private int qos;
         private IMqttMessageListener mqttMessageListener;

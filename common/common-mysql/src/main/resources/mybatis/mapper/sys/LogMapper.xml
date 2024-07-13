@@ -6,15 +6,15 @@
         SELECT l.id, l.user_id, l.authority_id, l.`code`, l.remote_address, l.req_url, l.req_body, l.duration, l.add_time
         FROM sys_log l
         <where>
-            <if test="logEntity.id != null">AND l.id = #{logEntity.id}</if>
-            <if test="logEntity.userId != null">AND l.user_id = #{logEntity.userId}</if>
-            <if test="logEntity.authorityId != null">AND l.authority_id = #{logEntity.authorityId}</if>
-            <if test="logEntity.code != null">AND l.`code` = #{logEntity.code}</if>
-            <if test="logEntity.remoteAddress != null">AND l.remote_address = #{logEntity.remoteAddress}</if>
-            <if test="logEntity.reqUrl != null">AND l.req_url = #{logEntity.reqUrl}</if>
-            <if test="logEntity.reqBody != null">AND l.req_body = #{logEntity.reqBody}</if>
-            <if test="logEntity.duration != null">AND l.duration = #{logEntity.duration}</if>
-            <if test="logEntity.addTime != null">AND l.add_time = #{logEntity.addTime}</if>
+            <if test="entity.id != null">AND l.id = #{entity.id}</if>
+            <if test="entity.userId != null">AND l.user_id = #{entity.userId}</if>
+            <if test="entity.authorityId != null">AND l.authority_id = #{entity.authorityId}</if>
+            <if test="entity.code != null">AND l.`code` = #{entity.code}</if>
+            <if test="entity.remoteAddress != null">AND l.remote_address = #{entity.remoteAddress}</if>
+            <if test="entity.reqUrl != null">AND l.req_url = #{entity.reqUrl}</if>
+            <if test="entity.reqBody != null">AND l.req_body = #{entity.reqBody}</if>
+            <if test="entity.duration != null">AND l.duration = #{entity.duration}</if>
+            <if test="entity.addTime != null">AND l.add_time = #{entity.addTime}</if>
         </where>
     </sql>
 

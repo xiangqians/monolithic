@@ -13,8 +13,8 @@ import org.xiangqian.monolithic.common.mysql.sys.entity.AuthorityGroupEntity;
 @Mapper
 public interface AuthorityGroupMapper extends BaseMapper<AuthorityGroupEntity> {
 
-    AuthorityGroupEntity getOne(AuthorityGroupEntity authorityGroup);
+    AuthorityGroupEntity getOne(AuthorityGroupEntity entity);
 
-    Long updById(AuthorityGroupEntity authorityGroup);
+    Long updById(AuthorityGroupEntity entity);
 
 }

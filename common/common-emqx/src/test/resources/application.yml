@@ -1,0 +1,16 @@
+# EMQX 配置
+emqx:
+  # 服务器地址和端口
+  url: tcp://localhost:1883
+  # 客户端 ID
+  client-id: publisher
+  # 是否清除会话
+  clean-session: false
+  # 用户名
+  username: test
+  # 密码
+  password: test
+  # 连接超时时间
+  connection-timeout: 30s
+  # 心跳包发送间隔时间
+  keep-alive-interval: 60s

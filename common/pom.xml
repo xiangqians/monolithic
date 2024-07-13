@@ -17,12 +17,14 @@
         <module>common-biz</module>
         <module>common-clickhouse</module>
         <module>common-emqx</module>
+        <module>common-generator</module>
         <module>common-influxdb</module>
         <module>common-kafka</module>
         <module>common-mail</module>
         <module>common-minio</module>
         <module>common-model</module>
         <module>common-mongodb</module>
+        <module>common-mybatis</module>
         <module>common-mysql</module>
         <module>common-neo4j</module>
         <module>common-prometheus</module>

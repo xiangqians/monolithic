@@ -16,24 +16,24 @@ import java.time.Duration;
 public class ZookeeperProperties {
 
     /**
-     * 为 CuratorFramework 实例设置命名空间，所有操作都会在该命名空间下进行
+     * 设置实例命名空间，所有操作都会在该命名空间下进行
      */
     private String namespace;
 
     /**
-     * 服务器连接地址，集群模式则使用逗号分隔如：host1:port1,host2:port2
+     * 服务器连接地址，集群模式则使用逗号分隔，如：host1:port1,host2:port2
      */
     private String connectString;
 
     /**
-     * 会话超时时间，时间格式：{n}h{n}m{n}s
+     * 会话超时时间
      */
     private Duration sessionTimeout;
 
     /**
-     * 连接超时时间，时间格式：{n}h{n}m{n}s
+     * 连接超时时间
      */
-    private Duration connectTimeout;
+    private Duration connectionTimeout;
 
     /**
      * Zookeeper 重试策略配置
