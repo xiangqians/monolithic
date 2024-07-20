@@ -1,11 +1,12 @@
 package org.xiangqian.monolithic.common.mysql.sched.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.xiangqian.monolithic.common.mybatis.LazyList;
 import org.xiangqian.monolithic.common.mybatis.Page;
 import org.xiangqian.monolithic.common.mysql.sched.entity.TaskRecordEntity;
+
+import java.util.List;
 
 /**
  * 任务调度记录表Mapper
@@ -14,10 +15,12 @@ import org.xiangqian.monolithic.common.mysql.sched.entity.TaskRecordEntity;
  * @date 16:36 2024/06/23
  */
 @Mapper
-public interface TaskRecordMapper extends BaseMapper<TaskRecordEntity> {
+public interface TaskRecordMapper {
 
-    Page<TaskRecordEntity> page(Page<TaskRecordEntity> page, @Param("entity") TaskRecordEntity entity);
+    List<TaskRecordEntity> list(@Param("entity") TaskRecordEntity entity);
 
     LazyList<TaskRecordEntity> lazyList(LazyList<TaskRecordEntity> lazyList, @Param("entity") TaskRecordEntity entity);
+
+    Page<TaskRecordEntity> page(Page<TaskRecordEntity> page, @Param("entity") TaskRecordEntity entity);
 
 }

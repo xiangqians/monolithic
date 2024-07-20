@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @date 22:56 2024/07/03
  */
 @Configuration(proxyBeanMethods = false)
-@ComponentScan("org.xiangqian.monolithic.common.biz.*.service") // 指定要扫描的service包路径
+@ComponentScan("org.xiangqian.monolithic.common.biz.*.service.impl") // 扫描 Service 接口所在的包路径
 public class BizAutoConfiguration {
 
     @Bean

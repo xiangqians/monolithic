@@ -1,6 +1,5 @@
 package org.xiangqian.monolithic.common.web;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -202,79 +201,79 @@ public abstract class WebSecurityFilter<T> implements Ordered, ApplicationRunner
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        // -----------入库::start-----------
-
-        int size = authorityGroups.size();
-        List<Long> authorityGroupIds = new ArrayList<>(size);
-        List<Long> authorityIds = new ArrayList<>(size);
-        for (AuthorityGroupEntity authorityGroup : authorityGroups) {
-            AuthorityGroupEntity queryAuthorityGroup = new AuthorityGroupEntity();
-            queryAuthorityGroup.setPath(authorityGroup.getPath());
-            AuthorityGroupEntity storedAuthorityGroup = authorityGroupMapper.getOne(queryAuthorityGroup);
-            if (storedAuthorityGroup == null) {
-                authorityGroupMapper.insert(authorityGroup);
-            } else {
-                authorityGroup.setId(storedAuthorityGroup.getId());
-                if (!storedAuthorityGroup.getRem().equals(authorityGroup.getRem()) || storedAuthorityGroup.getDel() == 1) {
-                    authorityGroupMapper.updById(authorityGroup);
-                }
-            }
-            Long authorityGroupId = authorityGroup.getId();
-            authorityGroupIds.add(authorityGroupId);
-
-            for (AuthorityEntity authority : authorityGroup.getAuthorities()) {
-                authority.setGroupId(authorityGroupId);
-
-                AuthorityEntity queryAuthority = new AuthorityEntity();
-                queryAuthority.setMethod(authority.getMethod());
-                queryAuthority.setPath(authority.getPath());
-                AuthorityEntity storedAuthority = authorityMapper.getOne(queryAuthority);
-                if (storedAuthority == null) {
-                    authorityMapper.insert(authority);
-                } else {
-                    authority.setId(storedAuthority.getId());
-                    if (!storedAuthority.getGroupId().equals(authority.getGroupId())
-                            || !storedAuthority.getAllow().equals(authority.getAllow())
-                            || !storedAuthority.getRem().equals(authority.getRem())
-                            || storedAuthority.getDel() == 1) {
-                        authorityMapper.updById(authority);
-                    }
-                }
-                authorityIds.add(authority.getId());
-            }
-        }
-        authorityGroupMapper.delete(new LambdaQueryWrapper<AuthorityGroupEntity>().notIn(AuthorityGroupEntity::getId, authorityGroupIds));
-        authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
-
-        // -----------入库::end-----------
-
-        List<AuthorityEntity> authorities = authorityGroups.stream()
-                .map(AuthorityGroupEntity::getAuthorities)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        authorityMap = new HashMap<>(authorities.size(), 1f) {
-            @Override
-            public AuthorityEntity put(Object method, AuthorityEntity value) {
-                return super.put(generateKey((Method) method), value);
-            }
-
-            @Override
-            public AuthorityEntity get(Object method) {
-                return super.get(generateKey((Method) method));
-            }
-
-            private String generateKey(Method method) {
-                return Md5Util.encryptToHexString(String.format("%s.%s(%s)",
-                        method.getDeclaringClass().getTypeName(),
-                        method.getName(),
-                        StringUtils.join(Arrays.asList(method.getParameterTypes()).stream().map(Type::getTypeName).collect(Collectors.toList()), ",")));
-            }
-        };
-
-        for (AuthorityEntity authority : authorities) {
-            authorityMap.put(authority.getHandleMethod(), authority);
-        }
+//        // -----------入库::start-----------
+//
+//        int size = authorityGroups.size();
+//        List<Long> authorityGroupIds = new ArrayList<>(size);
+//        List<Long> authorityIds = new ArrayList<>(size);
+//        for (AuthorityGroupEntity authorityGroup : authorityGroups) {
+//            AuthorityGroupEntity queryAuthorityGroup = new AuthorityGroupEntity();
+//            queryAuthorityGroup.setPath(authorityGroup.getPath());
+//            AuthorityGroupEntity storedAuthorityGroup = authorityGroupMapper.getOne(queryAuthorityGroup);
+//            if (storedAuthorityGroup == null) {
+//                authorityGroupMapper.insert(authorityGroup);
+//            } else {
+//                authorityGroup.setId(storedAuthorityGroup.getId());
+//                if (!storedAuthorityGroup.getRem().equals(authorityGroup.getRem()) || storedAuthorityGroup.getDel() == 1) {
+//                    authorityGroupMapper.updById(authorityGroup);
+//                }
+//            }
+//            Long authorityGroupId = authorityGroup.getId();
+//            authorityGroupIds.add(authorityGroupId);
+//
+//            for (AuthorityEntity authority : authorityGroup.getAuthorities()) {
+//                authority.setGroupId(authorityGroupId);
+//
+//                AuthorityEntity queryAuthority = new AuthorityEntity();
+//                queryAuthority.setMethod(authority.getMethod());
+//                queryAuthority.setPath(authority.getPath());
+//                AuthorityEntity storedAuthority = authorityMapper.getOne(queryAuthority);
+//                if (storedAuthority == null) {
+//                    authorityMapper.insert(authority);
+//                } else {
+//                    authority.setId(storedAuthority.getId());
+//                    if (!storedAuthority.getGroupId().equals(authority.getGroupId())
+//                            || !storedAuthority.getAllow().equals(authority.getAllow())
+//                            || !storedAuthority.getRem().equals(authority.getRem())
+//                            || storedAuthority.getDel() == 1) {
+//                        authorityMapper.updById(authority);
+//                    }
+//                }
+//                authorityIds.add(authority.getId());
+//            }
+//        }
+//        authorityGroupMapper.delete(new LambdaQueryWrapper<AuthorityGroupEntity>().notIn(AuthorityGroupEntity::getId, authorityGroupIds));
+//        authorityMapper.delete(new LambdaQueryWrapper<AuthorityEntity>().notIn(AuthorityEntity::getId, authorityIds));
+//
+//        // -----------入库::end-----------
+//
+//        List<AuthorityEntity> authorities = authorityGroups.stream()
+//                .map(AuthorityGroupEntity::getAuthorities)
+//                .flatMap(List::stream)
+//                .collect(Collectors.toList());
+//
+//        authorityMap = new HashMap<>(authorities.size(), 1f) {
+//            @Override
+//            public AuthorityEntity put(Object method, AuthorityEntity value) {
+//                return super.put(generateKey((Method) method), value);
+//            }
+//
+//            @Override
+//            public AuthorityEntity get(Object method) {
+//                return super.get(generateKey((Method) method));
+//            }
+//
+//            private String generateKey(Method method) {
+//                return Md5Util.encryptToHexString(String.format("%s.%s(%s)",
+//                        method.getDeclaringClass().getTypeName(),
+//                        method.getName(),
+//                        StringUtils.join(Arrays.asList(method.getParameterTypes()).stream().map(Type::getTypeName).collect(Collectors.toList()), ",")));
+//            }
+//        };
+//
+//        for (AuthorityEntity authority : authorities) {
+//            authorityMap.put(authority.getHandleMethod(), authority);
+//        }
     }
 
 }

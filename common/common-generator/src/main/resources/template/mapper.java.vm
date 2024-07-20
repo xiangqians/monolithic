@@ -1,0 +1,14 @@
+package ${basePkg}.${moduleName}.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * ${table.comment}Mapper
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+@Mapper
+public interface ${table.className}Mapper {
+
+}

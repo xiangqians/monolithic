@@ -1,6 +1,5 @@
 package org.xiangqian.monolithic.common.mysql.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -17,14 +16,12 @@ import java.util.stream.Collectors;
  * @date 13:02 2024/06/02
  */
 @Data
-@TableName("sys_authority")
 @Schema(description = "权限信息")
 public class AuthorityEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "主键")
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @Schema(description = "权限组id")
@@ -33,7 +30,6 @@ public class AuthorityEntity implements Serializable {
     @Schema(description = "方法")
     private String method;
 
-    @TableField("`path`")
     @Schema(description = "路径")
     private String path;
 
@@ -43,7 +39,6 @@ public class AuthorityEntity implements Serializable {
     @Schema(description = "备注")
     private String rem;
 
-    @TableLogic
     @Schema(description = "是否已删除，0-未删除，1-已删除")
     private Byte del;
 
@@ -57,11 +52,9 @@ public class AuthorityEntity implements Serializable {
      * 处理方法（@RequestMapping）
      */
     @Schema(hidden = true)
-    @TableField(exist = false)
     private Method handleMethod;
 
     @Schema(description = "所属角色id集合")
-    @TableField(exist = false)
     private Set<Long> roleIds;
 
     public void setRoleIdsStr(String roleIdsStr) {

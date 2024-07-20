@@ -23,4 +23,8 @@
         <include refid="query"></include>
     </select>
 
+    <select id="list" resultType="org.xiangqian.monolithic.common.mysql.sched.entity.TaskRecordEntity">
+        <include refid="query"></include>
+    </select>
+
 </mapper>

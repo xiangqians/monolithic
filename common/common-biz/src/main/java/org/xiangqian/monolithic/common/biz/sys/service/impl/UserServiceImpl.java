@@ -1,6 +1,5 @@
 package org.xiangqian.monolithic.common.biz.sys.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.security.Keys;
@@ -61,72 +60,76 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserTokenResult getTokenByEmail(UserTokenEmailArg arg) {
-        UserEntity user = null;
+//        UserEntity user = null;
+//
+//        // 验证类型
+//        byte type = arg.getType();
+//
+//        // 密码
+//        if (type == 1) {
+//            String email = StringUtils.trim(arg.getEmail());
+//            Assert.notEmpty(email, SysCode.USER_EMAIL_NOT_EMPTY);
+//            String passwd = StringUtils.trim(arg.getPasswd());
+//            Assert.notEmpty(passwd, SysCode.USER_PASSWD_NOT_EMPTY);
+//            user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
+//                    .eq(UserEntity::getEmail, email)
+//                    .last("LIMIT 1"));
+//            Assert.notNull(user, SysCode.USER_EMAIL_OR_PASSWD_INCORRECT);
+//            Assert.isTrue(passwordEncoder.matches(passwd, user.getPasswd()), SysCode.USER_EMAIL_OR_PASSWD_INCORRECT);
+//        }
+//        // 验证码
+//        else if (type == 2) {
+//            String email = StringUtils.trim(arg.getEmail());
+//            Assert.notEmpty(email, SysCode.USER_EMAIL_NOT_EMPTY);
+//            String code = StringUtils.trim(arg.getCode());
+//            Assert.notEmpty(code, SysCode.USER_CODE_NOT_EMPTY);
+//            throw new RuntimeException("暂不支持验证码授权");
+//        }
+//        // 验证类型不合法
+//        else {
+//            throw new CodeException(SysCode.USER_VERIFY_TYPE_ILLEGAL);
+//        }
+//
+//        return getTokenByUser(user);
 
-        // 验证类型
-        byte type = arg.getType();
-
-        // 密码
-        if (type == 1) {
-            String email = StringUtils.trim(arg.getEmail());
-            Assert.notEmpty(email, SysCode.USER_EMAIL_NOT_EMPTY);
-            String passwd = StringUtils.trim(arg.getPasswd());
-            Assert.notEmpty(passwd, SysCode.USER_PASSWD_NOT_EMPTY);
-            user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
-                    .eq(UserEntity::getEmail, email)
-                    .last("LIMIT 1"));
-            Assert.notNull(user, SysCode.USER_EMAIL_OR_PASSWD_INCORRECT);
-            Assert.isTrue(passwordEncoder.matches(passwd, user.getPasswd()), SysCode.USER_EMAIL_OR_PASSWD_INCORRECT);
-        }
-        // 验证码
-        else if (type == 2) {
-            String email = StringUtils.trim(arg.getEmail());
-            Assert.notEmpty(email, SysCode.USER_EMAIL_NOT_EMPTY);
-            String code = StringUtils.trim(arg.getCode());
-            Assert.notEmpty(code, SysCode.USER_CODE_NOT_EMPTY);
-            throw new RuntimeException("暂不支持验证码授权");
-        }
-        // 验证类型不合法
-        else {
-            throw new CodeException(SysCode.USER_VERIFY_TYPE_ILLEGAL);
-        }
-
-        return getTokenByUser(user);
+        return null;
     }
 
     @Override
     public UserTokenResult getTokenByPhone(UserTokenPhoneArg arg) {
-        UserEntity user = null;
+//        UserEntity user = null;
+//
+//        // 验证类型
+//        byte type = arg.getType();
+//
+//        // 密码
+//        if (type == 1) {
+//            String phone = StringUtils.trim(arg.getPhone());
+//            Assert.notEmpty(phone, SysCode.USER_PHONE_NOT_EMPTY);
+//            String passwd = StringUtils.trim(arg.getPasswd());
+//            Assert.notEmpty(passwd, SysCode.USER_PASSWD_NOT_EMPTY);
+//            user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
+//                    .eq(UserEntity::getPhone, phone)
+//                    .last("LIMIT 1"));
+//            Assert.notNull(user, SysCode.USER_PHONE_OR_PASSWD_INCORRECT);
+//            Assert.isTrue(passwordEncoder.matches(passwd, user.getPasswd()), SysCode.USER_PHONE_OR_PASSWD_INCORRECT);
+//        }
+//        // 验证码
+//        else if (type == 2) {
+//            String phone = StringUtils.trim(arg.getPhone());
+//            Assert.notEmpty(phone, SysCode.USER_PHONE_NOT_EMPTY);
+//            String code = StringUtils.trim(arg.getCode());
+//            Assert.notEmpty(code, SysCode.USER_CODE_NOT_EMPTY);
+//            throw new RuntimeException("暂不支持验证码授权");
+//        }
+//        // 验证类型不合法
+//        else {
+//            throw new CodeException(SysCode.USER_VERIFY_TYPE_ILLEGAL);
+//        }
+//
+//        return getTokenByUser(user);
 
-        // 验证类型
-        byte type = arg.getType();
-
-        // 密码
-        if (type == 1) {
-            String phone = StringUtils.trim(arg.getPhone());
-            Assert.notEmpty(phone, SysCode.USER_PHONE_NOT_EMPTY);
-            String passwd = StringUtils.trim(arg.getPasswd());
-            Assert.notEmpty(passwd, SysCode.USER_PASSWD_NOT_EMPTY);
-            user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
-                    .eq(UserEntity::getPhone, phone)
-                    .last("LIMIT 1"));
-            Assert.notNull(user, SysCode.USER_PHONE_OR_PASSWD_INCORRECT);
-            Assert.isTrue(passwordEncoder.matches(passwd, user.getPasswd()), SysCode.USER_PHONE_OR_PASSWD_INCORRECT);
-        }
-        // 验证码
-        else if (type == 2) {
-            String phone = StringUtils.trim(arg.getPhone());
-            Assert.notEmpty(phone, SysCode.USER_PHONE_NOT_EMPTY);
-            String code = StringUtils.trim(arg.getCode());
-            Assert.notEmpty(code, SysCode.USER_CODE_NOT_EMPTY);
-            throw new RuntimeException("暂不支持验证码授权");
-        }
-        // 验证类型不合法
-        else {
-            throw new CodeException(SysCode.USER_VERIFY_TYPE_ILLEGAL);
-        }
-
-        return getTokenByUser(user);
+        return null;
     }
 
     @Override

@@ -14,9 +14,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
+
+<!--                <dependency>-->
+<!--                    <groupId>com.baomidou</groupId>-->
+<!--                    <artifactId>mybatis-plus-boot-starter</artifactId>-->
+<!--                    <version>3.5.3.1</version>-->
+<!--                </dependency>-->
 
         <dependency>
             <groupId>org.xiangqian.monolithic</groupId>

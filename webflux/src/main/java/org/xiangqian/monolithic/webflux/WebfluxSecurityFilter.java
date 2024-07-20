@@ -31,7 +31,7 @@ import java.util.Map;
  * @author xiangqian
  * @date 12:00 2024/07/07
  */
-@Component
+//@Component
 public class WebfluxSecurityFilter extends WebSecurityFilter<ServerWebExchange> implements WebFilter {
 
     public static final String PRINCIPAL_ATTRIBUTE = "PRINCIPAL";

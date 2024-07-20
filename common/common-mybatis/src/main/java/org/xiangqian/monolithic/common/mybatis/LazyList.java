@@ -15,26 +15,26 @@ import java.util.List;
 public class LazyList<T> {
 
     @Schema(description = "当前页", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long current;
+    private Integer current;
 
     @Schema(description = "页数量", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long size;
-
-    @Schema(description = "数据")
-    private List<T> data;
+    private Integer size;
 
     @Schema(description = "是否有下一页数据")
     private Boolean next;
 
+    @Schema(description = "数据")
+    private List<T> data;
+
     public LazyList() {
-        this(1L, 10L);
+        this(1, 10);
     }
 
-    public LazyList(Long current, Long size) {
+    public LazyList(Integer current, Integer size) {
         this.current = current;
         this.size = size;
-        this.data = Collections.emptyList();
         this.next = false;
+        this.data = Collections.emptyList();
     }
 
 }

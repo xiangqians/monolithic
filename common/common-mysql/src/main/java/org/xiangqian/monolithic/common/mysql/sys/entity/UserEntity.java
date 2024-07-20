@@ -1,6 +1,5 @@
 package org.xiangqian.monolithic.common.mysql.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,14 +15,12 @@ import java.time.LocalDateTime;
  * @date 22:18 2024/05/30
  */
 @Data
-@TableName("sys_user")
 @Schema(description = "用户信息")
 public class UserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "主键")
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @Schema(description = "租户id")
@@ -33,7 +30,6 @@ public class UserEntity implements Serializable {
     private Long roleId;
 
     @Schema(description = "用户名")
-    @TableField("`name`")
     private String name;
 
     @Schema(description = "邮箱")
@@ -46,7 +42,6 @@ public class UserEntity implements Serializable {
     private String passwd;
 
     @Schema(description = "是否已锁定，0-否，1-是")
-    @TableField("`locked`")
     private Byte locked;
 
     @Schema(description = "用户连续错误登陆次数，超过3次则锁定用户")
@@ -56,7 +51,6 @@ public class UserEntity implements Serializable {
     @Schema(description = "登录历史")
     private String loginHistory;
 
-    @TableLogic
     @Schema(description = "是否已删除，0-未删除，1-已删除")
     private Byte del;
 
@@ -67,7 +61,6 @@ public class UserEntity implements Serializable {
     private LocalDateTime updTime;
 
     @Schema(hidden = true)
-    @TableField(exist = false)
     private String token;
 
     @JsonIgnore // 序列化时忽略该属性

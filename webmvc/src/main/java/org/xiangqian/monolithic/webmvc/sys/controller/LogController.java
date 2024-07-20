@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.xiangqian.monolithic.common.biz.sys.service.LogService;
 import org.xiangqian.monolithic.common.model.Result;
+import org.xiangqian.monolithic.common.mybatis.LazyList;
+import org.xiangqian.monolithic.common.mybatis.Page;
 import org.xiangqian.monolithic.common.mysql.LazyList;
 import org.xiangqian.monolithic.common.mysql.Page;
 import org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity;

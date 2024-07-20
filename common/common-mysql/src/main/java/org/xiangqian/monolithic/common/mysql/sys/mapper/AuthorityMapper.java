@@ -1,6 +1,5 @@
 package org.xiangqian.monolithic.common.mysql.sys.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.xiangqian.monolithic.common.mysql.sys.entity.AuthorityEntity;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * @date 13:02 2024/06/02
  */
 @Mapper
-public interface AuthorityMapper extends BaseMapper<AuthorityEntity> {
+public interface AuthorityMapper {
 
     List<AuthorityEntity> list();
 

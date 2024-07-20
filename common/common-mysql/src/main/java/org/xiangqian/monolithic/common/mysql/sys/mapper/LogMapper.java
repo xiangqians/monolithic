@@ -1,6 +1,5 @@
 package org.xiangqian.monolithic.common.mysql.sys.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.xiangqian.monolithic.common.mybatis.LazyList;
@@ -14,7 +13,7 @@ import org.xiangqian.monolithic.common.mysql.sys.entity.LogEntity;
  * @date 14:18 2024/06/09
  */
 @Mapper
-public interface LogMapper extends BaseMapper<LogEntity> {
+public interface LogMapper {
 
     Page<LogEntity> page(Page<LogEntity> page, @Param("entity") LogEntity entity);
 

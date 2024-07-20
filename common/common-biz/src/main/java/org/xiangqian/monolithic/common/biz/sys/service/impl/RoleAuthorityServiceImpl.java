@@ -1,19 +1,15 @@
 package org.xiangqian.monolithic.common.biz.sys.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 import org.xiangqian.monolithic.common.biz.sys.service.RoleAuthorityService;
-import org.xiangqian.monolithic.common.mysql.sys.entity.RoleAuthorityEntity;
 import org.xiangqian.monolithic.common.mysql.sys.mapper.RoleAuthorityMapper;
 import org.xiangqian.monolithic.common.redis.Redis;
 import org.xiangqian.monolithic.common.redis.RedisBitmap;
-import org.xiangqian.monolithic.common.redis.RedisLock;
 
-import java.util.*;
+import java.util.Set;
 
 /**
  * @author xiangqian
@@ -47,34 +43,34 @@ public class RoleAuthorityServiceImpl implements RoleAuthorityService, Applicati
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        RedisLock redisLock = redis.Lock(getKey(null) + "_lock");
-        try {
-            if (redisLock.tryLock()) {
-                List<RoleAuthorityEntity> roleAuthorities = roleAuthorityMapper.selectList(new LambdaQueryWrapper<>());
-                if (CollectionUtils.isNotEmpty(roleAuthorities)) {
-                    Map<Long, Set<Long>> authorityIdsMap = new HashMap<>(64, 1f);
-                    for (RoleAuthorityEntity roleAuthority : roleAuthorities) {
-                        Long roleId = roleAuthority.getRoleId();
-                        Set<Long> authorityIds = authorityIdsMap.get(roleId);
-                        if (authorityIds == null) {
-                            authorityIds = new HashSet<>(8, 1f);
-                            authorityIdsMap.put(roleId, authorityIds);
-                        }
-                        authorityIds.add(roleAuthority.getAuthorityId());
-                    }
-
-                    for (Map.Entry<Long, Set<Long>> entry : authorityIdsMap.entrySet()) {
-                        Long roleId = entry.getKey();
-                        Set<Long> authorityIds = entry.getValue();
-                        if (CollectionUtils.isNotEmpty(authorityIds)) {
-                            add(roleId, authorityIds);
-                        }
-                    }
-                }
-            }
-        } finally {
-            redisLock.forceUnlock();
-        }
+//        RedisLock redisLock = redis.Lock(getKey(null) + "_lock");
+//        try {
+//            if (redisLock.tryLock()) {
+//                List<RoleAuthorityEntity> roleAuthorities = roleAuthorityMapper.selectList(new LambdaQueryWrapper<>());
+//                if (CollectionUtils.isNotEmpty(roleAuthorities)) {
+//                    Map<Long, Set<Long>> authorityIdsMap = new HashMap<>(64, 1f);
+//                    for (RoleAuthorityEntity roleAuthority : roleAuthorities) {
+//                        Long roleId = roleAuthority.getRoleId();
+//                        Set<Long> authorityIds = authorityIdsMap.get(roleId);
+//                        if (authorityIds == null) {
+//                            authorityIds = new HashSet<>(8, 1f);
+//                            authorityIdsMap.put(roleId, authorityIds);
+//                        }
+//                        authorityIds.add(roleAuthority.getAuthorityId());
+//                    }
+//
+//                    for (Map.Entry<Long, Set<Long>> entry : authorityIdsMap.entrySet()) {
+//                        Long roleId = entry.getKey();
+//                        Set<Long> authorityIds = entry.getValue();
+//                        if (CollectionUtils.isNotEmpty(authorityIds)) {
+//                            add(roleId, authorityIds);
+//                        }
+//                    }
+//                }
+//            }
+//        } finally {
+//            redisLock.forceUnlock();
+//        }
     }
 
     private String getKey(Long roleId) {

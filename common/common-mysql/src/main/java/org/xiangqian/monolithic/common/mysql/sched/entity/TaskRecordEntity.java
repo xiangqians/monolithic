@@ -1,9 +1,5 @@
 package org.xiangqian.monolithic.common.mysql.sched.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -15,21 +11,18 @@ import java.time.LocalDateTime;
  * @date 16:36 2024/06/23
  */
 @Data
-@TableName("sched_task_record")
 @Schema(description = "任务调度记录表")
 public class TaskRecordEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "主键")
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     @Schema(description = "任务id")
     private Integer taskId;
 
     @Schema(description = "状态，0-执行中，1-成功，2-失败")
-    @TableField("`status`")
     private Byte status;
 
     @Schema(description = "开始时间")

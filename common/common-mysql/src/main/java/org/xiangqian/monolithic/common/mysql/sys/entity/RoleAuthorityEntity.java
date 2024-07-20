@@ -1,19 +1,16 @@
 package org.xiangqian.monolithic.common.mysql.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
 
 /**
  * @author xiangqian
  * @date 11:34 2024/06/10
  */
 @Data
-@TableName("sys_role_authority")
 @Schema(description = "角色权限信息")
 public class RoleAuthorityEntity implements Serializable {
 

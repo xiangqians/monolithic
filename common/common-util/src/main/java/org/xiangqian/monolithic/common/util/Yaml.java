@@ -2,7 +2,6 @@ package org.xiangqian.monolithic.common.util;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.xiangqian.monolithic.common.util.naming.NamingLowerHyphenUtil;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -130,7 +129,7 @@ public class Yaml {
 
                 Property property = super.getProperty(type, name);
                 if (property instanceof MissingProperty) {
-                    property = super.getProperty(type, NamingLowerHyphenUtil.convToLowerCamel(name));
+                    property = super.getProperty(type, NamingUtil.lowerHyphenConvertToLowerCamel(name));
                 }
                 return property;
             }

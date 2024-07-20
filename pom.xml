@@ -21,6 +21,7 @@
         <module>webflux</module>
         <module>webmvc</module>
         <module>websocket</module>
+        <module>webrtc</module>
     </modules>
 
     <properties>
@@ -59,11 +60,11 @@
         <!-- mysql-connector -->
         <mysql-connector.version>8.0.30</mysql-connector.version>
 
-        <!-- mybatis-plus -->
-        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
+        <!-- mybatis -->
+        <mybatis.version>3.0.3</mybatis.version>
 
-        <!-- apache-velocity-engine -->
-        <apache-velocity-engine.version>2.3</apache-velocity-engine.version>
+        <!-- 模板引擎 -->
+        <velocity-engine.version>2.3</velocity-engine.version>
 
         <!-- nimbus-jose-jwt -->
         <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
@@ -81,6 +82,8 @@
         <minio.version>8.5.10</minio.version>
 
         <clickhouse-jdbc.version>0.6.1</clickhouse-jdbc.version>
+
+        <lz4.version>1.8.0</lz4.version>
 
         <influxdb-client.version>6.11.0</influxdb-client.version>
 
@@ -238,6 +241,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.lz4</groupId>
+                <artifactId>lz4-java</artifactId>
+                <version>${lz4.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
@@ -277,34 +286,19 @@
                 <version>${bootstrap.version}</version>
             </dependency>
 
-            <!-- @mybatis::start -->
+            <!-- MyBatis Starter -->
             <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
             </dependency>
 
-            <!-- mybatis核心 -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-core</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-
-            <!-- mybatis代码生成器 -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-generator</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-
-            <!-- velocity模板引擎 -->
+            <!-- 模板引擎 -->
             <dependency>
                 <groupId>org.apache.velocity</groupId>
                 <artifactId>velocity-engine-core</artifactId>
-                <version>${apache-velocity-engine.version}</version>
+                <version>${velocity-engine.version}</version>
             </dependency>
-            <!-- @mybatis::end -->
 
             <dependency>
                 <groupId>mysql</groupId>

@@ -1,0 +1,28 @@
+package ${basePkg}.${moduleName}.entity;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+import java.io.Serializable;
+#foreach ($columnType in ${table.columnTypes})
+    #if( ${columnType.name} != "Long" )
+import ${columnType.name};
+    #end
+#end
+
+/**
+ * @author ${author}
+ * @date ${date}
+ */
+@Data
+@Schema(description = "${table.comment}")
+public class ${table.className}Entity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+#foreach ($column in ${table.columns})
+    @Schema(description = "${column.comment}")
+    private ${column.type.simpleName} ${column.fieldName};
+
+#end
+}
